@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --maroon: #741f2b;
+  --maroon-dark: #4e111b;
+  --gold: #c9a227;
+  --ivory: #faf7ef;
+  --charcoal: #20242a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--charcoal);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--maroon-dark);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(rgba(116, 31, 43, 0.9), rgba(78, 17, 27, 0.94)),
+    radial-gradient(circle at 20% 20%, rgba(201, 162, 39, 0.24), transparent 35%),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1), transparent 30%);
+}
+
+.glass-panel {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.card-3d:hover {
+  transform: perspective(900px) rotateX(2deg) rotateY(-2deg) translateY(-5px);
+  box-shadow: 0 24px 60px rgba(78, 17, 27, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

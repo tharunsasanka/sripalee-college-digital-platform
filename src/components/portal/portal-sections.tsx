@@ -8,7 +8,6 @@ import {
   ArrowRight,
   BellRing,
   BookOpenCheck,
-  CalendarDays,
   CheckCircle2,
   ClipboardCheck,
   Eye,

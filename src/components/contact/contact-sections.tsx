@@ -19,7 +19,6 @@ import {
   Phone,
   Send,
   ShieldCheck,
-  UsersRound,
   Wrench,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";

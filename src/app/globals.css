@@ -98,4 +98,351 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+.heritage-page {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(166, 124, 65, 0.08), transparent 28%),
+    radial-gradient(circle at 88% 40%, rgba(94, 35, 39, 0.06), transparent 32%),
+    #f2ead7;
+  color: #34261c;
+}
 
+.heritage-serif {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  letter-spacing: -0.025em;
+}
+
+.heritage-hero {
+  background:
+    linear-gradient(110deg, rgba(39, 24, 18, 0.99), rgba(76, 24, 31, 0.96)),
+    #321c1c;
+}
+
+.heritage-hero-pattern {
+  background-image:
+    linear-gradient(rgba(221, 190, 126, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(221, 190, 126, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 25% 30%, rgba(207, 167, 87, 0.18), transparent 30%),
+    radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.06), transparent 28%);
+  background-size:
+    46px 46px,
+    46px 46px,
+    auto,
+    auto;
+}
+
+.heritage-hero-vignette {
+  background:
+    linear-gradient(90deg, rgba(15, 9, 7, 0.35), transparent 35%, transparent 70%, rgba(15, 9, 7, 0.28)),
+    linear-gradient(0deg, rgba(15, 9, 7, 0.25), transparent 35%);
+}
+
+.heritage-paper {
+  position: relative;
+  background:
+    radial-gradient(circle at 15% 12%, rgba(126, 85, 36, 0.12), transparent 23%),
+    radial-gradient(circle at 85% 78%, rgba(126, 85, 36, 0.08), transparent 25%),
+    repeating-linear-gradient(
+      0deg,
+      rgba(91, 61, 31, 0.025) 0,
+      rgba(91, 61, 31, 0.025) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    #efe2c4;
+  border: 1px solid rgba(100, 72, 42, 0.38);
+  box-shadow:
+    0 28px 65px rgba(10, 6, 4, 0.32),
+    inset 0 0 80px rgba(102, 72, 35, 0.08);
+}
+
+.heritage-document-tilt {
+  transform: rotate(1.2deg);
+}
+
+.heritage-document-border {
+  border: 1px solid rgba(104, 74, 41, 0.5);
+  box-shadow:
+    inset 0 0 0 5px rgba(239, 226, 196, 0.9),
+    inset 0 0 0 6px rgba(104, 74, 41, 0.16);
+}
+
+.heritage-stamp {
+  display: grid;
+  place-items: center;
+  width: 86px;
+  height: 86px;
+  border: 2px solid rgba(113, 31, 39, 0.72);
+  border-radius: 9999px;
+  color: #711f27;
+  transform: rotate(-9deg);
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.heritage-stamp span {
+  margin-top: 3px;
+}
+
+.heritage-nav {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(239, 228, 205, 0.95);
+  backdrop-filter: blur(14px);
+}
+
+.heritage-catalogue-label {
+  min-width: 220px;
+  border: 1px solid rgba(113, 82, 47, 0.28);
+  background: rgba(235, 220, 190, 0.65);
+  padding: 14px 18px;
+  color: #5c432e;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-weight: 700;
+}
+
+.heritage-catalogue-label span {
+  display: block;
+  margin-top: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  opacity: 0.6;
+}
+
+.heritage-catalogue-panel {
+  border: 1px solid rgba(113, 82, 47, 0.25);
+  background:
+    linear-gradient(rgba(255, 250, 239, 0.78), rgba(240, 226, 198, 0.72)),
+    #eee0c3;
+  box-shadow: 0 12px 30px rgba(72, 49, 27, 0.08);
+}
+
+.heritage-record-card {
+  overflow: hidden;
+  border: 1px solid rgba(92, 67, 40, 0.25);
+  background: #f7eedb;
+  box-shadow: 0 17px 35px rgba(59, 39, 22, 0.1);
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.heritage-record-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 46px rgba(59, 39, 22, 0.16);
+}
+
+.heritage-record-header {
+  min-height: 260px;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(198, 158, 81, 0.12), transparent 30%),
+    linear-gradient(135deg, #39221d, #5b1d28);
+}
+
+.heritage-record-body {
+  padding: 28px;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(91, 61, 31, 0.018) 0,
+      rgba(91, 61, 31, 0.018) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    #f7eedb;
+}
+
+.heritage-dark-section {
+  position: relative;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(204, 164, 85, 0.13), transparent 25%),
+    linear-gradient(135deg, #2b1c17, #4a2024);
+}
+
+.heritage-photo-frame {
+  border: 12px solid #2d1d16;
+  background: #211510;
+  box-shadow:
+    0 0 0 1px rgba(210, 173, 98, 0.45),
+    0 28px 50px rgba(0, 0, 0, 0.32);
+}
+
+.heritage-photo-placeholder {
+  display: grid;
+  min-height: 470px;
+  place-items: center;
+  align-content: center;
+  padding: 48px;
+  text-align: center;
+  color: rgba(241, 223, 187, 0.68);
+  background:
+    linear-gradient(rgba(58, 42, 31, 0.38), rgba(45, 32, 24, 0.78)),
+    radial-gradient(circle at center, #88735b, #2d211a 70%);
+  filter: sepia(0.45);
+}
+
+.heritage-photo-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid rgba(210, 173, 98, 0.25);
+  padding: 13px 16px;
+  color: rgba(241, 223, 187, 0.55);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.heritage-founding-fact {
+  border-top: 1px solid rgba(208, 175, 102, 0.45);
+  padding-top: 16px;
+}
+
+.heritage-founding-fact span {
+  color: #d0af66;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 28px;
+}
+
+.heritage-founding-fact p {
+  margin-top: 5px;
+  color: rgba(246, 234, 208, 0.65);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.heritage-figure-card {
+  overflow: hidden;
+  border: 1px solid rgba(111, 81, 48, 0.25);
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(98, 66, 35, 0.018) 0,
+      rgba(98, 66, 35, 0.018) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    #f7eedb;
+  box-shadow: 0 18px 36px rgba(59, 39, 22, 0.09);
+}
+
+.heritage-figure-portrait {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 320px;
+  padding: 34px;
+  color: rgba(240, 224, 192, 0.72);
+  background:
+    radial-gradient(circle at center, rgba(176, 143, 89, 0.28), transparent 38%),
+    linear-gradient(145deg, #4b2826, #2c1d18);
+}
+
+.heritage-portrait-medallion {
+  display: grid;
+  width: 142px;
+  height: 142px;
+  place-items: center;
+  border: 1px solid rgba(215, 180, 105, 0.6);
+  border-radius: 9999px;
+  color: #d6b76f;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 46px;
+  box-shadow:
+    inset 0 0 0 8px rgba(215, 180, 105, 0.05),
+    0 0 0 7px rgba(215, 180, 105, 0.07);
+}
+
+.heritage-collections-section {
+  background:
+    linear-gradient(rgba(34, 22, 17, 0.96), rgba(48, 27, 25, 0.98)),
+    #2c1b18;
+}
+
+.heritage-collection-card {
+  background:
+    radial-gradient(circle at 80% 15%, rgba(210, 175, 102, 0.08), transparent 27%),
+    rgba(255, 255, 255, 0.025);
+  transition: background 180ms ease;
+}
+
+.heritage-collection-card:hover {
+  background:
+    radial-gradient(circle at 80% 15%, rgba(210, 175, 102, 0.13), transparent 27%),
+    rgba(255, 255, 255, 0.055);
+}
+
+.heritage-process-line::before {
+  content: "";
+  position: absolute;
+  top: 28px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: rgba(133, 98, 56, 0.25);
+}
+
+.heritage-process-card {
+  border: 1px solid rgba(107, 78, 45, 0.24);
+  background: rgba(248, 239, 220, 0.72);
+  box-shadow: 0 13px 26px rgba(59, 39, 22, 0.07);
+}
+
+.heritage-process-number {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 56px;
+  height: 56px;
+  place-items: center;
+  border: 1px solid rgba(116, 80, 43, 0.35);
+  border-radius: 9999px;
+  background: #eee0c3;
+  color: #7d1f2b;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.heritage-final-cta {
+  background:
+    radial-gradient(circle at 15% 30%, rgba(208, 175, 102, 0.1), transparent 24%),
+    linear-gradient(120deg, #2a1b17, #541f29);
+}
+
+@media (max-width: 767px) {
+  .heritage-document-tilt {
+    transform: none;
+  }
+
+  .heritage-nav {
+    position: relative;
+    top: auto;
+  }
+
+  .heritage-process-line::before {
+    display: none;
+  }
+
+  .heritage-photo-placeholder {
+    min-height: 350px;
+    padding: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heritage-record-card {
+    transition: none;
+  }
+
+  .heritage-record-card:hover {
+    transform: none;
+  }
+}

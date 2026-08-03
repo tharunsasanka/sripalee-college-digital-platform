@@ -1,12 +1,18 @@
+import type { Metadata } from "next";
 import { PageTransition } from "@/components/page-transition";
+import { StaffDirectorySections } from "@/components/staff/staff-directory-sections";
 
-export default function Page() {
+export const metadata: Metadata = {
+  title: "Academic Staff",
+  description:
+    "Explore approved academic staff, departments, subjects and professional responsibilities at Sripalee College.",
+};
+
+export default function StaffPage() {
   return (
     <PageTransition>
-      <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-20 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Sripalee College</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[#4e111b] md:text-6xl">Academic Staff</h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-black/65">Approved teacher and staff profiles will be displayed with optional photographs, departments and subjects taught.</p>
+      <main>
+        <StaffDirectorySections />
       </main>
     </PageTransition>
   );

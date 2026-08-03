@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import "./globals.css";
-import { AnnouncementBar } from "@/components/home/announcement-bar";
-import { SiteFooter } from "@/components/site-footer";
+import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
+import { LanguageProvider } from "@/components/language/language-provider";
+import { PwaShell } from "@/components/pwa/pwa-shell";
+import SiteFooter from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
@@ -9,17 +12,27 @@ export const metadata: Metadata = {
     default: "Sripalee College Digital Platform",
     template: "%s | Sripalee College",
   },
-  description: "Development preview for the secure, multilingual and accessible Sripalee College digital platform.",
+  description:
+    "Development preview for the secure, multilingual and accessible Sripalee College digital platform.",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: ReactNode;
+}>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <AnnouncementBar />
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+        <LanguageProvider>
+          <SiteHeader />
+
+          {children}
+
+          <SiteFooter />
+          <PwaShell />
+          <AccessibilityToolbar />
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -13,11 +13,9 @@ import {
   GraduationCap,
   Languages,
   LockKeyhole,
-  Mail,
   School,
   Send,
   ShieldCheck,
-  UserCheck,
   UsersRound,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";

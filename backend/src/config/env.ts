@@ -11,6 +11,9 @@ const environmentSchema = z.object({
   FRONTEND_ORIGINS: z
     .string()
     .default("http://localhost:3000,http://localhost:3010"),
+  DATABASE_URL: z
+    .string()
+    .min(1, "DATABASE_URL is required."),
 });
 
 const result = environmentSchema.safeParse(process.env);
@@ -24,6 +27,7 @@ if (!result.success) {
 export const env = {
   nodeEnv: result.data.NODE_ENV,
   port: result.data.PORT,
+  databaseUrl: result.data.DATABASE_URL,
   frontendOrigins: result.data.FRONTEND_ORIGINS.split(",")
     .map((origin) => origin.trim())
     .filter(Boolean),

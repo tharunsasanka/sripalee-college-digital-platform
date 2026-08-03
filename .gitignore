@@ -11,3 +11,4 @@ backend/.env
 backend/node_modules/
 backend/dist/
 backend/*.log
+backend/src/generated/prisma/

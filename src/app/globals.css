@@ -446,3 +446,29 @@ a {
     transform: none;
   }
 }
+html[lang="si"] body {
+  font-family:
+    Arial,
+    "Noto Sans Sinhala",
+    system-ui,
+    sans-serif;
+}
+
+html[lang="ta"] body {
+  font-family:
+    Arial,
+    "Noto Sans Tamil",
+    system-ui,
+    sans-serif;
+}
+
+html[lang="si"] button,
+html[lang="si"] input,
+html[lang="si"] select,
+html[lang="si"] textarea,
+html[lang="ta"] button,
+html[lang="ta"] input,
+html[lang="ta"] select,
+html[lang="ta"] textarea {
+  font-family: inherit;
+}

@@ -15,7 +15,7 @@ export function HomeSections() {
             return (
               <Reveal key={item.href} delay={index * 0.05}>
                 <Link href={item.href} className="card-3d focus-ring group block rounded-3xl border border-black/10 bg-white p-6">
-                  <div className="flex items-start justify-between"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b]/10 text-[#741f2b]"><Icon size={23} /></div><ArrowUpRight className="text-black/35 group-hover:text-[#741f2b]" size={20} /></div>
+                  <div className="flex items-start justify-between"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b]/10 text-[#741f2b]"><Icon size={23} /></div><ArrowUpRight className="text-black/50 group-hover:text-[#741f2b]" size={20} /></div>
                   <h3 className="mt-6 text-xl font-semibold text-[#4e111b]">{item.label}</h3>
                   <p className="mt-2 text-sm leading-6 text-black/60">{item.description}</p>
                 </Link>
@@ -52,7 +52,7 @@ export function HomeSections() {
           <Reveal>
             <div className="rounded-[2rem] border border-black/10 bg-white p-6 md:p-8">
               <div className="flex items-center justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#741f2b]">Latest Notices</p><h3 className="mt-2 text-2xl font-semibold text-[#4e111b]">Official information centre</h3></div><FileText className="text-[#741f2b]" /></div>
-              <div className="mt-7 divide-y divide-black/10">{notices.map((notice) => <article key={notice.title} className="py-5 first:pt-0 last:pb-0"><span className="rounded-full bg-[#741f2b]/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#741f2b]">{notice.category}</span><h4 className="mt-3 text-lg font-semibold">{notice.title}</h4><p className="mt-2 text-sm text-black/50">{notice.date}</p></article>)}</div>
+              <div className="mt-7 divide-y divide-black/10">{notices.map((notice) => <article key={notice.title} className="py-5 first:pt-0 last:pb-0"><span className="rounded-full bg-[#741f2b]/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#741f2b]">{notice.category}</span><h4 className="mt-3 text-lg font-semibold">{notice.title}</h4><p className="mt-2 text-sm text-black/60">{notice.date}</p></article>)}</div>
               <Link href="/news" className="focus-ring mt-7 inline-flex items-center gap-2 font-semibold text-[#741f2b]">View all notices <ArrowRight size={17} /></Link>
             </div>
           </Reveal>
@@ -94,7 +94,7 @@ export function HomeSections() {
       <section className="bg-white px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <Reveal><SectionHeading eyebrow="Media Gallery" title="Approved moments from school life" description="Original, consent-cleared and appropriately credited photography will replace these development placeholders." /></Reveal>
-          <div className="mt-12 grid auto-rows-[180px] gap-4 sm:grid-cols-2 lg:grid-cols-4">{["Campus", "Academic", "Culture", "Sports", "Heritage", "Events"].map((item, index) => <Reveal key={item} className={index === 0 || index === 5 ? "lg:col-span-2" : ""} delay={index * 0.04}><div className="card-3d relative h-full overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-5 text-white"><div className="absolute inset-0 opacity-30 soft-grid" /><div className="relative flex h-full flex-col justify-between"><ImageIcon className="text-[#e8c85e]" /><div><p className="text-lg font-semibold">{item}</p><p className="mt-1 text-sm text-white/55">Approved photo collection</p></div></div></div></Reveal>)}</div>
+          <div className="mt-12 grid auto-rows-[180px] gap-4 sm:grid-cols-2 lg:grid-cols-4">{["Campus", "Academic", "Culture", "Sports", "Heritage", "Events"].map((item, index) => <Reveal key={item} className={index === 0 || index === 5 ? "lg:col-span-2" : ""} delay={index * 0.04}><div className="card-3d relative h-full overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-5 text-white"><div className="absolute inset-0 opacity-30 soft-grid" /><div className="relative flex h-full flex-col justify-between"><ImageIcon className="text-[#e8c85e]" /><div><p className="text-lg font-semibold">{item}</p><p className="mt-1 text-sm text-white/60">Approved photo collection</p></div></div></div></Reveal>)}</div>
         </div>
       </section>
 

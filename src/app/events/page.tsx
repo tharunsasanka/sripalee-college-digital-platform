@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function EventsPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <EventsSections />
       </main>
     </PageTransition>

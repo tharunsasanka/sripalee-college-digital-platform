@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function StaffPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <StaffDirectorySections />
       </main>
     </PageTransition>

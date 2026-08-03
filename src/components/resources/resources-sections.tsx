@@ -222,7 +222,7 @@ export function ResourcesSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   Development entries do not provide real downloads until the
                   school supplies and approves the official files.
                 </p>
@@ -355,7 +355,7 @@ export function ResourcesSections() {
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Title, category or keyword"
-                    className="w-full bg-transparent text-base outline-none placeholder:text-black/35"
+                    className="w-full bg-transparent text-base outline-none placeholder:text-black/55"
                   />
                 </div>
               </label>
@@ -458,7 +458,7 @@ export function ResourcesSections() {
                               {resource.category}
                             </p>
 
-                            <p className="mt-1 text-sm text-black/50">
+                            <p className="mt-1 text-sm text-black/60">
                               {resource.audience}
                             </p>
                           </div>

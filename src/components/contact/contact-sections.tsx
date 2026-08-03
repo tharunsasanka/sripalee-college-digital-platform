@@ -237,7 +237,7 @@ export function ContactSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   Telephone numbers, email addresses and office hours remain
                   placeholders until confirmed by the school.
                 </p>
@@ -304,7 +304,7 @@ export function ContactSections() {
                       {channel.value}
                     </p>
 
-                    <p className="mt-2 text-xs leading-5 text-black/50">
+                    <p className="mt-2 text-xs leading-5 text-black/60">
                       {channel.availability}
                     </p>
                   </div>
@@ -528,7 +528,7 @@ export function ContactSections() {
                   placeholder="Explain your enquiry clearly without including sensitive personal information."
                 />
 
-                <span className="mt-2 block text-right text-xs text-black/45">
+                <span className="mt-2 block text-right text-xs text-black/60">
                   {form.message.length}/2000
                 </span>
               </label>
@@ -620,7 +620,7 @@ export function ContactSections() {
                     {period.hours}
                   </p>
 
-                  <p className="mt-3 text-sm leading-6 text-white/55">
+                  <p className="mt-3 text-sm leading-6 text-white/60">
                     {period.availability}
                   </p>
                 </article>
@@ -638,7 +638,7 @@ export function ContactSections() {
 
                   <h3 className="mt-5 text-lg font-semibold">{item.title}</h3>
 
-                  <p className="mt-3 text-sm leading-6 text-white/55">
+                  <p className="mt-3 text-sm leading-6 text-white/60">
                     {item.description}
                   </p>
                 </article>

@@ -218,7 +218,7 @@ export function EventsSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   The displayed event records are development examples and must
                   be replaced with approved school information.
                 </p>
@@ -385,7 +385,7 @@ export function EventsSections() {
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Event, venue or keyword"
-                    className="w-full bg-transparent text-base outline-none placeholder:text-black/35"
+                    className="w-full bg-transparent text-base outline-none placeholder:text-black/55"
                   />
                 </div>
               </label>
@@ -488,7 +488,7 @@ export function EventsSections() {
                               {event.category}
                             </p>
 
-                            <p className="mt-1 text-sm text-black/50">
+                            <p className="mt-1 text-sm text-black/60">
                               {event.audience}
                             </p>
                           </div>

@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
 import { LanguageProvider } from "@/components/language/language-provider";
-import { PwaShell } from "@/components/pwa/pwa-shell";
-import SiteFooter from "@/components/site-footer";
+import SiteFooterStatic from "@/components/site-footer-static";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
@@ -29,8 +28,7 @@ export default function RootLayout({
 
           {children}
 
-          <SiteFooter />
-          <PwaShell />
+          <SiteFooterStatic />
           <AccessibilityToolbar />
         </LanguageProvider>
       </body>

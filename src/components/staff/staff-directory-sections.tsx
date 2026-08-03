@@ -152,7 +152,7 @@ export function StaffDirectorySections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   The current entries are development placeholders and must be
                   replaced with verified school-approved information.
                 </p>
@@ -188,7 +188,7 @@ export function StaffDirectorySections() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Name, role, department or subject"
-                  className="w-full bg-transparent text-base outline-none placeholder:text-black/35"
+                  className="w-full bg-transparent text-base outline-none placeholder:text-black/55"
                 />
               </div>
             </label>

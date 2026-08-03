@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AcademicsPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <AcademicsSections />
       </main>
     </PageTransition>

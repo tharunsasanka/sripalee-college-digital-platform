@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function PortalPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <PortalSections />
       </main>
     </PageTransition>

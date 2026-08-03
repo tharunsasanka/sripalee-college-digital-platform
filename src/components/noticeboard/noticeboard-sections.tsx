@@ -264,7 +264,7 @@ export function NoticeboardSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   Current slides are development examples and must be replaced
                   with authorised school content.
                 </p>
@@ -314,7 +314,7 @@ export function NoticeboardSections() {
               </div>
 
               <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-2">
-                <span className="px-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/50">
+                <span className="px-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
                   Rotation
                 </span>
 
@@ -400,7 +400,7 @@ export function NoticeboardSections() {
             <p
               role="status"
               aria-live="polite"
-              className="mt-4 text-sm text-white/55"
+              className="mt-4 text-sm text-white/60"
             >
               {fullscreenFeedback}
             </p>
@@ -430,7 +430,7 @@ export function NoticeboardSections() {
                   No slides available
                 </h3>
 
-                <p className="mt-3 text-white/55">
+                <p className="mt-3 text-white/60">
                   Select another display category.
                 </p>
               </div>
@@ -463,14 +463,14 @@ export function NoticeboardSections() {
                       {style.label}
                     </span>
 
-                    <span className="text-xs text-white/35">
+                    <span className="text-xs text-white/60">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
 
                   <p className="mt-4 font-semibold text-white">{slide.title}</p>
 
-                  <p className="mt-2 text-xs text-white/45">
+                  <p className="mt-2 text-xs text-white/60">
                     {slide.category}
                   </p>
                 </button>
@@ -697,7 +697,7 @@ function NoticeboardDisplay({
 
           <div>
             <p className="font-semibold">Sripalee College</p>
-            <p className="text-xs uppercase tracking-[0.16em] text-white/45">
+            <p className="text-xs uppercase tracking-[0.16em] text-white/60">
               Digital Noticeboard
             </p>
           </div>
@@ -761,7 +761,7 @@ function NoticeboardDisplay({
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <CalendarDays className={style.accent} size={20} />
 
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
                 Date
               </p>
 
@@ -773,7 +773,7 @@ function NoticeboardDisplay({
             <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <Clock3 className={style.accent} size={20} />
 
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
                 Time
               </p>
 
@@ -784,7 +784,7 @@ function NoticeboardDisplay({
           </div>
 
           <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/45">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
               Location or channel
             </p>
 
@@ -806,7 +806,7 @@ function NoticeboardDisplay({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/15 px-6 py-4 text-xs text-white/45 md:px-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/15 px-6 py-4 text-xs text-white/60 md:px-10">
         <p>{slide.status}</p>
 
         <div className="flex items-center gap-3">

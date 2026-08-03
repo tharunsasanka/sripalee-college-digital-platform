@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ResourcesPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <ResourcesSections />
       </main>
     </PageTransition>

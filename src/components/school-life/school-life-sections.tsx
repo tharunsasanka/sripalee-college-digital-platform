@@ -168,7 +168,7 @@ export function SchoolLifeSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   All activity names, teacher assignments and achievements must
                   be verified before official publication.
                 </p>
@@ -221,7 +221,7 @@ export function SchoolLifeSections() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search clubs, sports or activities"
-                  className="w-full bg-transparent text-base outline-none placeholder:text-black/35"
+                  className="w-full bg-transparent text-base outline-none placeholder:text-black/55"
                 />
               </div>
             </label>

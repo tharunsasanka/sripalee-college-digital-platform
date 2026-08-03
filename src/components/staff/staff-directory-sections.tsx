@@ -6,12 +6,9 @@ import {
   ArchiveRestore,
   ArrowRight,
   BadgeCheck,
-  BookOpenCheck,
-  Building2,
   CheckCircle2,
   Eye,
   FileClock,
-  GraduationCap,
   LockKeyhole,
   PencilLine,
   Plus,
@@ -19,7 +16,7 @@ import {
   ShieldCheck,
   UserRound,
   UsersRound,
-} from "lucide-react";
+} from "lucide-react"; 
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import {

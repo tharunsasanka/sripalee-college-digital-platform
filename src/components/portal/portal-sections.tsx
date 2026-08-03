@@ -221,7 +221,7 @@ export function PortalSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   The current interface is a frontend demonstration. It does
                   not contain real accounts, passwords or student records.
                 </p>

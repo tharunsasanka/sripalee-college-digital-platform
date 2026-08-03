@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function SchoolLifePage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <SchoolLifeSections />
       </main>
     </PageTransition>

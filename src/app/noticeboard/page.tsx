@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function NoticeboardPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <NoticeboardSections />
       </main>
     </PageTransition>

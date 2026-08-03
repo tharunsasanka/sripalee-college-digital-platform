@@ -252,7 +252,7 @@ export function AdmissionsSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   No admission period is active unless the school publishes an
                   authorised announcement.
                 </p>
@@ -323,7 +323,7 @@ export function AdmissionsSections() {
                     {pathway.title}
                   </h2>
 
-                  <p className="mt-2 text-sm font-semibold text-black/45">
+                  <p className="mt-2 text-sm font-semibold text-black/60">
                     For: {pathway.audience}
                   </p>
 
@@ -673,7 +673,7 @@ export function AdmissionsSections() {
                   placeholder="Ask a general question without including sensitive documents or private student information."
                 />
 
-                <span className="mt-2 block text-right text-xs text-black/45">
+                <span className="mt-2 block text-right text-xs text-black/60">
                   {form.message.length}/2000
                 </span>
               </label>

@@ -154,7 +154,7 @@ export function SchoolProfileSections() {
                     Approved crest and official image
                   </p>
 
-                  <p className="mt-2 max-w-sm text-sm leading-6 text-white/[0.55]">
+                  <p className="mt-2 max-w-sm text-sm leading-6 text-white/60">
                     This development placeholder will be replaced after
                     receiving authorised high-resolution material.
                   </p>
@@ -202,7 +202,7 @@ export function SchoolProfileSections() {
           </div>
         </Reveal>
 
-        <p className="mt-5 text-sm leading-6 text-black/50">
+        <p className="mt-5 text-sm leading-6 text-black/60">
           Development summary based on available authoritative records. Final
           wording and current institutional details require school
           confirmation.
@@ -526,8 +526,8 @@ export function SchoolProfileSections() {
                       <p
                         className={`mt-2 text-xs ${
                           highlighted
-                            ? "text-white/[0.55]"
-                            : "text-black/[0.45]"
+                            ? "text-white/60"
+                            : "text-black/60"
                         }`}
                       >
                         Approved details required
@@ -569,7 +569,7 @@ export function SchoolProfileSections() {
 
                     <h3 className="mt-2 text-lg font-semibold">{area}</h3>
 
-                    <p className="mt-2 text-sm leading-6 text-white/[0.55]">
+                    <p className="mt-2 text-sm leading-6 text-white/60">
                       Approved photography and facility details to be added.
                     </p>
                   </div>

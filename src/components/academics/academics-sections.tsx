@@ -160,7 +160,7 @@ export function AcademicsSections() {
                   ))}
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
+                <p className="mt-6 text-sm leading-6 text-white/60">
                   Final departments, subjects and Advanced Level streams must
                   be confirmed by authorised school officers.
                 </p>
@@ -408,7 +408,7 @@ export function AcademicsSections() {
 
                   <h3 className="mt-5 text-lg font-semibold">{item.title}</h3>
 
-                  <p className="mt-3 text-sm leading-6 text-white/55">
+                  <p className="mt-3 text-sm leading-6 text-white/60">
                     {item.description}
                   </p>
                 </article>
@@ -421,7 +421,7 @@ export function AcademicsSections() {
               <div>
                 <ClipboardCheck className="text-[#e8c85e]" size={26} />
                 <h3 className="mt-4 font-semibold">Approval workflow</h3>
-                <p className="mt-2 text-sm leading-6 text-white/55">
+                <p className="mt-2 text-sm leading-6 text-white/60">
                   Draft, review, approval, publication, locking and controlled
                   amendment.
                 </p>
@@ -430,7 +430,7 @@ export function AcademicsSections() {
               <div>
                 <ShieldCheck className="text-[#e8c85e]" size={26} />
                 <h3 className="mt-4 font-semibold">Protected records</h3>
-                <p className="mt-2 text-sm leading-6 text-white/55">
+                <p className="mt-2 text-sm leading-6 text-white/60">
                   Students and parents access only records linked to their
                   verified accounts.
                 </p>
@@ -439,7 +439,7 @@ export function AcademicsSections() {
               <div>
                 <FileText className="text-[#e8c85e]" size={26} />
                 <h3 className="mt-4 font-semibold">Audited corrections</h3>
-                <p className="mt-2 text-sm leading-6 text-white/55">
+                <p className="mt-2 text-sm leading-6 text-white/60">
                   Published marks retain the original value, correction reason,
                   requester and approver.
                 </p>

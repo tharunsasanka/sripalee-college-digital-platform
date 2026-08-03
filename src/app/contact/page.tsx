@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <ContactSections />
       </main>
     </PageTransition>

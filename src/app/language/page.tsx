@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function LanguagePage() {
   return (
     <PageTransition>
-      <main>
+      <main className="site-page-theme">
         <LanguageCentre />
       </main>
     </PageTransition>

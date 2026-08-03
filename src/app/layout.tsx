@@ -4,7 +4,7 @@ import "./globals.css";
 import { AccessibilityToolbar } from "@/components/accessibility/accessibility-toolbar";
 import { LanguageProvider } from "@/components/language/language-provider";
 import { PwaShell } from "@/components/pwa/pwa-shell";
-import { SiteFooter } from "@/components/site-footer";
+import SiteFooter from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {

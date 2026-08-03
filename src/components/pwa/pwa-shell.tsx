@@ -1,6 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import {
   Download,
   RefreshCw,
@@ -25,27 +29,99 @@ declare global {
   }
 }
 
+function subscribeToOnlineStatus(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getOnlineSnapshot() {
+  return typeof navigator === "undefined" ? true : navigator.onLine;
+}
+
+function getOnlineServerSnapshot() {
+  return true;
+}
+
+function subscribeToDisplayMode(callback: () => void) {
+  const mediaQuery = window.matchMedia("(display-mode: standalone)");
+
+  mediaQuery.addEventListener("change", callback);
+
+  return () => {
+    mediaQuery.removeEventListener("change", callback);
+  };
+}
+
+function getInstalledSnapshot() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  return window.matchMedia("(display-mode: standalone)").matches;
+}
+
+function getInstalledServerSnapshot() {
+  return false;
+}
+
+async function clearDevelopmentPwaData() {
+  if ("serviceWorker" in navigator) {
+    const registrations =
+      await navigator.serviceWorker.getRegistrations();
+
+    await Promise.all(
+      registrations.map((registration) =>
+        registration.unregister(),
+      ),
+    );
+  }
+
+  if ("caches" in window) {
+    const cacheNames = await caches.keys();
+
+    await Promise.all(
+      cacheNames
+        .filter((cacheName) =>
+          cacheName.startsWith("sripalee-pwa-"),
+        )
+        .map((cacheName) => caches.delete(cacheName)),
+    );
+  }
+}
+
 export function PwaShell() {
+  const isOnline = useSyncExternalStore(
+    subscribeToOnlineStatus,
+    getOnlineSnapshot,
+    getOnlineServerSnapshot,
+  );
+
+  const isInstalled = useSyncExternalStore(
+    subscribeToDisplayMode,
+    getInstalledSnapshot,
+    getInstalledServerSnapshot,
+  );
+
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [isOnline, setIsOnline] = useState(true);
-  const [isInstalled, setIsInstalled] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    function handleOnline() {
-      setIsOnline(true);
-      setMessage("Internet connection restored.");
+    if (process.env.NODE_ENV !== "production") {
+      void clearDevelopmentPwaData();
+      return;
     }
 
-    function handleOffline() {
-      setIsOnline(false);
-      setMessage("");
-    }
-
-    function handleInstallPrompt(event: BeforeInstallPromptEvent) {
+    function handleInstallPrompt(
+      event: BeforeInstallPromptEvent,
+    ) {
       event.preventDefault();
       setInstallPrompt(event);
       setDismissed(false);
@@ -53,7 +129,6 @@ export function PwaShell() {
 
     function handleAppInstalled() {
       setInstallPrompt(null);
-      setIsInstalled(true);
       setDismissed(true);
       setMessage("Sripalee College was installed successfully.");
     }
@@ -62,8 +137,6 @@ export function PwaShell() {
       window.location.reload();
     }
 
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
     window.addEventListener(
       "beforeinstallprompt",
       handleInstallPrompt,
@@ -89,15 +162,18 @@ export function PwaShell() {
               return;
             }
 
-            installingWorker.addEventListener("statechange", () => {
-              if (
-                installingWorker.state === "installed" &&
-                navigator.serviceWorker.controller
-              ) {
-                setUpdateAvailable(true);
-                setDismissed(false);
-              }
-            });
+            installingWorker.addEventListener(
+              "statechange",
+              () => {
+                if (
+                  installingWorker.state === "installed" &&
+                  navigator.serviceWorker.controller
+                ) {
+                  setUpdateAvailable(true);
+                  setDismissed(false);
+                }
+              },
+            );
           });
         })
         .catch(() => {
@@ -113,8 +189,6 @@ export function PwaShell() {
     }
 
     return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
       window.removeEventListener(
         "beforeinstallprompt",
         handleInstallPrompt,
@@ -142,11 +216,11 @@ export function PwaShell() {
 
     const choice = await installPrompt.userChoice;
 
-    if (choice.outcome === "accepted") {
-      setMessage("Application installation started.");
-    } else {
-      setMessage("Application installation was cancelled.");
-    }
+    setMessage(
+      choice.outcome === "accepted"
+        ? "Application installation started."
+        : "Application installation was cancelled.",
+    );
 
     setInstallPrompt(null);
     setDismissed(true);
@@ -175,6 +249,7 @@ export function PwaShell() {
   }
 
   const showActionCard =
+    process.env.NODE_ENV === "production" &&
     !dismissed &&
     (updateAvailable || (!isInstalled && installPrompt !== null));
 
@@ -225,14 +300,16 @@ export function PwaShell() {
 
           <p className="mt-3 pr-4 text-sm leading-6 text-black/60">
             {updateAvailable
-              ? "Load the newest approved version of the digital platform."
+              ? "Load the newest version of the digital platform."
               : "Add the school platform to this device for easier access and limited offline use."}
           </p>
 
           <button
             type="button"
             onClick={
-              updateAvailable ? applyUpdate : installApplication
+              updateAvailable
+                ? applyUpdate
+                : installApplication
             }
             className="focus-ring mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#741f2b] px-5 py-3 font-semibold text-white"
           >
@@ -257,11 +334,10 @@ export function PwaShell() {
           aria-live="polite"
           className="fixed right-5 top-24 z-[95] flex max-w-sm items-start gap-3 rounded-2xl border border-black/10 bg-white px-5 py-4 text-[#4e111b] shadow-2xl"
         >
-          {isOnline ? (
-            <Wifi className="mt-0.5 shrink-0 text-emerald-700" size={20} />
-          ) : (
-            <WifiOff className="mt-0.5 shrink-0 text-amber-700" size={20} />
-          )}
+          <Wifi
+            className="mt-0.5 shrink-0 text-emerald-700"
+            size={20}
+          />
 
           <p className="pr-5 text-sm font-semibold leading-6">
             {message}

@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -23,6 +23,7 @@ body {
   background: var(--ivory);
   color: var(--charcoal);
   font-family: Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
 }
 
 a {
@@ -36,26 +37,55 @@ a {
 }
 
 .hero-grid {
+  background-color: var(--maroon-dark);
   background-image:
-    linear-gradient(rgba(116, 31, 43, 0.9), rgba(78, 17, 27, 0.94)),
-    radial-gradient(circle at 20% 20%, rgba(201, 162, 39, 0.24), transparent 35%),
-    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.1), transparent 30%);
+    linear-gradient(120deg, rgba(78, 17, 27, 0.98), rgba(116, 31, 43, 0.92)),
+    radial-gradient(circle at 18% 18%, rgba(201, 162, 39, 0.28), transparent 34%),
+    radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.12), transparent 30%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size:
+    auto,
+    auto,
+    auto,
+    34px 34px,
+    34px 34px;
+  background-position: center;
+}
+
+.soft-grid {
+  background-image:
+    linear-gradient(rgba(116, 31, 43, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(116, 31, 43, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
 }
 
 .glass-panel {
   border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px);
+  background: rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(16px);
 }
 
 .card-3d {
   transform-style: preserve-3d;
-  transition: transform 220ms ease, box-shadow 220ms ease;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
 .card-3d:hover {
-  transform: perspective(900px) rotateX(2deg) rotateY(-2deg) translateY(-5px);
-  box-shadow: 0 24px 60px rgba(78, 17, 27, 0.18);
+  transform: perspective(900px) rotateX(1.4deg) rotateY(-1.4deg) translateY(-5px);
+  box-shadow: 0 24px 60px rgba(78, 17, 27, 0.14);
+  border-color: rgba(116, 31, 43, 0.22);
+}
+
+.gold-line {
+  height: 2px;
+  width: 72px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+}
+
+.focus-ring:focus-visible {
+  outline: 3px solid rgba(201, 162, 39, 0.75);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -68,3 +98,4 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+

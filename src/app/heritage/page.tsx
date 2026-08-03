@@ -1,12 +1,18 @@
+import type { Metadata } from "next";
+import { HeritageSections } from "@/components/heritage/heritage-sections";
 import { PageTransition } from "@/components/page-transition";
 
-export default function Page() {
+export const metadata: Metadata = {
+  title: "Digital Heritage Archive",
+  description:
+    "Explore the history, people, buildings, documents, photographs and traditions of Sripalee College.",
+};
+
+export default function HeritagePage() {
   return (
     <PageTransition>
-      <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-20 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Sripalee College</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[#4e111b] md:text-6xl">Digital Heritage Archive</h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-black/65">The interactive historical timeline, important people, photographs, documents and virtual museum will be developed here.</p>
+      <main>
+        <HeritageSections />
       </main>
     </PageTransition>
   );

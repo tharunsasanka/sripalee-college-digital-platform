@@ -9,11 +9,14 @@ import {
   BookOpen,
   Building2,
   Camera,
+  CheckCircle2,
   Clock3,
   FileText,
   Landmark,
   LibraryBig,
   Mic2,
+  Quote,
+  ScrollText,
   Search,
   ShieldCheck,
   Sparkles,
@@ -21,7 +24,6 @@ import {
   UsersRound,
 } from "lucide-react";
 import { Reveal } from "@/components/reveal";
-import { SectionHeading } from "@/components/section-heading";
 import {
   archiveCollectionTypes,
   heritageCategories,
@@ -54,7 +56,11 @@ const collectionIcons: Record<string, LucideIcon> = {
 const sectionLinks = [
   {
     href: "archive",
-    label: "Archive",
+    label: "Archive catalogue",
+  },
+  {
+    href: "founding",
+    label: "Founding story",
   },
   {
     href: "figures",
@@ -67,10 +73,6 @@ const sectionLinks = [
   {
     href: "preservation",
     label: "Preservation",
-  },
-  {
-    href: "controls",
-    label: "Publication controls",
   },
 ];
 
@@ -87,9 +89,11 @@ export function HeritageSections() {
 
       const matchesQuery =
         normalizedQuery.length === 0 ||
+        record.reference.toLowerCase().includes(normalizedQuery) ||
         record.title.toLowerCase().includes(normalizedQuery) ||
         record.year.toLowerCase().includes(normalizedQuery) ||
         record.category.toLowerCase().includes(normalizedQuery) ||
+        record.collection.toLowerCase().includes(normalizedQuery) ||
         record.summary.toLowerCase().includes(normalizedQuery) ||
         record.keywords.some((keyword) =>
           keyword.toLowerCase().includes(normalizedQuery),
@@ -100,104 +104,133 @@ export function HeritageSections() {
   }, [category, query]);
 
   return (
-    <>
-      <section className="relative overflow-hidden bg-[#4e111b] px-5 py-24 text-white lg:px-8 lg:py-32">
-        <div className="soft-grid absolute inset-0 opacity-30" />
-        <div className="absolute -left-28 top-24 h-80 w-80 rounded-full border border-[#c9a227]/30" />
-        <div className="absolute -right-28 bottom-0 h-96 w-96 rounded-full border border-white/10" />
+    <div className="heritage-page">
+      <section className="heritage-hero relative overflow-hidden px-5 py-24 text-[#f7ecd1] lg:px-8 lg:py-32">
+        <div className="heritage-hero-pattern absolute inset-0" />
+        <div className="heritage-hero-vignette absolute inset-0" />
 
         <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
           <Reveal>
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#e8c85e]">
-                Digital Heritage Archive
-              </p>
+              <div className="flex items-center gap-4">
+                <div className="h-px w-14 bg-[#c7a05a]" />
 
-              <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-7xl">
-                Preserving the people, places and stories that shaped
-                Sripalee College.
+                <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#dbc17d]">
+                  Sripalee College Historical Collection
+                </p>
+              </div>
+
+              <h1 className="heritage-serif mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] md:text-7xl">
+                Preserving a legacy of education, culture and service.
               </h1>
 
-              <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70 md:text-xl">
-                Explore the proposed structure for source-backed history,
-                historical photographs, documents, buildings, traditions and
-                oral-history collections.
+              <p className="mt-8 max-w-3xl text-lg leading-8 text-[#f7ecd1]/70 md:text-xl">
+                Enter a digital archive designed like a museum collection,
+                bringing together verified history, photographs, documents,
+                buildings, traditions and recorded memories.
               </p>
 
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-10 flex flex-wrap gap-3">
                 <a
                   href="#archive"
-                  className="focus-ring inline-flex items-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
+                  className="focus-ring inline-flex items-center gap-2 rounded-sm border border-[#d4b66b] bg-[#c7a05a] px-6 py-3.5 font-semibold text-[#2f2117] shadow-lg"
                 >
-                  Explore the archive
+                  Enter the archive
                   <ArrowRight size={18} />
                 </a>
 
                 <Link
                   href="/about"
-                  className="focus-ring inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:bg-white/10"
+                  className="focus-ring inline-flex items-center gap-2 rounded-sm border border-[#f7ecd1]/30 px-6 py-3.5 font-semibold text-[#f7ecd1] transition hover:bg-white/10"
                 >
                   Our School
                 </Link>
+              </div>
+
+              <div className="mt-12 flex flex-wrap gap-x-8 gap-y-4 border-t border-[#f7ecd1]/15 pt-6">
+                {heritageFacts.map((fact) => (
+                  <div key={fact.label}>
+                    <p className="heritage-serif text-2xl text-[#dbc17d]">
+                      {fact.value}
+                    </p>
+
+                    <p className="mt-1 text-xs uppercase tracking-[0.16em] text-[#f7ecd1]/45">
+                      {fact.label}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </Reveal>
 
           <Reveal delay={0.08}>
-            <div className="glass-panel rounded-[2rem] p-6 md:p-8">
-              <div className="rounded-[1.5rem] border border-white/10 bg-black/10 p-6">
-                <div className="flex items-center justify-between gap-4">
+            <div className="heritage-paper heritage-document-tilt p-5 md:p-7">
+              <div className="heritage-document-border p-6 md:p-8">
+                <div className="flex items-start justify-between gap-5">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e8c85e]">
-                      Archive overview
+                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#73532f]">
+                      Foundation Record
                     </p>
 
-                    <h2 className="mt-3 text-2xl font-semibold">
-                      Evidence, context and responsible preservation
-                    </h2>
+                    <p className="mt-2 font-mono text-xs text-[#6a5139]/70">
+                      Archive Ref. SC-FA-1934-001
+                    </p>
                   </div>
 
-                  <Archive className="text-[#e8c85e]" size={31} />
+                  <div className="heritage-stamp">
+                    <ShieldCheck size={25} />
+                    <span>Verified</span>
+                  </div>
                 </div>
 
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  {heritageFacts.map((fact) => (
-                    <div
-                      key={fact.label}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-5"
-                    >
-                      <p className="text-2xl font-semibold text-[#e8c85e]">
-                        {fact.value}
-                      </p>
+                <div className="my-8 border-y border-[#755938]/25 py-9 text-center">
+                  <p className="heritage-serif text-7xl font-semibold text-[#5d1b25] md:text-8xl">
+                    1934
+                  </p>
 
-                      <p className="mt-2 text-sm leading-6 text-white/60">
-                        {fact.label}
-                      </p>
-                    </div>
-                  ))}
+                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.28em] text-[#73532f]">
+                    The Founding Era
+                  </p>
                 </div>
 
-                <p className="mt-6 text-sm leading-6 text-white/50">
-                  Development records remain clearly marked until their
-                  sources, permissions and descriptions are approved.
+                <Quote className="text-[#8b6b3f]" size={30} />
+
+                <p className="heritage-serif mt-5 text-2xl leading-9 text-[#34271d]">
+                  A historical beginning connected with Wilmot A. Perera,
+                  Rabindranath Tagore and a vision that brought education and
+                  culture together.
                 </p>
+
+                <p className="mt-7 border-t border-[#755938]/20 pt-5 text-sm leading-6 text-[#5d4937]">
+                  This public record is presented as a curated historical
+                  summary. Detailed dates, media and supporting documents must
+                  remain linked to approved sources.
+                </p>
+
+                <div className="mt-7 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.16em] text-[#73532f]">
+                  <span>Founding Archive</span>
+                  <span>Record 001</span>
+                </div>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="border-b border-black/10 bg-white px-5 lg:px-8">
+      <section className="heritage-nav border-b border-[#765934]/20 px-5 lg:px-8">
         <nav
-          aria-label="Heritage page sections"
-          className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 py-4 text-sm font-semibold text-[#4e111b]"
+          aria-label="Heritage archive sections"
+          className="mx-auto flex max-w-7xl flex-wrap gap-x-8 gap-y-2 py-5"
         >
-          {sectionLinks.map((item) => (
+          {sectionLinks.map((item, index) => (
             <a
               key={item.href}
               href={`#${item.href}`}
-              className="focus-ring rounded-lg px-2 py-1.5 transition hover:bg-[#741f2b]/10"
+              className="focus-ring heritage-serif rounded-sm px-2 py-1.5 text-sm font-semibold text-[#4c3423] transition hover:bg-[#7d1f2b]/10"
             >
+              <span className="mr-2 text-xs text-[#a1763d]">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               {item.label}
             </a>
           ))}
@@ -206,196 +239,342 @@ export function HeritageSections() {
 
       <section
         id="archive"
-        className="mx-auto max-w-7xl scroll-mt-36 px-5 py-20 lg:px-8"
+        className="scroll-mt-36 px-5 py-20 lg:px-8"
       >
-        <Reveal>
-          <SectionHeading
-            eyebrow="Archive Directory"
-            title="Search historical records by subject or category"
-            description="The final archive will connect every public record with source, date, permission, verification and preservation information."
-          />
-        </Reveal>
+        <div className="mx-auto max-w-7xl">
+          <Reveal>
+            <div className="grid gap-6 border-b border-[#745737]/25 pb-8 md:grid-cols-[1fr_auto] md:items-end">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#7d1f2b]">
+                  Archive Catalogue
+                </p>
 
-        <Reveal delay={0.05}>
-          <div className="mt-10 grid gap-4 rounded-[2rem] border border-black/10 bg-white p-5 lg:grid-cols-[1.3fr_1fr]">
-            <label className="block">
-              <span className="text-sm font-semibold text-[#4e111b]">
-                Search records
-              </span>
+                <h2 className="heritage-serif mt-3 text-4xl font-semibold text-[#34261c] md:text-6xl">
+                  Records held in the collection
+                </h2>
 
-              <div className="mt-2 flex items-center gap-3 rounded-2xl border border-black/15 px-4 py-3">
-                <Search className="shrink-0 text-[#741f2b]" size={19} />
-
-                <input
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search people, places, dates or keywords"
-                  className="w-full bg-transparent text-base outline-none placeholder:text-black/35"
-                />
+                <p className="mt-5 max-w-3xl text-lg leading-8 text-[#5b4837]">
+                  Search by person, period, building, document, collection or
+                  archival reference number.
+                </p>
               </div>
-            </label>
 
-            <label className="block">
-              <span className="text-sm font-semibold text-[#4e111b]">
-                Archive category
-              </span>
+              <div className="heritage-catalogue-label">
+                Collection Register
+                <span>SC/ARCHIVE/PUBLIC</span>
+              </div>
+            </div>
+          </Reveal>
 
-              <select
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-                className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 text-base"
+          <Reveal delay={0.05}>
+            <div className="heritage-catalogue-panel mt-10 grid gap-4 p-5 lg:grid-cols-[1.3fr_1fr]">
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[0.17em] text-[#62472e]">
+                  Search the catalogue
+                </span>
+
+                <div className="mt-2 flex items-center gap-3 border border-[#795c3b]/30 bg-[#fffaf0]/70 px-4 py-3.5">
+                  <Search className="shrink-0 text-[#7d1f2b]" size={19} />
+
+                  <input
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Title, person, date or archive reference"
+                    className="w-full bg-transparent text-base text-[#34261c] outline-none placeholder:text-[#5b4837]/45"
+                  />
+                </div>
+              </label>
+
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[0.17em] text-[#62472e]">
+                  Collection category
+                </span>
+
+                <select
+                  value={category}
+                  onChange={(event) => setCategory(event.target.value)}
+                  className="mt-2 w-full border border-[#795c3b]/30 bg-[#fffaf0]/70 px-4 py-3.5 text-base text-[#34261c]"
+                >
+                  {heritageCategories.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          </Reveal>
+
+          <div
+            className="mt-6 flex flex-wrap items-center justify-between gap-4"
+            aria-live="polite"
+          >
+            <p className="font-mono text-xs uppercase tracking-[0.12em] text-[#67503a]">
+              Catalogue results: {filteredRecords.length}{" "}
+              {filteredRecords.length === 1 ? "record" : "records"}
+            </p>
+
+            {(query || category !== "All Records") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  setCategory("All Records");
+                }}
+                className="focus-ring border-b border-[#7d1f2b] pb-1 text-sm font-semibold text-[#7d1f2b]"
               >
-                {heritageCategories.map((item) => (
-                  <option key={item}>{item}</option>
-                ))}
-              </select>
-            </label>
+                Clear catalogue filters
+              </button>
+            )}
           </div>
-        </Reveal>
 
-        <div
-          className="mt-6 flex flex-wrap items-center justify-between gap-4"
-          aria-live="polite"
-        >
-          <p className="text-sm text-black/55">
-            Showing {filteredRecords.length}{" "}
-            {filteredRecords.length === 1 ? "record" : "records"}.
-          </p>
+          {filteredRecords.length > 0 ? (
+            <div className="mt-10 grid gap-7 md:grid-cols-2 xl:grid-cols-3">
+              {filteredRecords.map((record, index) => {
+                const Icon = recordIcons[record.category] ?? BookOpen;
 
-          {(query || category !== "All Records") && (
-            <button
-              type="button"
-              onClick={() => {
-                setQuery("");
-                setCategory("All Records");
-              }}
-              className="focus-ring rounded-full border border-[#741f2b]/20 px-4 py-2 text-sm font-semibold text-[#741f2b]"
-            >
-              Clear filters
-            </button>
-          )}
-        </div>
+                return (
+                  <Reveal key={record.id} delay={index * 0.035}>
+                    <article className="heritage-record-card flex h-full flex-col">
+                      <div className="heritage-record-header">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="grid h-12 w-12 place-items-center border border-[#d0af66]/50 bg-[#d0af66]/15 text-[#e2c781]">
+                            <Icon size={23} />
+                          </div>
 
-        {filteredRecords.length > 0 ? (
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {filteredRecords.map((record, index) => {
-              const Icon = recordIcons[record.category] ?? BookOpen;
-
-              return (
-                <Reveal key={record.id} delay={index * 0.04}>
-                  <article className="card-3d flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/10 bg-white">
-                    <div className="bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-7 text-white">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#c9a227] text-[#4e111b]">
-                          <Icon size={25} />
+                          <span className="font-mono text-[11px] uppercase tracking-[0.13em] text-[#e8d8b4]/55">
+                            {record.reference}
+                          </span>
                         </div>
 
-                        <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold text-[#e8c85e]">
-                          {record.year}
-                        </span>
-                      </div>
-
-                      <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-[#e8c85e]">
-                        {record.category}
-                      </p>
-
-                      <h2 className="mt-2 text-2xl font-semibold">
-                        {record.title}
-                      </h2>
-                    </div>
-
-                    <div className="flex flex-1 flex-col p-7">
-                      <p className="leading-7 text-black/65">
-                        {record.summary}
-                      </p>
-
-                      <div className="mt-6 rounded-2xl bg-[#faf7ef] p-4">
-                        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#741f2b]">
-                          Historical significance
+                        <p className="mt-7 text-xs font-bold uppercase tracking-[0.2em] text-[#d0af66]">
+                          {record.category}
                         </p>
 
-                        <p className="mt-2 text-sm leading-6 text-black/60">
-                          {record.significance}
-                        </p>
+                        <h3 className="heritage-serif mt-2 text-3xl leading-9 text-[#f6ead0]">
+                          {record.title}
+                        </h3>
+
+                        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs uppercase tracking-[0.12em] text-[#f6ead0]/45">
+                          <span>{record.year}</span>
+                          <span>{record.collection}</span>
+                        </div>
                       </div>
 
-                      <div className="mt-auto pt-6">
-                        <div className="flex items-start gap-3 rounded-2xl border border-[#c9a227]/30 bg-[#c9a227]/10 p-4">
-                          <ShieldCheck
-                            className="mt-0.5 shrink-0 text-[#741f2b]"
-                            size={19}
-                          />
+                      <div className="heritage-record-body flex flex-1 flex-col">
+                        <p className="leading-7 text-[#4e3b2c]">
+                          {record.summary}
+                        </p>
 
-                          <p className="text-sm font-semibold leading-6 text-[#741f2b]">
-                            {record.sourceStatus}
+                        <div className="mt-6 border-l-2 border-[#b38a48] pl-4">
+                          <p className="text-xs font-bold uppercase tracking-[0.15em] text-[#7d1f2b]">
+                            Curatorial note
+                          </p>
+
+                          <p className="mt-2 text-sm leading-6 text-[#5d4937]">
+                            {record.significance}
                           </p>
                         </div>
+
+                        <div className="mt-auto pt-7">
+                          <div className="border-t border-[#806342]/20 pt-5">
+                            <div className="flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#7d1f2b]">
+                                  Evidence type
+                                </p>
+
+                                <p className="mt-1 text-sm text-[#5d4937]">
+                                  {record.evidenceType}
+                                </p>
+                              </div>
+
+                              <ShieldCheck
+                                className="shrink-0 text-[#8f6b37]"
+                                size={25}
+                              />
+                            </div>
+
+                            <p className="mt-4 bg-[#e9dcc0]/60 px-3 py-2.5 text-xs font-semibold leading-5 text-[#674b30]">
+                              {record.sourceStatus}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="mt-8 rounded-[2rem] border border-dashed border-black/20 bg-white p-12 text-center">
-            <Search className="mx-auto text-[#741f2b]" size={30} />
+                    </article>
+                  </Reveal>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="heritage-paper mt-10 p-12 text-center">
+              <Search className="mx-auto text-[#7d1f2b]" size={30} />
 
-            <h2 className="mt-5 text-2xl font-semibold text-[#4e111b]">
-              No matching historical records
-            </h2>
+              <h3 className="heritage-serif mt-5 text-3xl text-[#34261c]">
+                No matching archive records
+              </h3>
 
-            <p className="mt-3 text-black/55">
-              Change the search term or archive category.
-            </p>
-          </div>
-        )}
+              <p className="mt-3 text-[#5d4937]">
+                Change the search term or collection category.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section
+        id="founding"
+        className="heritage-dark-section scroll-mt-36 px-5 py-24 text-[#f6ead0] lg:px-8"
+      >
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
+          <Reveal>
+            <div className="heritage-photo-frame">
+              <div className="heritage-photo-placeholder">
+                <Landmark size={44} />
+                <p className="heritage-serif mt-5 text-3xl">
+                  Historical photograph
+                </p>
+                <p className="mt-3 max-w-sm text-sm leading-6">
+                  Approved foundation-era or early-campus photography will be
+                  displayed here with its source and archive reference.
+                </p>
+              </div>
+
+              <div className="heritage-photo-caption">
+                <span>Collection: Founding Archive</span>
+                <span>Image awaiting approval</span>
+              </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.07}>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d0af66]">
+                The Founding Story
+              </p>
+
+              <h2 className="heritage-serif mt-4 text-4xl font-semibold leading-tight md:text-6xl">
+                A school born from an educational and cultural vision.
+              </h2>
+
+              <div className="mt-8 border-l border-[#d0af66]/50 pl-6">
+                <p className="heritage-serif text-2xl leading-9 text-[#ead9b8]">
+                  Sripalee College’s founding history connects Wilmot A.
+                  Perera, Rabindranath Tagore and a wider belief in education
+                  enriched by creativity and culture.
+                </p>
+              </div>
+
+              <div className="mt-9 grid gap-4 sm:grid-cols-3">
+                <div className="heritage-founding-fact">
+                  <span>01</span>
+                  <p>Founding vision</p>
+                </div>
+
+                <div className="heritage-founding-fact">
+                  <span>02</span>
+                  <p>Cultural learning</p>
+                </div>
+
+                <div className="heritage-founding-fact">
+                  <span>03</span>
+                  <p>Public service</p>
+                </div>
+              </div>
+
+              <p className="mt-9 text-sm leading-7 text-[#f6ead0]/55">
+                The final public narrative must remain connected with approved
+                historical records. Unverified recollections should be
+                identified separately as oral history.
+              </p>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
       <section
         id="figures"
-        className="soft-grid scroll-mt-36 border-y border-black/5 bg-white px-5 py-20 lg:px-8"
+        className="scroll-mt-36 px-5 py-24 lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
           <Reveal>
-            <SectionHeading
-              eyebrow="Historical Figures"
-              title="People connected with the school’s story"
-              description="Biographical profiles should separate verified historical information from interpretation, recollection and unconfirmed material."
-            />
+            <div className="max-w-4xl">
+              <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#7d1f2b]">
+                Historical Figures
+              </p>
+
+              <h2 className="heritage-serif mt-3 text-4xl font-semibold text-[#34261c] md:text-6xl">
+                Lives connected with the institution
+              </h2>
+
+              <p className="mt-5 text-lg leading-8 text-[#5b4837]">
+                Each profile is treated as an archival record with identified
+                sources, historical context and publication controls.
+              </p>
+            </div>
           </Reveal>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+          <div className="mt-12 space-y-8">
             {heritageFigures.map((figure, index) => (
               <Reveal key={figure.name} delay={index * 0.05}>
-                <article className="card-3d h-full rounded-[2rem] border border-black/10 bg-[#faf7ef] p-7">
-                  <div className="grid h-20 w-20 place-items-center rounded-full bg-[#741f2b] text-2xl font-semibold text-[#e8c85e]">
-                    {figure.name
-                      .split(" ")
-                      .map((part) => part.charAt(0))
-                      .slice(0, 2)
-                      .join("")}
+                <article className="heritage-figure-card grid gap-0 lg:grid-cols-[0.36fr_0.64fr]">
+                  <div className="heritage-figure-portrait">
+                    <div className="heritage-portrait-medallion">
+                      {figure.initials}
+                    </div>
+
+                    <p className="mt-6 text-xs font-bold uppercase tracking-[0.18em]">
+                      Portrait pending
+                    </p>
+
+                    <p className="mt-2 text-center text-xs leading-5 opacity-60">
+                      Approved historical image required
+                    </p>
                   </div>
 
-                  <p className="mt-7 text-xs font-semibold uppercase tracking-[0.16em] text-[#741f2b]">
-                    {figure.period}
-                  </p>
+                  <div className="p-7 md:p-10">
+                    <div className="flex flex-wrap items-start justify-between gap-5">
+                      <div>
+                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#7d1f2b]">
+                          {figure.period}
+                        </p>
 
-                  <h3 className="mt-2 text-2xl font-semibold text-[#4e111b]">
-                    {figure.name}
-                  </h3>
+                        <h3 className="heritage-serif mt-2 text-4xl text-[#34261c]">
+                          {figure.name}
+                        </h3>
 
-                  <p className="mt-2 text-sm font-semibold text-black/50">
-                    {figure.role}
-                  </p>
+                        <p className="mt-2 font-semibold text-[#765637]">
+                          {figure.role}
+                        </p>
+                      </div>
 
-                  <p className="mt-5 leading-7 text-black/65">
-                    {figure.summary}
-                  </p>
+                      <ScrollText className="text-[#a47c42]" size={31} />
+                    </div>
 
-                  <p className="mt-6 rounded-2xl bg-white p-4 text-sm font-semibold leading-6 text-[#741f2b]">
-                    {figure.publicationStatus}
-                  </p>
+                    <p className="mt-7 max-w-3xl text-lg leading-8 text-[#5d4937]">
+                      {figure.summary}
+                    </p>
+
+                    <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                      {figure.focus.map((item) => (
+                        <div
+                          key={item}
+                          className="flex items-start gap-3 border border-[#806342]/15 bg-[#eadfc7]/45 p-3"
+                        >
+                          <CheckCircle2
+                            className="mt-0.5 shrink-0 text-[#8d6935]"
+                            size={17}
+                          />
+
+                          <p className="text-sm font-semibold text-[#4f3a29]">
+                            {item}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <p className="mt-7 border-t border-[#806342]/20 pt-5 font-mono text-xs uppercase tracking-[0.1em] text-[#7d1f2b]">
+                      {figure.publicationStatus}
+                    </p>
+                  </div>
                 </article>
               </Reveal>
             ))}
@@ -405,44 +584,52 @@ export function HeritageSections() {
 
       <section
         id="collections"
-        className="scroll-mt-36 bg-[#4e111b] px-5 py-20 text-white lg:px-8"
+        className="heritage-collections-section scroll-mt-36 px-5 py-24 text-[#f6ead0] lg:px-8"
       >
         <div className="mx-auto max-w-7xl">
           <Reveal>
-            <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#e8c85e]">
-                Digital Collections
+            <div className="max-w-4xl">
+              <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#d0af66]">
+                Museum Collections
               </p>
 
-              <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Different materials require different forms of preservation
+              <h2 className="heritage-serif mt-4 text-4xl font-semibold md:text-6xl">
+                Different forms of evidence, preserved together
               </h2>
 
-              <p className="mt-5 text-lg leading-8 text-white/65">
-                The archive can organise related records while preserving
-                ownership, source, context, privacy and technical metadata.
+              <p className="mt-5 text-lg leading-8 text-[#f6ead0]/60">
+                Documents, photography, oral history and buildings require
+                different forms of description, storage and access control.
               </p>
             </div>
           </Reveal>
 
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-12 grid gap-px border border-[#d0af66]/20 bg-[#d0af66]/20 sm:grid-cols-2 lg:grid-cols-3">
             {archiveCollectionTypes.map((collection, index) => {
               const Icon = collectionIcons[collection.icon] ?? LibraryBig;
 
               return (
                 <Reveal key={collection.title} delay={index * 0.04}>
-                  <article className="card-3d h-full rounded-3xl border border-white/10 bg-white/5 p-7">
-                    <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#c9a227] text-[#4e111b]">
-                      <Icon size={23} />
+                  <article className="heritage-collection-card h-full p-7">
+                    <div className="flex items-start justify-between gap-5">
+                      <div className="grid h-12 w-12 place-items-center border border-[#d0af66]/40 text-[#d0af66]">
+                        <Icon size={23} />
+                      </div>
+
+                      <span className="font-mono text-xs tracking-[0.18em] text-[#f6ead0]/30">
+                        {collection.code}
+                      </span>
                     </div>
 
-                    <h3 className="mt-6 text-xl font-semibold">
+                    <h3 className="heritage-serif mt-8 text-3xl">
                       {collection.title}
                     </h3>
 
-                    <p className="mt-4 text-sm leading-6 text-white/60">
+                    <p className="mt-4 text-sm leading-7 text-[#f6ead0]/55">
                       {collection.description}
                     </p>
+
+                    <div className="mt-7 h-px w-14 bg-[#d0af66]/50" />
                   </article>
                 </Reveal>
               );
@@ -453,74 +640,81 @@ export function HeritageSections() {
 
       <section
         id="preservation"
-        className="mx-auto max-w-7xl scroll-mt-36 px-5 py-20 lg:px-8"
+        className="scroll-mt-36 px-5 py-24 lg:px-8"
       >
-        <Reveal>
-          <SectionHeading
-            eyebrow="Preservation Workflow"
-            title="From original material to a trusted digital record"
-            description="Digitisation is only one part of archival work. Every item should pass through assessment, description, verification and approval."
-          />
-        </Reveal>
-
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {preservationProcess.map((item, index) => (
-            <Reveal key={item.step} delay={index * 0.035}>
-              <article className="card-3d h-full rounded-3xl border border-black/10 bg-white p-6">
-                <div className="flex items-center justify-between gap-4">
-                  <p className="text-3xl font-semibold text-[#741f2b]">
-                    {item.step}
-                  </p>
-
-                  <Archive className="text-[#c9a227]" size={22} />
-                </div>
-
-                <h3 className="mt-5 text-xl font-semibold text-[#4e111b]">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-black/60">
-                  {item.description}
+        <div className="mx-auto max-w-7xl">
+          <Reveal>
+            <div className="grid gap-8 border-b border-[#745737]/25 pb-8 lg:grid-cols-[1fr_0.55fr] lg:items-end">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#7d1f2b]">
+                  Preservation Workflow
                 </p>
-              </article>
-            </Reveal>
-          ))}
+
+                <h2 className="heritage-serif mt-3 text-4xl font-semibold text-[#34261c] md:text-6xl">
+                  From original object to trusted digital record
+                </h2>
+              </div>
+
+              <p className="text-sm leading-7 text-[#5d4937]">
+                Digitisation does not replace archival care. Every item should
+                pass through assessment, description, verification, approval
+                and long-term preservation.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="heritage-process-line relative mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {preservationProcess.map((item, index) => (
+              <Reveal key={item.step} delay={index * 0.035}>
+                <article className="heritage-process-card relative h-full p-6">
+                  <div className="heritage-process-number">{item.step}</div>
+
+                  <Archive className="mt-7 text-[#9d743c]" size={24} />
+
+                  <h3 className="heritage-serif mt-5 text-2xl text-[#34261c]">
+                    {item.title}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-6 text-[#5d4937]">
+                    {item.description}
+                  </p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section
-        id="controls"
-        className="soft-grid scroll-mt-36 border-y border-black/5 bg-white px-5 py-20 lg:px-8"
-      >
-        <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-black/10 bg-[#faf7ef] p-8 md:p-12 lg:grid-cols-[0.82fr_1.18fr]">
+      <section className="px-5 pb-24 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-10 border border-[#7b5a36]/25 bg-[#eadfc7]/55 p-8 md:p-12 lg:grid-cols-[0.8fr_1.2fr]">
           <Reveal>
             <div>
-              <ShieldCheck className="text-[#741f2b]" size={34} />
+              <ShieldCheck className="text-[#7d1f2b]" size={35} />
 
-              <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">
-                Publication Controls
+              <p className="mt-6 text-xs font-bold uppercase tracking-[0.25em] text-[#7d1f2b]">
+                Curatorial and Publication Controls
               </p>
 
-              <h2 className="mt-3 text-3xl font-semibold text-[#4e111b]">
-                Historical value does not remove privacy and copyright duties
+              <h2 className="heritage-serif mt-3 text-4xl text-[#34261c]">
+                Heritage must remain accurate, respectful and traceable
               </h2>
 
-              <p className="mt-5 leading-7 text-black/65">
-                The archive must remain useful, trustworthy and respectful to
-                students, staff, families, contributors and rights holders.
+              <p className="mt-5 leading-7 text-[#5d4937]">
+                Historical value does not remove privacy, consent, copyright or
+                information-security responsibilities.
               </p>
             </div>
           </Reveal>
 
           <div className="space-y-3">
             {heritagePublishingRules.map((rule, index) => (
-              <Reveal key={rule} delay={index * 0.035}>
-                <div className="flex gap-3 rounded-2xl border border-black/10 bg-white p-4">
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#741f2b] text-xs font-semibold text-white">
-                    {index + 1}
-                  </div>
+              <Reveal key={rule} delay={index * 0.03}>
+                <div className="flex gap-4 border-b border-[#795c3b]/20 bg-[#fff9eb]/50 p-4">
+                  <span className="heritage-serif text-xl text-[#7d1f2b]">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
 
-                  <p className="text-sm leading-6 text-black/65">{rule}</p>
+                  <p className="text-sm leading-6 text-[#584432]">{rule}</p>
                 </div>
               </Reveal>
             ))}
@@ -528,27 +722,27 @@ export function HeritageSections() {
         </div>
       </section>
 
-      <section className="px-5 py-20 lg:px-8">
+      <section className="heritage-final-cta px-5 py-20 text-[#f6ead0] lg:px-8">
         <Reveal>
-          <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] bg-[#4e111b] p-8 text-white md:p-12 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#e8c85e]">
-                School Identity
+              <p className="text-xs font-bold uppercase tracking-[0.26em] text-[#d0af66]">
+                Continue the Story
               </p>
 
-              <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Continue exploring Sripalee College
+              <h2 className="heritage-serif mt-3 text-4xl font-semibold md:text-6xl">
+                Discover the school behind the archive
               </h2>
 
-              <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">
-                Visit the Our School section for the institutional profile,
-                leadership structure, identity and educational direction.
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-[#f6ead0]/60">
+                Explore the institutional profile, educational direction,
+                leadership structure and school identity.
               </p>
             </div>
 
             <Link
               href="/about"
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
+              className="focus-ring inline-flex items-center justify-center gap-2 border border-[#d0af66] bg-[#d0af66] px-6 py-3.5 font-semibold text-[#2f2117]"
             >
               Explore Our School
               <ArrowRight size={18} />
@@ -556,6 +750,6 @@ export function HeritageSections() {
           </div>
         </Reveal>
       </section>
-    </>
+    </div>
   );
 }

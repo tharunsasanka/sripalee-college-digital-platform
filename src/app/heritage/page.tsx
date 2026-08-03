@@ -5,7 +5,7 @@ import { PageTransition } from "@/components/page-transition";
 export const metadata: Metadata = {
   title: "Digital Heritage Archive",
   description:
-    "Explore the history, people, buildings, documents, photographs and traditions of Sripalee College.",
+    "Explore the historical records, people, buildings, photographs, documents and traditions of Sripalee College.",
 };
 
 export default function HeritagePage() {

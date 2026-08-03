@@ -1,12 +1,18 @@
+import type { Metadata } from "next";
 import { PageTransition } from "@/components/page-transition";
+import { SchoolProfileSections } from "@/components/school/school-profile-sections";
 
-export default function Page() {
+export const metadata: Metadata = {
+  title: "Our School",
+  description:
+    "Explore the verified history, identity, leadership, traditions and campus of Sripalee College, Horana.",
+};
+
+export default function AboutPage() {
   return (
     <PageTransition>
-      <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-20 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Sripalee College</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[#4e111b] md:text-6xl">Our School</h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-black/65">Verified school information, leadership, vision, mission and official history will be presented here.</p>
+      <main>
+        <SchoolProfileSections />
       </main>
     </PageTransition>
   );

@@ -7,5 +7,5 @@ export const navigation = [
   { href: "/news", label: "News" },
   { href: "/heritage", label: "Heritage" },
   { href: "/resources", label: "Resources" },
-  { href: "/contact", label: "Contact" }
+  { href: "/contact", label: "Contact" },
 ];

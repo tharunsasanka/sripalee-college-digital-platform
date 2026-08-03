@@ -1,12 +1,18 @@
+import type { Metadata } from "next";
+import { ContactSections } from "@/components/contact/contact-sections";
 import { PageTransition } from "@/components/page-transition";
 
-export default function Page() {
+export const metadata: Metadata = {
+  title: "Contact and Enquiries",
+  description:
+    "Find official contact routes, department information, visitor guidance and general enquiry support for Sripalee College.",
+};
+
+export default function ContactPage() {
   return (
     <PageTransition>
-      <main className="mx-auto min-h-[65vh] max-w-7xl px-5 py-20 lg:px-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Sripalee College</p>
-        <h1 className="mt-3 text-4xl font-semibold text-[#4e111b] md:text-6xl">Contact</h1>
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-black/65">Official contact information, office hours, location details and secure enquiry options will be provided here.</p>
+      <main>
+        <ContactSections />
       </main>
     </PageTransition>
   );

@@ -1,8 +1,14 @@
 import type {
+  AdministratorListResponse,
+  AdministratorMutationResponse,
   ApiErrorResponse,
   AuthenticationResponse,
+  CreateAdministratorInput,
   LoginInput,
   LogoutResponse,
+  ManageableAdminRole,
+  ManageableAdminStatus,
+  SessionRevocationResponse,
 } from "../types/admin-auth";
 
 const apiBaseUrl = (
@@ -12,14 +18,17 @@ const apiBaseUrl = (
 
 export class AdminApiError extends Error {
   readonly status: number;
+  readonly details: unknown;
 
   constructor(
     message: string,
     status: number,
+    details?: unknown,
   ) {
     super(message);
     this.name = "AdminApiError";
     this.status = status;
+    this.details = details;
   }
 }
 
@@ -42,6 +51,7 @@ async function parseResponse<T>(
       errorBody?.message ??
         "The administrator service could not complete the request.",
       response.status,
+      errorBody?.errors,
     );
   }
 
@@ -105,6 +115,65 @@ export function getCurrentAdministrator() {
 export function logoutAdministrator() {
   return apiRequest<LogoutResponse>(
     "/api/auth/logout",
+    {
+      method: "POST",
+    },
+  );
+}
+
+export function listAdministrators() {
+  return apiRequest<AdministratorListResponse>(
+    "/api/admin/users",
+  );
+}
+
+export function createAdministrator(
+  input: CreateAdministratorInput,
+) {
+  return apiRequest<AdministratorMutationResponse>(
+    "/api/admin/users",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export function updateAdministratorRole(
+  administratorId: string,
+  role: ManageableAdminRole,
+) {
+  return apiRequest<AdministratorMutationResponse>(
+    `/api/admin/users/${administratorId}/role`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        role,
+      }),
+    },
+  );
+}
+
+export function updateAdministratorStatus(
+  administratorId: string,
+  status: ManageableAdminStatus,
+) {
+  return apiRequest<AdministratorMutationResponse>(
+    `/api/admin/users/${administratorId}/status`,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        status,
+      }),
+    },
+  );
+}
+
+export function revokeAdministratorSessions(
+  administratorId: string,
+) {
+  return apiRequest<SessionRevocationResponse>(
+    `/api/admin/users/${administratorId}/revoke-sessions`,
     {
       method: "POST",
     },

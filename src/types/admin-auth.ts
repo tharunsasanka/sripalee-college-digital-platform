@@ -3,9 +3,17 @@ export type AdminRole =
   | "CONTENT_ADMIN"
   | "EDITOR";
 
+export type ManageableAdminRole =
+  | "CONTENT_ADMIN"
+  | "EDITOR";
+
 export type AdminStatus =
   | "ACTIVE"
   | "PENDING"
+  | "DISABLED";
+
+export type ManageableAdminStatus =
+  | "ACTIVE"
   | "DISABLED";
 
 export interface Administrator {
@@ -14,6 +22,15 @@ export interface Administrator {
   displayName: string;
   role: AdminRole;
   status: AdminStatus;
+}
+
+export interface ManagedAdministrator
+  extends Administrator {
+  failedLoginCount: number;
+  lockedUntil: string | null;
+  lastLoginAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AdministratorSession {
@@ -35,6 +52,29 @@ export interface LogoutResponse {
 export interface LoginInput {
   email: string;
   password: string;
+}
+
+export interface CreateAdministratorInput {
+  email: string;
+  displayName: string;
+  password: string;
+  role: ManageableAdminRole;
+}
+
+export interface AdministratorListResponse {
+  success: true;
+  administrators: ManagedAdministrator[];
+}
+
+export interface AdministratorMutationResponse {
+  success: true;
+  administrator: ManagedAdministrator;
+  revokedSessions?: number;
+}
+
+export interface SessionRevocationResponse {
+  success: true;
+  revokedSessions: number;
 }
 
 export interface ApiErrorResponse {

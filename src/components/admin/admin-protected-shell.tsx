@@ -14,6 +14,7 @@ import type {
   Administrator,
   AdministratorSession,
 } from "../../types/admin-auth";
+import { AdminUserManagement } from "./admin-user-management";
 
 export function AdminProtectedShell() {
   const router = useRouter();
@@ -43,13 +44,16 @@ export function AdminProtectedShell() {
         const result =
           await getCurrentAdministrator();
 
-        if (active) {
-          setAdministrator(
-            result.administrator,
-          );
-          setSession(result.session);
-          setLoading(false);
+        if (!active) {
+          return;
         }
+
+        setAdministrator(
+          result.administrator,
+        );
+
+        setSession(result.session);
+        setLoading(false);
       } catch (error) {
         if (!active) {
           return;
@@ -66,6 +70,7 @@ export function AdminProtectedShell() {
         setMessage(
           "The administrator dashboard could not connect to the API.",
         );
+
         setLoading(false);
       }
     }
@@ -88,6 +93,7 @@ export function AdminProtectedShell() {
       setMessage(
         "Logout could not be completed. Please try again.",
       );
+
       setLoggingOut(false);
     }
   }
@@ -164,6 +170,7 @@ export function AdminProtectedShell() {
           <p className="text-sm font-semibold text-slate-500">
             Account role
           </p>
+
           <p className="mt-3 text-2xl font-bold text-slate-950">
             {administrator.role.replaceAll(
               "_",
@@ -176,6 +183,7 @@ export function AdminProtectedShell() {
           <p className="text-sm font-semibold text-slate-500">
             Account status
           </p>
+
           <p className="mt-3 text-2xl font-bold text-emerald-700">
             {administrator.status}
           </p>
@@ -185,6 +193,7 @@ export function AdminProtectedShell() {
           <p className="text-sm font-semibold text-slate-500">
             Session expires
           </p>
+
           <p className="mt-3 text-lg font-bold text-slate-950">
             {session
               ? new Date(
@@ -224,11 +233,16 @@ export function AdminProtectedShell() {
             </h2>
 
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Available dashboard modules will be restricted according to your administrator role.
+              Available dashboard modules are restricted according to the administrator role.
             </p>
           </article>
         )}
       </div>
+
+      {administrator.role ===
+      "SUPER_ADMIN" ? (
+        <AdminUserManagement />
+      ) : null}
     </section>
   );
 }

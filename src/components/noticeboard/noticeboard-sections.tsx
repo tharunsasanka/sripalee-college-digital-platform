@@ -813,7 +813,18 @@ function NoticeboardDisplay({
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/15 px-6 py-4 text-xs text-white/60 md:px-10">
-        <p>{slide.status}</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <p>{slide.status}</p>
+
+          {slide.slug ? (
+            <Link
+              href={`/noticeboard/view?slug=${encodeURIComponent(slide.slug)}`}
+              className="focus-ring rounded-full border border-white/20 px-3 py-1.5 font-semibold text-white"
+            >
+              Read full notice
+            </Link>
+          ) : null}
+        </div>
 
         <div className="flex items-center gap-3">
           {isPlaying ? <Play size={14} /> : <Pause size={14} />}

@@ -298,6 +298,16 @@ export function EventsSections({
                   <div className="flex flex-1 flex-col p-7">
                     <p className="leading-7 text-black/65">{event.summary}</p>
 
+                    {event.slug ? (
+                      <Link
+                        href={`/events/view?slug=${encodeURIComponent(event.slug)}`}
+                        className="focus-ring mt-4 inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[#741f2b]"
+                      >
+                        View event details
+                        <ArrowRight size={16} />
+                      </Link>
+                    ) : null}
+
                     <div className="mt-6 space-y-3">
                       <div className="flex items-start gap-3">
                         <CalendarDays
@@ -311,7 +321,7 @@ export function EventsSections({
                           </p>
 
                           <p className="mt-1 text-sm text-black/60">
-                            {event.month} Â· {event.dateLabel}
+                            {event.month} Ã‚Â· {event.dateLabel}
                           </p>
                         </div>
                       </div>

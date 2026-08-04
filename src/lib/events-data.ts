@@ -6,6 +6,7 @@ export type EventStatus =
 
 export type SchoolEvent = {
   id: string;
+  slug?: string;
   title: string;
   category: string;
   audience: string;
@@ -280,7 +281,7 @@ export const calendarViews = [
   {
     title: "Parent Calendar",
     description:
-      "Approved meetings, deadlines and events relevant to the parent’s verified student account.",
+      "Approved meetings, deadlines and events relevant to the parentâ€™s verified student account.",
   },
   {
     title: "Staff Calendar",

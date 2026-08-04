@@ -115,7 +115,7 @@ export function createContentExcerpt(
 
   return `${source
     .slice(0, maximumLength)
-    .trimEnd()}…`;
+    .trimEnd()}â€¦`;
 }
 
 function getContentDetails(
@@ -226,12 +226,13 @@ export function mapPublicEvent(
 
   const timeLabel = start
     ? end
-      ? `${formatTime(start)} – ${formatTime(end)}`
+      ? `${formatTime(start)} â€“ ${formatTime(end)}`
       : formatTime(start)
     : "Time to be confirmed";
 
   return {
     id: entry.id,
+    slug: entry.slug,
     title: entry.title,
     category: "School Community",
     audience:
@@ -275,6 +276,7 @@ export function mapPublicNotice(
 
   return {
     id: entry.id,
+    slug: entry.slug,
     title: entry.title,
     subtitle: entry.featured
       ? "Featured official school notice"
@@ -300,4 +302,48 @@ export function mapPublicNotice(
     status: `Published by ${entry.createdBy.displayName}`,
     icon: "administration",
   };
+}
+
+interface PublicContentDetailResponse {
+  success: true;
+  content: PublicContentEntry;
+}
+
+export async function getPublicContentBySlug(
+  slug: string,
+) {
+  const response = await fetch(
+    `${apiBaseUrl}/api/content/${encodeURIComponent(slug)}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    },
+  );
+
+  let body: unknown = null;
+
+  try {
+    body = await response.json();
+  } catch {
+    body = null;
+  }
+
+  if (!response.ok) {
+    const errorBody = body as {
+      message?: string;
+    } | null;
+
+    throw new PublicContentApiError(
+      errorBody?.message ??
+        "The requested published content could not be loaded.",
+      response.status,
+    );
+  }
+
+  return (
+    body as PublicContentDetailResponse
+  ).content;
 }

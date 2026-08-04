@@ -4,6 +4,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import Link from "next/link";
 import {
   CalendarDays,
   Newspaper,
@@ -111,7 +112,7 @@ export function PublicNewsSections() {
       <section className="mx-auto min-h-[50vh] max-w-7xl px-5 py-20 lg:px-8">
         {loading ? (
           <p className="rounded-[2rem] bg-[#faf7ef] p-10 text-center font-semibold text-[#741f2b]">
-            Loading published news…
+            Loading published newsâ€¦
           </p>
         ) : error ? (
           <div className="rounded-[2rem] border border-red-200 bg-red-50 p-10 text-center">
@@ -166,7 +167,12 @@ export function PublicNewsSections() {
                     </div>
 
                     <h2 className="mt-6 text-2xl font-semibold leading-tight text-[#4e111b]">
-                      {entry.title}
+                      <Link
+                        href={`/news/view?slug=${encodeURIComponent(entry.slug)}`}
+                        className="focus-ring rounded-lg transition hover:text-[#741f2b]"
+                      >
+                        {entry.title}
+                      </Link>
                     </h2>
 
                     <p className="mt-4 leading-7 text-black/65">

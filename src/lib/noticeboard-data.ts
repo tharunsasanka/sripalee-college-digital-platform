@@ -6,6 +6,7 @@ export type NoticeboardPriority =
 
 export type NoticeboardSlide = {
   id: string;
+  slug?: string;
   title: string;
   subtitle: string;
   category: string;

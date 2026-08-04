@@ -23,6 +23,18 @@ enum AdminStatus {
   DISABLED
 }
 
+enum ContentType {
+  NEWS
+  NOTICE
+  EVENT
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 model AdminUser {
   id                String         @id @default(uuid()) @db.Uuid
   email             String         @unique @db.VarChar(254)
@@ -38,6 +50,9 @@ model AdminUser {
   updatedAt         DateTime       @updatedAt @map("updated_at")
   sessions          AdminSession[]
   auditLogs         AuditLog[]     @relation("AuditActor")
+  createdContent    ContentEntry[] @relation("ContentCreatedBy")
+  updatedContent    ContentEntry[] @relation("ContentUpdatedBy")
+  deletedContent    ContentEntry[] @relation("ContentDeletedBy")
 
   @@index([status])
   @@index([role])
@@ -82,4 +97,37 @@ model AuditLog {
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_logs")
+}
+
+model ContentEntry {
+  id            String        @id @default(uuid()) @db.Uuid
+  type          ContentType
+  title         String        @db.VarChar(180)
+  slug          String        @unique @db.VarChar(200)
+  summary       String?       @db.VarChar(320)
+  body          String        @db.Text
+  status        ContentStatus @default(DRAFT)
+  featured      Boolean       @default(false)
+  publishedAt   DateTime?     @map("published_at")
+  eventStartAt  DateTime?     @map("event_start_at")
+  eventEndAt    DateTime?     @map("event_end_at")
+  eventLocation String?       @map("event_location") @db.VarChar(200)
+  createdById   String        @map("created_by_id") @db.Uuid
+  updatedById   String        @map("updated_by_id") @db.Uuid
+  deletedById   String?       @map("deleted_by_id") @db.Uuid
+  deletedAt     DateTime?     @map("deleted_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdBy     AdminUser     @relation("ContentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy     AdminUser     @relation("ContentUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  deletedBy     AdminUser?    @relation("ContentDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull)
+
+  @@index([type])
+  @@index([status])
+  @@index([featured])
+  @@index([publishedAt])
+  @@index([eventStartAt])
+  @@index([deletedAt])
+  @@index([type, status, publishedAt])
+  @@map("content_entries")
 }

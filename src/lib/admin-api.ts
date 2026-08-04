@@ -1,14 +1,20 @@
 import type {
+  AdminContentFilters,
   AdministratorListResponse,
   AdministratorMutationResponse,
   ApiErrorResponse,
   AuthenticationResponse,
+  ContentDeleteResponse,
+  ContentListResponse,
+  ContentMutationResponse,
   CreateAdministratorInput,
+  CreateContentInput,
   LoginInput,
   LogoutResponse,
   ManageableAdminRole,
   ManageableAdminStatus,
   SessionRevocationResponse,
+  UpdateContentInput,
 } from "../types/admin-auth";
 
 const apiBaseUrl = (
@@ -176,6 +182,112 @@ export function revokeAdministratorSessions(
     `/api/admin/users/${administratorId}/revoke-sessions`,
     {
       method: "POST",
+    },
+  );
+}
+
+export function listAdminContent(
+  filters: AdminContentFilters = {},
+) {
+  const searchParameters =
+    new URLSearchParams();
+
+  if (filters.type) {
+    searchParameters.set(
+      "type",
+      filters.type,
+    );
+  }
+
+  if (filters.status) {
+    searchParameters.set(
+      "status",
+      filters.status,
+    );
+  }
+
+  if (filters.deleted) {
+    searchParameters.set(
+      "deleted",
+      filters.deleted,
+    );
+  }
+
+  if (filters.page) {
+    searchParameters.set(
+      "page",
+      String(filters.page),
+    );
+  }
+
+  if (filters.pageSize) {
+    searchParameters.set(
+      "pageSize",
+      String(filters.pageSize),
+    );
+  }
+
+  const query = searchParameters.toString();
+
+  return apiRequest<ContentListResponse>(
+    `/api/admin/content${query ? `?${query}` : ""}`,
+  );
+}
+
+export function createAdminContent(
+  input: CreateContentInput,
+) {
+  return apiRequest<ContentMutationResponse>(
+    "/api/admin/content",
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export function updateAdminContent(
+  contentId: string,
+  input: UpdateContentInput,
+) {
+  return apiRequest<ContentMutationResponse>(
+    `/api/admin/content/${contentId}`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export function publishAdminContent(
+  contentId: string,
+) {
+  return apiRequest<ContentMutationResponse>(
+    `/api/admin/content/${contentId}/publish`,
+    {
+      method: "POST",
+    },
+  );
+}
+
+export function archiveAdminContent(
+  contentId: string,
+) {
+  return apiRequest<ContentMutationResponse>(
+    `/api/admin/content/${contentId}/archive`,
+    {
+      method: "POST",
+    },
+  );
+}
+
+export function deleteAdminContent(
+  contentId: string,
+) {
+  return apiRequest<ContentDeleteResponse>(
+    `/api/admin/content/${contentId}`,
+    {
+      method: "DELETE",
     },
   );
 }

@@ -16,6 +16,16 @@ export type ManageableAdminStatus =
   | "ACTIVE"
   | "DISABLED";
 
+export type ContentType =
+  | "NEWS"
+  | "NOTICE"
+  | "EVENT";
+
+export type ContentStatus =
+  | "DRAFT"
+  | "PUBLISHED"
+  | "ARCHIVED";
+
 export interface Administrator {
   id: string;
   email: string;
@@ -75,6 +85,87 @@ export interface AdministratorMutationResponse {
 export interface SessionRevocationResponse {
   success: true;
   revokedSessions: number;
+}
+
+export interface ContentAuthor {
+  id: string;
+  displayName: string;
+  email: string;
+}
+
+export interface ManagedContentEntry {
+  id: string;
+  type: ContentType;
+  title: string;
+  slug: string;
+  summary: string | null;
+  body: string;
+  status: ContentStatus;
+  featured: boolean;
+  publishedAt: string | null;
+  eventStartAt: string | null;
+  eventEndAt: string | null;
+  eventLocation: string | null;
+  deletedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: ContentAuthor;
+  updatedBy: ContentAuthor;
+}
+
+export interface AdminContentFilters {
+  type?: ContentType;
+  status?: ContentStatus;
+  deleted?: "exclude" | "include" | "only";
+  page?: number;
+  pageSize?: number;
+}
+
+export interface ContentPagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface ContentListResponse {
+  success: true;
+  content: ManagedContentEntry[];
+  pagination: ContentPagination;
+}
+
+export interface ContentMutationResponse {
+  success: true;
+  content: ManagedContentEntry;
+}
+
+export interface ContentDeleteResponse {
+  success: true;
+  message: string;
+}
+
+export interface CreateContentInput {
+  type: ContentType;
+  title: string;
+  slug?: string;
+  summary?: string | null;
+  body: string;
+  featured?: boolean;
+  eventStartAt?: string | null;
+  eventEndAt?: string | null;
+  eventLocation?: string | null;
+}
+
+export interface UpdateContentInput {
+  type?: ContentType;
+  title?: string;
+  slug?: string;
+  summary?: string | null;
+  body?: string;
+  featured?: boolean;
+  eventStartAt?: string | null;
+  eventEndAt?: string | null;
+  eventLocation?: string | null;
 }
 
 export interface ApiErrorResponse {

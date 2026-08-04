@@ -14,6 +14,7 @@ import type {
   Administrator,
   AdministratorSession,
 } from "../../types/admin-auth";
+import { AdminContentManagement } from "./admin-content-management";
 import { AdminUserManagement } from "./admin-user-management";
 
 export function AdminProtectedShell() {
@@ -105,7 +106,7 @@ export function AdminProtectedShell() {
         aria-live="polite"
       >
         <p className="text-sm text-slate-600">
-          Loading administrator dashboard…
+          Loading administrator dashboardÃ¢â‚¬Â¦
         </p>
       </div>
     );
@@ -135,7 +136,7 @@ export function AdminProtectedShell() {
 
             <p className="mt-3 text-sm text-slate-300">
               {administrator.email}
-              {" · "}
+              {" Ã‚Â· "}
               {administrator.role.replaceAll(
                 "_",
                 " ",
@@ -150,7 +151,7 @@ export function AdminProtectedShell() {
             className="rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-semibold text-white transition hover:bg-white/20 disabled:opacity-60"
           >
             {loggingOut
-              ? "Signing out…"
+              ? "Signing outÃ¢â‚¬Â¦"
               : "Sign out"}
           </button>
         </div>
@@ -238,6 +239,8 @@ export function AdminProtectedShell() {
           </article>
         )}
       </div>
+      <AdminContentManagement role={administrator.role} />
+
 
       {administrator.role ===
       "SUPER_ADMIN" ? (

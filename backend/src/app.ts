@@ -6,9 +6,11 @@ import helmet from "helmet";
 import { env } from "./config/env";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
+import { adminContentRouter } from "./routes/admin-content";
 import { adminUsersRouter } from "./routes/admin-users";
 import { authRouter } from "./routes/auth";
 import { healthRouter } from "./routes/health";
+import { publicContentRouter } from "./routes/public-content";
 
 export const app = express();
 
@@ -72,6 +74,8 @@ app.get("/", (_request, response) => {
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/admin/users", adminUsersRouter);
+app.use("/api/admin/content", adminContentRouter);
+app.use("/api/content", publicContentRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

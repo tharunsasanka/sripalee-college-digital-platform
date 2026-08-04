@@ -8,7 +8,9 @@
     "dev": "tsx watch src/server.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "admin:bootstrap": "tsx src/scripts/bootstrap-admin.ts",
+    "preadmin:bootstrap": "prisma generate"
   },
   "keywords": [],
   "author": "",

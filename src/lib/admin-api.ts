@@ -17,6 +17,11 @@ import type {
   UpdateContentInput,
 } from "../types/admin-auth";
 
+import type {
+  AuditLogFilters,
+  AuditLogListResponse,
+} from "../types/admin-auth";
+
 const apiBaseUrl = (
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   "http://127.0.0.1:4000"
@@ -289,5 +294,49 @@ export function deleteAdminContent(
     {
       method: "DELETE",
     },
+  );
+}
+
+export function listAuditLogs(
+  filters: AuditLogFilters = {},
+) {
+  const searchParameters =
+    new URLSearchParams();
+
+  if (filters.action) {
+    searchParameters.set(
+      "action",
+      filters.action,
+    );
+  }
+
+  if (filters.entityType) {
+    searchParameters.set(
+      "entityType",
+      filters.entityType,
+    );
+  }
+
+  if (filters.page) {
+    searchParameters.set(
+      "page",
+      String(filters.page),
+    );
+  }
+
+  if (filters.pageSize) {
+    searchParameters.set(
+      "pageSize",
+      String(filters.pageSize),
+    );
+  }
+
+  const query =
+    searchParameters.toString();
+
+  return apiRequest<AuditLogListResponse>(
+    `/api/admin/audit-logs${
+      query ? `?${query}` : ""
+    }`,
   );
 }

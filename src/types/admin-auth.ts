@@ -173,3 +173,35 @@ export interface ApiErrorResponse {
   message: string;
   errors?: unknown;
 }
+
+export interface AuditLogActor {
+  id: string;
+  displayName: string;
+  email: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  actorId: string | null;
+  action: string;
+  entityType: string | null;
+  entityId: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  metadata: unknown;
+  createdAt: string;
+  actor: AuditLogActor | null;
+}
+
+export interface AuditLogFilters {
+  action?: string;
+  entityType?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface AuditLogListResponse {
+  success: true;
+  auditLogs: AuditLogEntry[];
+  pagination: ContentPagination;
+}

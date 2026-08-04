@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { env } from "./config/env";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
+import { adminAuditLogsRouter } from "./routes/admin-audit-logs";
 import { adminContentRouter } from "./routes/admin-content";
 import { adminUsersRouter } from "./routes/admin-users";
 import { authRouter } from "./routes/auth";
@@ -75,6 +76,7 @@ app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/admin/users", adminUsersRouter);
 app.use("/api/admin/content", adminContentRouter);
+app.use("/api/admin/audit-logs", adminAuditLogsRouter);
 app.use("/api/content", publicContentRouter);
 
 app.use(notFoundHandler);

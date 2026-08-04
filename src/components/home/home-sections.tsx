@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, CalendarDays, FileText, ImageIcon, MapPin, MessageSquareText, Quote } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ImageIcon, MapPin, MessageSquareText, Quote } from "lucide-react";
 import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
-import { departments, events, notices, quickLinks, schoolLife, staffPreview } from "@/lib/home-data";
+import { HomeLiveContent } from "@/components/home/home-live-content";
+import { departments, quickLinks, schoolLife, staffPreview } from "@/lib/home-data";
 
 export function HomeSections() {
   return (
@@ -30,7 +31,7 @@ export function HomeSections() {
           <Reveal>
             <div className="card-3d rounded-[2rem] border border-black/10 bg-[#faf7ef] p-6">
               <div className="grid min-h-96 place-items-center rounded-[1.5rem] bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-8 text-center text-white">
-                <div><div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-2 border-[#c9a227] bg-white/10 text-2xl font-semibold text-[#e8c85e]">Photo</div><p className="mt-6 text-lg font-semibold">Principal’s approved photograph</p><p className="mt-2 text-sm text-white/65">To be added after official confirmation.</p></div>
+                <div><div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-2 border-[#c9a227] bg-white/10 text-2xl font-semibold text-[#e8c85e]">Photo</div><p className="mt-6 text-lg font-semibold">PrincipalÃ¢â‚¬â„¢s approved photograph</p><p className="mt-2 text-sm text-white/65">To be added after official confirmation.</p></div>
               </div>
             </div>
           </Reveal>
@@ -39,31 +40,14 @@ export function HomeSections() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Message from the Principal</p>
               <Quote className="mt-6 text-[#c9a227]" size={42} />
               <h2 className="mt-5 text-3xl font-semibold text-[#4e111b] md:text-5xl">Leadership, learning and responsibility</h2>
-              <p className="mt-6 text-lg leading-8 text-black/65">The official principal’s message will introduce the school’s educational direction, values, responsibilities and commitment to students. This development text will be replaced with approved content before launch.</p>
+              <p className="mt-6 text-lg leading-8 text-black/65">The official principalÃ¢â‚¬â„¢s message will introduce the schoolÃ¢â‚¬â„¢s educational direction, values, responsibilities and commitment to students. This development text will be replaced with approved content before launch.</p>
               <Link href="/about" className="focus-ring mt-8 inline-flex items-center gap-2 rounded-full bg-[#741f2b] px-5 py-3 font-semibold text-white hover:bg-[#4e111b]">Read about the school <ArrowRight size={18} /></Link>
             </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <Reveal><SectionHeading eyebrow="Stay Informed" title="Notices and upcoming events" description="A structured area for official announcements, deadlines, examination information and approved school activities." /></Reveal>
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-          <Reveal>
-            <div className="rounded-[2rem] border border-black/10 bg-white p-6 md:p-8">
-              <div className="flex items-center justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#741f2b]">Latest Notices</p><h3 className="mt-2 text-2xl font-semibold text-[#4e111b]">Official information centre</h3></div><FileText className="text-[#741f2b]" /></div>
-              <div className="mt-7 divide-y divide-black/10">{notices.map((notice) => <article key={notice.title} className="py-5 first:pt-0 last:pb-0"><span className="rounded-full bg-[#741f2b]/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-[#741f2b]">{notice.category}</span><h4 className="mt-3 text-lg font-semibold">{notice.title}</h4><p className="mt-2 text-sm text-black/60">{notice.date}</p></article>)}</div>
-              <Link href="/news" className="focus-ring mt-7 inline-flex items-center gap-2 font-semibold text-[#741f2b]">View all notices <ArrowRight size={17} /></Link>
-            </div>
-          </Reveal>
-          <Reveal delay={0.08}>
-            <div className="rounded-[2rem] bg-[#4e111b] p-6 text-white md:p-8">
-              <div className="flex items-center justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#e8c85e]">Upcoming Events</p><h3 className="mt-2 text-2xl font-semibold">School calendar preview</h3></div><CalendarDays className="text-[#e8c85e]" /></div>
-              <div className="mt-7 space-y-4">{events.map((event) => <article key={event.title} className="flex gap-4 rounded-2xl border border-white/10 bg-white/5 p-4"><div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-[#c9a227] text-center text-[#4e111b]"><div><p className="text-lg font-bold leading-none">{event.day}</p><p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.12em]">{event.month}</p></div></div><div><h4 className="font-semibold">{event.title}</h4><p className="mt-1 text-sm leading-6 text-white/60">{event.meta}</p></div></article>)}</div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <HomeLiveContent />
 
       <section className="bg-[#4e111b] px-5 py-20 text-white lg:px-8">
         <div className="mx-auto max-w-7xl">

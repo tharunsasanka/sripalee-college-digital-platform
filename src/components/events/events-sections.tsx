@@ -30,8 +30,8 @@ import {
   eventMonths,
   eventPublishingRules,
   eventWorkflow,
-  schoolEvents,
   type EventStatus,
+  type SchoolEvent,
 } from "@/lib/events-data";
 
 const eventIcons: Record<string, LucideIcon> = {
@@ -97,16 +97,22 @@ const sectionLinks = [
   },
 ];
 
-export function EventsSections() {
+type EventsSectionsProps = {
+  events: SchoolEvent[];
+};
+
+export function EventsSections({
+  events,
+}: EventsSectionsProps) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All Categories");
   const [audience, setAudience] = useState("All Audiences");
   const [month, setMonth] = useState("All Months");
 
-  const featuredEvents = schoolEvents.filter((event) => event.featured);
+  const featuredEvents = events.filter((event) => event.featured);
   const normalizedQuery = query.trim().toLowerCase();
 
-  const filteredEvents = schoolEvents.filter((event) => {
+  const filteredEvents = events.filter((event) => {
     const matchesQuery =
       normalizedQuery.length === 0 ||
       event.title.toLowerCase().includes(normalizedQuery) ||
@@ -219,8 +225,8 @@ export function EventsSections() {
                 </div>
 
                 <p className="mt-6 text-sm leading-6 text-white/60">
-                  The displayed event records are development examples and must
-                  be replaced with approved school information.
+                  The events displayed below are published through the approved
+                  school administration workflow.
                 </p>
               </div>
             </div>
@@ -305,7 +311,7 @@ export function EventsSections() {
                           </p>
 
                           <p className="mt-1 text-sm text-black/60">
-                            {event.month} · {event.dateLabel}
+                            {event.month} Â· {event.dateLabel}
                           </p>
                         </div>
                       </div>

@@ -34,10 +34,10 @@ import {
   noticeboardCategories,
   noticeboardFacts,
   noticeboardSecurityRules,
-  noticeboardSlides,
   noticeboardWorkflow,
   noticeboardZones,
   type NoticeboardPriority,
+  type NoticeboardSlide,
 } from "@/lib/noticeboard-data";
 
 const slideIcons: Record<string, LucideIcon> = {
@@ -110,14 +110,20 @@ const sectionLinks = [
   },
 ];
 
-export function NoticeboardSections() {
+type NoticeboardSectionsProps = {
+  slides: NoticeboardSlide[];
+};
+
+export function NoticeboardSections({
+  slides,
+}: NoticeboardSectionsProps) {
   const [category, setCategory] = useState("All Slides");
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [rotationSeconds, setRotationSeconds] = useState(8);
   const [fullscreenFeedback, setFullscreenFeedback] = useState("");
 
-  const filteredSlides = noticeboardSlides.filter(
+  const filteredSlides = slides.filter(
     (slide) => category === "All Slides" || slide.category === category,
   );
 
@@ -668,7 +674,7 @@ export function NoticeboardSections() {
 }
 
 type NoticeboardDisplayProps = {
-  slide: (typeof noticeboardSlides)[number];
+  slide: NoticeboardSlide;
   position: number;
   total: number;
   isPlaying: boolean;

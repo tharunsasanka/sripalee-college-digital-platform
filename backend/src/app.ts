@@ -6,6 +6,7 @@ import helmet from "helmet";
 import { env } from "./config/env";
 import { errorHandler } from "./middleware/error-handler";
 import { notFoundHandler } from "./middleware/not-found";
+import { adminUsersRouter } from "./routes/admin-users";
 import { authRouter } from "./routes/auth";
 import { healthRouter } from "./routes/health";
 
@@ -70,6 +71,7 @@ app.get("/", (_request, response) => {
 
 app.use("/api/health", healthRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/admin/users", adminUsersRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

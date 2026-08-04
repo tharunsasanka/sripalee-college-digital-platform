@@ -13,7 +13,9 @@
     "preadmin:bootstrap": "prisma generate",
     "pretypecheck": "prisma generate",
     "prebuild": "prisma generate",
-    "predev": "prisma generate"
+    "predev": "prisma generate",
+    "admin:reset-password": "tsx src/scripts/reset-admin-password.ts",
+    "preadmin:reset-password": "prisma generate"
   },
   "keywords": [],
   "author": "",

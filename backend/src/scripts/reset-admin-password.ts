@@ -54,7 +54,6 @@ async function main() {
             passwordChangedAt: new Date(),
             failedLoginCount: 0,
             lockedUntil: null,
-            status: "ACTIVE",
           },
           select: {
             id: true,

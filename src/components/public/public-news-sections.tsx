@@ -112,7 +112,7 @@ export function PublicNewsSections() {
       <section className="mx-auto min-h-[50vh] max-w-7xl px-5 py-20 lg:px-8">
         {loading ? (
           <p className="rounded-[2rem] bg-[#faf7ef] p-10 text-center font-semibold text-[#741f2b]">
-            Loading published newsâ€¦
+            Loading published news…
           </p>
         ) : error ? (
           <div className="rounded-[2rem] border border-red-200 bg-red-50 p-10 text-center">

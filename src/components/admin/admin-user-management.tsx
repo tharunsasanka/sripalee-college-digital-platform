@@ -417,7 +417,7 @@ export function AdminUserManagement() {
             className="rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting
-              ? "Creating accountâ€¦"
+              ? "Creating account…"
               : "Create administrator"}
           </button>
         </div>
@@ -452,7 +452,7 @@ export function AdminUserManagement() {
                   colSpan={5}
                   className="px-4 py-8 text-center text-sm text-slate-500"
                 >
-                  Loading administrator accountsâ€¦
+                  Loading administrator accounts…
                 </td>
               </tr>
             ) : administrators.length === 0 ? (
@@ -570,7 +570,7 @@ export function AdminUserManagement() {
                             className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100 disabled:opacity-60"
                           >
                             {busy
-                              ? "Updatingâ€¦"
+                              ? "Updating…"
                               : "Revoke sessions"}
                           </button>
                         )}

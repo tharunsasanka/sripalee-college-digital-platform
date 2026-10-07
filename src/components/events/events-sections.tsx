@@ -321,7 +321,7 @@ export function EventsSections({
                           </p>
 
                           <p className="mt-1 text-sm text-black/60">
-                            {event.month} Ã‚Â· {event.dateLabel}
+                            {event.month} · {event.dateLabel}
                           </p>
                         </div>
                       </div>

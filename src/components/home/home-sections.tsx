@@ -31,7 +31,7 @@ export function HomeSections() {
           <Reveal>
             <div className="card-3d rounded-[2rem] border border-black/10 bg-[#faf7ef] p-6">
               <div className="grid min-h-96 place-items-center rounded-[1.5rem] bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-8 text-center text-white">
-                <div><div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-2 border-[#c9a227] bg-white/10 text-2xl font-semibold text-[#e8c85e]">Photo</div><p className="mt-6 text-lg font-semibold">PrincipalÃ¢â‚¬â„¢s approved photograph</p><p className="mt-2 text-sm text-white/65">To be added after official confirmation.</p></div>
+                <div><div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-2 border-[#c9a227] bg-white/10 text-2xl font-semibold text-[#e8c85e]">Photo</div><p className="mt-6 text-lg font-semibold">Principal’s approved photograph</p><p className="mt-2 text-sm text-white/65">To be added after official confirmation.</p></div>
               </div>
             </div>
           </Reveal>
@@ -40,7 +40,7 @@ export function HomeSections() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">Message from the Principal</p>
               <Quote className="mt-6 text-[#c9a227]" size={42} />
               <h2 className="mt-5 text-3xl font-semibold text-[#4e111b] md:text-5xl">Leadership, learning and responsibility</h2>
-              <p className="mt-6 text-lg leading-8 text-black/65">The official principalÃ¢â‚¬â„¢s message will introduce the schoolÃ¢â‚¬â„¢s educational direction, values, responsibilities and commitment to students. This development text will be replaced with approved content before launch.</p>
+              <p className="mt-6 text-lg leading-8 text-black/65">The official principal’s message will introduce the school’s educational direction, values, responsibilities and commitment to students. This development text will be replaced with approved content before launch.</p>
               <Link href="/about" className="focus-ring mt-8 inline-flex items-center gap-2 rounded-full bg-[#741f2b] px-5 py-3 font-semibold text-white hover:bg-[#4e111b]">Read about the school <ArrowRight size={18} /></Link>
             </div>
           </Reveal>

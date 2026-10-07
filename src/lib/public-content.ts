@@ -115,7 +115,7 @@ export function createContentExcerpt(
 
   return `${source
     .slice(0, maximumLength)
-    .trimEnd()}â€¦`;
+    .trimEnd()}…`;
 }
 
 function getContentDetails(
@@ -226,7 +226,7 @@ export function mapPublicEvent(
 
   const timeLabel = start
     ? end
-      ? `${formatTime(start)} â€“ ${formatTime(end)}`
+      ? `${formatTime(start)} – ${formatTime(end)}`
       : formatTime(start)
     : "Time to be confirmed";
 

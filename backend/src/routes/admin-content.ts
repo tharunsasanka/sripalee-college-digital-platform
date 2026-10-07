@@ -5,6 +5,10 @@ import {
 } from "express";
 import { z } from "zod";
 import type { Prisma } from "../generated/prisma/client";
+import {
+  createContentSlug,
+  validateEventDates,
+} from "../lib/content-validation";
 import { prisma } from "../lib/prisma";
 import { getRequestMetadata } from "../lib/session";
 import { authenticateAdmin } from "../middleware/authenticate";
@@ -183,23 +187,12 @@ function parseDate(
   return new Date(value);
 }
 
-function createSlug(value: string) {
-  const normalized = value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 180);
-
-  return normalized || "content";
-}
-
 async function createUniqueSlug(
   value: string,
   excludedId?: string,
 ) {
-  const baseSlug = createSlug(value);
+  const baseSlug =
+    createContentSlug(value);
 
   for (
     let attempt = 0;
@@ -239,30 +232,6 @@ async function createUniqueSlug(
   }
 
   return `${baseSlug.slice(0, 191)}-${randomUUID().slice(0, 8)}`;
-}
-
-function validateEventDates(
-  type: string,
-  eventStartAt: Date | null,
-  eventEndAt: Date | null,
-) {
-  if (type !== "EVENT") {
-    return null;
-  }
-
-  if (!eventStartAt) {
-    return "Events require a start date and time.";
-  }
-
-  if (
-    eventEndAt &&
-    eventEndAt.getTime() <
-      eventStartAt.getTime()
-  ) {
-    return "The event end date cannot be earlier than its start date.";
-  }
-
-  return null;
 }
 
 adminContentRouter.get(

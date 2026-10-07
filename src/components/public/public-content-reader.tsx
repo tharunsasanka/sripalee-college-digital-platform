@@ -161,7 +161,7 @@ export function PublicContentReader({
     return (
       <section className="mx-auto flex min-h-[65vh] max-w-4xl items-center justify-center px-5 py-20">
         <p className="font-semibold text-[#741f2b]">
-          Loading published contentâ€¦
+          Loading published content…
         </p>
       </section>
     );

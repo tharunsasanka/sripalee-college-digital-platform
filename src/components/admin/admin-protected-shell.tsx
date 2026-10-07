@@ -106,7 +106,7 @@ export function AdminProtectedShell() {
         aria-live="polite"
       >
         <p className="text-sm text-slate-600">
-          Loading administrator dashboardÃ¢â‚¬Â¦
+          Loading administrator dashboard…
         </p>
       </div>
     );
@@ -136,7 +136,7 @@ export function AdminProtectedShell() {
 
             <p className="mt-3 text-sm text-slate-300">
               {administrator.email}
-              {" Ã‚Â· "}
+              {" · "}
               {administrator.role.replaceAll(
                 "_",
                 " ",
@@ -151,7 +151,7 @@ export function AdminProtectedShell() {
             className="rounded-xl border border-white/20 bg-white/10 px-5 py-3 font-semibold text-white transition hover:bg-white/20 disabled:opacity-60"
           >
             {loggingOut
-              ? "Signing outÃ¢â‚¬Â¦"
+              ? "Signing out…"
               : "Sign out"}
           </button>
         </div>

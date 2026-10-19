@@ -1,12 +1,12 @@
 import { app } from "./app";
 import { env } from "./config/env";
 
-const host = "127.0.0.1";
+const host = "0.0.0.0";
 let shuttingDown = false;
 
 const server = app.listen(env.port, host, () => {
   console.log(
-    `Sripalee College API running at http://${host}:${env.port}`,
+    `Sripalee College API running on ${host}:${env.port}`,
   );
 });
 

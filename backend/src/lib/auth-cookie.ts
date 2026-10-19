@@ -2,12 +2,15 @@ import type {
   CookieOptions,
   Response,
 } from "express";
+
 import { env } from "../config/env";
+
+const isProduction = env.nodeEnv === "production";
 
 const sessionCookieOptions: CookieOptions = {
   httpOnly: true,
-  secure: env.nodeEnv === "production",
-  sameSite: "strict",
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "strict",
   path: "/",
 };
 

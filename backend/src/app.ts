@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
@@ -20,6 +21,10 @@ import { publicContentRouter } from "./routes/public-content";
 export const app = express();
 
 app.disable("x-powered-by");
+
+if (env.nodeEnv === "production") {
+  app.set("trust proxy", 1);
+}
 
 app.use(helmet());
 
@@ -44,6 +49,44 @@ app.use(
     },
   }),
 );
+
+/*
+ * CSRF / Origin protection
+ *
+ * In production, all state-changing browser requests
+ * must come from an explicitly permitted frontend origin.
+ */
+app.use((request, response, next) => {
+  const safeMethods = new Set([
+    "GET",
+    "HEAD",
+    "OPTIONS",
+  ]);
+
+  if (
+    env.nodeEnv !== "production" ||
+    safeMethods.has(request.method)
+  ) {
+    next();
+    return;
+  }
+
+  const origin = request.get("origin");
+
+  if (
+    origin &&
+    env.frontendOrigins.includes(origin)
+  ) {
+    next();
+    return;
+  }
+
+  response.status(403).json({
+    success: false,
+    message:
+      "Request origin is not permitted.",
+  });
+});
 
 app.use(
   rateLimit({
@@ -70,11 +113,13 @@ app.use(
 );
 
 /*
- * Public uploaded media
+ * Legacy local uploaded media.
+ *
+ * New production media is stored in Cloudinary.
  *
  * IMPORTANT:
- * This must be registered BEFORE
- * notFoundHandler.
+ * This must remain registered BEFORE
+ * notFoundHandler while legacy paths are supported.
  */
 app.use(
   "/uploads",

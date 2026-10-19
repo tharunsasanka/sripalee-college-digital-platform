@@ -23,6 +23,7 @@ export interface PublicContentEntry {
   slug: string;
   summary: string | null;
   body: string;
+  imagePath: string | null;
   featured: boolean;
   publishedAt: string | null;
   eventStartAt: string | null;
@@ -37,10 +38,32 @@ interface PublicContentResponse {
   content: PublicContentEntry[];
 }
 
+interface PublicContentDetailResponse {
+  success: true;
+  content: PublicContentEntry;
+}
+
 const apiBaseUrl = (
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   "http://127.0.0.1:4000"
 ).replace(/\/+$/, "");
+
+export function getPublicImageUrl(
+  imagePath: string | null | undefined,
+) {
+  if (!imagePath) {
+    return null;
+  }
+
+  if (
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://")
+  ) {
+    return imagePath;
+  }
+
+  return `${apiBaseUrl}${imagePath}`;
+}
 
 export class PublicContentApiError extends Error {
   readonly status: number;
@@ -50,7 +73,10 @@ export class PublicContentApiError extends Error {
     status: number,
   ) {
     super(message);
-    this.name = "PublicContentApiError";
+
+    this.name =
+      "PublicContentApiError";
+
     this.status = status;
   }
 }
@@ -79,15 +105,17 @@ export async function listPublicContent(
   let body: unknown = null;
 
   try {
-    body = await response.json();
+    body =
+      await response.json();
   } catch {
     body = null;
   }
 
   if (!response.ok) {
-    const errorBody = body as {
-      message?: string;
-    } | null;
+    const errorBody =
+      body as {
+        message?: string;
+      } | null;
 
     throw new PublicContentApiError(
       errorBody?.message ??
@@ -109,7 +137,9 @@ export function createContentExcerpt(
     entry.summary?.trim() ||
     entry.body.trim();
 
-  if (source.length <= maximumLength) {
+  if (
+    source.length <= maximumLength
+  ) {
     return source;
   }
 
@@ -123,11 +153,16 @@ function getContentDetails(
 ) {
   const paragraphs = body
     .split(/\r?\n+/)
-    .map((value) => value.trim())
+    .map((value) =>
+      value.trim(),
+    )
     .filter(Boolean);
 
   if (paragraphs.length > 0) {
-    return paragraphs.slice(0, 3);
+    return paragraphs.slice(
+      0,
+      3,
+    );
   }
 
   return [
@@ -142,9 +177,12 @@ function getValidDate(
     return null;
   }
 
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
-  return Number.isNaN(date.getTime())
+  return Number.isNaN(
+    date.getTime(),
+  )
     ? null
     : date;
 }
@@ -190,7 +228,8 @@ function getEventStatus(
 
   if (
     end &&
-    end.getTime() < now.getTime()
+    end.getTime() <
+      now.getTime()
   ) {
     return "completed";
   }
@@ -198,7 +237,8 @@ function getEventStatus(
   if (
     !end &&
     start &&
-    start.getTime() < now.getTime()
+    start.getTime() <
+      now.getTime()
   ) {
     return "completed";
   }
@@ -210,10 +250,14 @@ export function mapPublicEvent(
   entry: PublicContentEntry,
 ): SchoolEvent {
   const start =
-    getValidDate(entry.eventStartAt);
+    getValidDate(
+      entry.eventStartAt,
+    );
 
   const end =
-    getValidDate(entry.eventEndAt);
+    getValidDate(
+      entry.eventEndAt,
+    );
 
   const month = start
     ? new Intl.DateTimeFormat(
@@ -226,7 +270,11 @@ export function mapPublicEvent(
 
   const timeLabel = start
     ? end
-      ? `${formatTime(start)} – ${formatTime(end)}`
+      ? `${formatTime(
+          start,
+        )} – ${formatTime(
+          end,
+        )}`
       : formatTime(start)
     : "Time to be confirmed";
 
@@ -234,29 +282,56 @@ export function mapPublicEvent(
     id: entry.id,
     slug: entry.slug,
     title: entry.title,
-    category: "School Community",
+
+    imageUrl:
+      getPublicImageUrl(
+        entry.imagePath,
+      ),
+
+    category:
+      "School Community",
+
     audience:
       "Entire School Community",
+
     month,
-    dateLabel: formatDate(start),
+
+    dateLabel:
+      formatDate(start),
+
     timeLabel,
+
     venue:
       entry.eventLocation ??
       "Sripalee College",
+
     summary:
-      createContentExcerpt(entry),
-    details: getContentDetails(
-      entry.body,
-    ),
-    status: getEventStatus(
-      start,
-      end,
-    ),
-    featured: entry.featured,
-    registrationRequired: false,
+      createContentExcerpt(
+        entry,
+      ),
+
+    details:
+      getContentDetails(
+        entry.body,
+      ),
+
+    status:
+      getEventStatus(
+        start,
+        end,
+      ),
+
+    featured:
+      entry.featured,
+
+    registrationRequired:
+      false,
+
     registrationStatus:
       "Refer to the published event information for participation details.",
+
     languages: [],
+
     approvalStatus:
       "Published through the official administration portal",
   };
@@ -266,7 +341,9 @@ export function mapPublicNotice(
   entry: PublicContentEntry,
 ): NoticeboardSlide {
   const publishedAt =
-    getValidDate(entry.publishedAt);
+    getValidDate(
+      entry.publishedAt,
+    );
 
   const priority:
     NoticeboardPriority =
@@ -278,46 +355,72 @@ export function mapPublicNotice(
     id: entry.id,
     slug: entry.slug,
     title: entry.title,
-    subtitle: entry.featured
-      ? "Featured official school notice"
-      : "Official school notice",
-    category: entry.featured
-      ? "Important Notice"
-      : "Administration",
+
+    imageUrl:
+      getPublicImageUrl(
+        entry.imagePath,
+      ),
+
+    subtitle:
+      entry.featured
+        ? "Featured official school notice"
+        : "Official school notice",
+
+    category:
+      entry.featured
+        ? "Important Notice"
+        : "Administration",
+
     priority,
+
     audience:
       "Entire School Community",
+
     summary:
-      createContentExcerpt(entry),
-    details: getContentDetails(
-      entry.body,
-    ),
+      createContentExcerpt(
+        entry,
+      ),
+
+    details:
+      getContentDetails(
+        entry.body,
+      ),
+
     dateLabel:
-      formatDate(publishedAt),
+      formatDate(
+        publishedAt,
+      ),
+
     timeLabel:
-      formatTime(publishedAt),
+      formatTime(
+        publishedAt,
+      ),
+
     location:
       "Sripalee College digital channels",
-    languages: [],
-    status: `Published by ${entry.createdBy.displayName}`,
-    icon: "administration",
-  };
-}
 
-interface PublicContentDetailResponse {
-  success: true;
-  content: PublicContentEntry;
+    languages: [],
+
+    status:
+      `Published by ${entry.createdBy.displayName}`,
+
+    icon:
+      "administration",
+  };
 }
 
 export async function getPublicContentBySlug(
   slug: string,
 ) {
   const response = await fetch(
-    `${apiBaseUrl}/api/content/${encodeURIComponent(slug)}`,
+    `${apiBaseUrl}/api/content/${encodeURIComponent(
+      slug,
+    )}`,
     {
       method: "GET",
       headers: {
-        Accept: "application/json",
+        Accept:
+          "application/json",
       },
       cache: "no-store",
     },
@@ -326,15 +429,17 @@ export async function getPublicContentBySlug(
   let body: unknown = null;
 
   try {
-    body = await response.json();
+    body =
+      await response.json();
   } catch {
     body = null;
   }
 
   if (!response.ok) {
-    const errorBody = body as {
-      message?: string;
-    } | null;
+    const errorBody =
+      body as {
+        message?: string;
+      } | null;
 
     throw new PublicContentApiError(
       errorBody?.message ??
@@ -344,6 +449,7 @@ export async function getPublicContentBySlug(
   }
 
   return (
-    body as PublicContentDetailResponse
+    body as
+      PublicContentDetailResponse
   ).content;
 }

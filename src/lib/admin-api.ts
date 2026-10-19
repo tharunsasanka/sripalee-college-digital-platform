@@ -22,6 +22,18 @@ import type {
   AuditLogListResponse,
 } from "../types/admin-auth";
 
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ChangePasswordResponse {
+  success: boolean;
+  message: string;
+  revokedSessions: number;
+}
+
 const apiBaseUrl = (
   process.env.NEXT_PUBLIC_API_BASE_URL ??
   "http://127.0.0.1:4000"
@@ -37,9 +49,15 @@ export class AdminApiError extends Error {
     details?: unknown,
   ) {
     super(message);
-    this.name = "AdminApiError";
-    this.status = status;
-    this.details = details;
+
+    this.name =
+      "AdminApiError";
+
+    this.status =
+      status;
+
+    this.details =
+      details;
   }
 }
 
@@ -49,14 +67,17 @@ async function parseResponse<T>(
   let body: unknown = null;
 
   try {
-    body = await response.json();
+    body =
+      await response.json();
   } catch {
     body = null;
   }
 
   if (!response.ok) {
     const errorBody =
-      body as Partial<ApiErrorResponse> | null;
+      body as
+        | Partial<ApiErrorResponse>
+        | null;
 
     throw new AdminApiError(
       errorBody?.message ??
@@ -73,9 +94,10 @@ async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const headers = new Headers(
-    options.headers,
-  );
+  const headers =
+    new Headers(
+      options.headers,
+    );
 
   headers.set(
     "Accept",
@@ -84,7 +106,9 @@ async function apiRequest<T>(
 
   if (
     options.body !== undefined &&
-    !headers.has("Content-Type")
+    !headers.has(
+      "Content-Type",
+    )
   ) {
     headers.set(
       "Content-Type",
@@ -92,17 +116,25 @@ async function apiRequest<T>(
     );
   }
 
-  const response = await fetch(
-    `${apiBaseUrl}${path}`,
-    {
-      ...options,
-      headers,
-      credentials: "include",
-      cache: "no-store",
-    },
-  );
+  const response =
+    await fetch(
+      `${apiBaseUrl}${path}`,
+      {
+        ...options,
 
-  return parseResponse<T>(response);
+        headers,
+
+        credentials:
+          "include",
+
+        cache:
+          "no-store",
+      },
+    );
+
+  return parseResponse<T>(
+    response,
+  );
 }
 
 export function loginAdministrator(
@@ -111,8 +143,13 @@ export function loginAdministrator(
   return apiRequest<AuthenticationResponse>(
     "/api/auth/login",
     {
-      method: "POST",
-      body: JSON.stringify(input),
+      method:
+        "POST",
+
+      body:
+        JSON.stringify(
+          input,
+        ),
     },
   );
 }
@@ -127,7 +164,25 @@ export function logoutAdministrator() {
   return apiRequest<LogoutResponse>(
     "/api/auth/logout",
     {
-      method: "POST",
+      method:
+        "POST",
+    },
+  );
+}
+
+export function changeAdministratorPassword(
+  input: ChangePasswordInput,
+) {
+  return apiRequest<ChangePasswordResponse>(
+    "/api/auth/change-password",
+    {
+      method:
+        "POST",
+
+      body:
+        JSON.stringify(
+          input,
+        ),
     },
   );
 }
@@ -144,8 +199,13 @@ export function createAdministrator(
   return apiRequest<AdministratorMutationResponse>(
     "/api/admin/users",
     {
-      method: "POST",
-      body: JSON.stringify(input),
+      method:
+        "POST",
+
+      body:
+        JSON.stringify(
+          input,
+        ),
     },
   );
 }
@@ -157,10 +217,13 @@ export function updateAdministratorRole(
   return apiRequest<AdministratorMutationResponse>(
     `/api/admin/users/${administratorId}/role`,
     {
-      method: "PATCH",
-      body: JSON.stringify({
-        role,
-      }),
+      method:
+        "PATCH",
+
+      body:
+        JSON.stringify({
+          role,
+        }),
     },
   );
 }
@@ -172,10 +235,13 @@ export function updateAdministratorStatus(
   return apiRequest<AdministratorMutationResponse>(
     `/api/admin/users/${administratorId}/status`,
     {
-      method: "PATCH",
-      body: JSON.stringify({
-        status,
-      }),
+      method:
+        "PATCH",
+
+      body:
+        JSON.stringify({
+          status,
+        }),
     },
   );
 }
@@ -186,7 +252,8 @@ export function revokeAdministratorSessions(
   return apiRequest<SessionRevocationResponse>(
     `/api/admin/users/${administratorId}/revoke-sessions`,
     {
-      method: "POST",
+      method:
+        "POST",
     },
   );
 }
@@ -221,21 +288,30 @@ export function listAdminContent(
   if (filters.page) {
     searchParameters.set(
       "page",
-      String(filters.page),
+      String(
+        filters.page,
+      ),
     );
   }
 
   if (filters.pageSize) {
     searchParameters.set(
       "pageSize",
-      String(filters.pageSize),
+      String(
+        filters.pageSize,
+      ),
     );
   }
 
-  const query = searchParameters.toString();
+  const query =
+    searchParameters.toString();
 
   return apiRequest<ContentListResponse>(
-    `/api/admin/content${query ? `?${query}` : ""}`,
+    `/api/admin/content${
+      query
+        ? `?${query}`
+        : ""
+    }`,
   );
 }
 
@@ -245,8 +321,13 @@ export function createAdminContent(
   return apiRequest<ContentMutationResponse>(
     "/api/admin/content",
     {
-      method: "POST",
-      body: JSON.stringify(input),
+      method:
+        "POST",
+
+      body:
+        JSON.stringify(
+          input,
+        ),
     },
   );
 }
@@ -258,8 +339,13 @@ export function updateAdminContent(
   return apiRequest<ContentMutationResponse>(
     `/api/admin/content/${contentId}`,
     {
-      method: "PATCH",
-      body: JSON.stringify(input),
+      method:
+        "PATCH",
+
+      body:
+        JSON.stringify(
+          input,
+        ),
     },
   );
 }
@@ -270,7 +356,8 @@ export function publishAdminContent(
   return apiRequest<ContentMutationResponse>(
     `/api/admin/content/${contentId}/publish`,
     {
-      method: "POST",
+      method:
+        "POST",
     },
   );
 }
@@ -281,7 +368,8 @@ export function archiveAdminContent(
   return apiRequest<ContentMutationResponse>(
     `/api/admin/content/${contentId}/archive`,
     {
-      method: "POST",
+      method:
+        "POST",
     },
   );
 }
@@ -292,7 +380,8 @@ export function deleteAdminContent(
   return apiRequest<ContentDeleteResponse>(
     `/api/admin/content/${contentId}`,
     {
-      method: "DELETE",
+      method:
+        "DELETE",
     },
   );
 }
@@ -310,7 +399,9 @@ export function listAuditLogs(
     );
   }
 
-  if (filters.entityType) {
+  if (
+    filters.entityType
+  ) {
     searchParameters.set(
       "entityType",
       filters.entityType,
@@ -320,14 +411,18 @@ export function listAuditLogs(
   if (filters.page) {
     searchParameters.set(
       "page",
-      String(filters.page),
+      String(
+        filters.page,
+      ),
     );
   }
 
   if (filters.pageSize) {
     searchParameters.set(
       "pageSize",
-      String(filters.pageSize),
+      String(
+        filters.pageSize,
+      ),
     );
   }
 
@@ -336,7 +431,9 @@ export function listAuditLogs(
 
   return apiRequest<AuditLogListResponse>(
     `/api/admin/audit-logs${
-      query ? `?${query}` : ""
+      query
+        ? `?${query}`
+        : ""
     }`,
   );
 }

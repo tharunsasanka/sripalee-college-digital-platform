@@ -121,7 +121,7 @@ export default function SiteFooter() {
           </p>
 
           <p className="mt-2 font-semibold text-[#e8c85e]">
-            Developed by Tharun Sasanka
+            Developed by FutureByte LK 
           </p>
         </div>
 

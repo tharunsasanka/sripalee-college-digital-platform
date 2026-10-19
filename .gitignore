@@ -13,3 +13,4 @@ backend/dist/
 backend/*.log
 
 backend/src/generated/prisma/
+backend/uploads/

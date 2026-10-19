@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import { useState } from "react";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
@@ -104,55 +106,129 @@ type EventsSectionsProps = {
 export function EventsSections({
   events,
 }: EventsSectionsProps) {
-  const [query, setQuery] = useState("");
-  const [category, setCategory] = useState("All Categories");
-  const [audience, setAudience] = useState("All Audiences");
-  const [month, setMonth] = useState("All Months");
+  const [query, setQuery] =
+    useState("");
 
-  const featuredEvents = events.filter((event) => event.featured);
-  const normalizedQuery = query.trim().toLowerCase();
+  const [category, setCategory] =
+    useState(
+      "All Categories",
+    );
 
-  const filteredEvents = events.filter((event) => {
-    const matchesQuery =
-      normalizedQuery.length === 0 ||
-      event.title.toLowerCase().includes(normalizedQuery) ||
-      event.category.toLowerCase().includes(normalizedQuery) ||
-      event.audience.toLowerCase().includes(normalizedQuery) ||
-      event.venue.toLowerCase().includes(normalizedQuery) ||
-      event.summary.toLowerCase().includes(normalizedQuery) ||
-      event.details.some((detail) =>
-        detail.toLowerCase().includes(normalizedQuery),
+  const [audience, setAudience] =
+    useState(
+      "All Audiences",
+    );
+
+  const [month, setMonth] =
+    useState(
+      "All Months",
+    );
+
+  const featuredEvents =
+    events.filter(
+      (event) =>
+        event.featured,
+    );
+
+  const normalizedQuery =
+    query
+      .trim()
+      .toLowerCase();
+
+  const filteredEvents =
+    events.filter((event) => {
+      const matchesQuery =
+        normalizedQuery.length ===
+          0 ||
+        event.title
+          .toLowerCase()
+          .includes(
+            normalizedQuery,
+          ) ||
+        event.category
+          .toLowerCase()
+          .includes(
+            normalizedQuery,
+          ) ||
+        event.audience
+          .toLowerCase()
+          .includes(
+            normalizedQuery,
+          ) ||
+        event.venue
+          .toLowerCase()
+          .includes(
+            normalizedQuery,
+          ) ||
+        event.summary
+          .toLowerCase()
+          .includes(
+            normalizedQuery,
+          ) ||
+        event.details.some(
+          (detail) =>
+            detail
+              .toLowerCase()
+              .includes(
+                normalizedQuery,
+              ),
+        );
+
+      const matchesCategory =
+        category ===
+          "All Categories" ||
+        event.category ===
+          category;
+
+      const matchesAudience =
+        audience ===
+          "All Audiences" ||
+        event.audience ===
+          audience;
+
+      const matchesMonth =
+        month ===
+          "All Months" ||
+        event.month ===
+          month;
+
+      return (
+        matchesQuery &&
+        matchesCategory &&
+        matchesAudience &&
+        matchesMonth
       );
-
-    const matchesCategory =
-      category === "All Categories" || event.category === category;
-
-    const matchesAudience =
-      audience === "All Audiences" || event.audience === audience;
-
-    const matchesMonth = month === "All Months" || event.month === month;
-
-    return matchesQuery && matchesCategory && matchesAudience && matchesMonth;
-  });
+    });
 
   const filtersActive =
     query.length > 0 ||
-    category !== "All Categories" ||
-    audience !== "All Audiences" ||
-    month !== "All Months";
+    category !==
+      "All Categories" ||
+    audience !==
+      "All Audiences" ||
+    month !==
+      "All Months";
 
   const clearFilters = () => {
     setQuery("");
-    setCategory("All Categories");
-    setAudience("All Audiences");
-    setMonth("All Months");
+    setCategory(
+      "All Categories",
+    );
+    setAudience(
+      "All Audiences",
+    );
+    setMonth(
+      "All Months",
+    );
   };
 
   return (
     <>
       <section className="relative overflow-hidden bg-[#4e111b] px-5 py-24 text-white lg:px-8 lg:py-32">
         <div className="soft-grid absolute inset-0 opacity-30" />
+
         <div className="absolute -left-24 top-20 h-72 w-72 rounded-full border border-[#c9a227]/30" />
+
         <div className="absolute -right-28 bottom-0 h-96 w-96 rounded-full border border-white/10" />
 
         <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
@@ -163,12 +239,19 @@ export function EventsSections({
               </p>
 
               <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-7xl">
-                Important dates and activities in one clear calendar.
+                Important dates and
+                activities in one clear
+                calendar.
               </h1>
 
               <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70 md:text-xl">
-                Explore approved academic, sporting, cultural, administrative
-                and community events organised by Sripalee College.
+                Explore approved
+                academic, sporting,
+                cultural,
+                administrative and
+                community events
+                organised by Sripalee
+                College.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
@@ -177,7 +260,10 @@ export function EventsSections({
                   className="focus-ring inline-flex items-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
                 >
                   Browse calendar
-                  <ArrowRight size={18} />
+
+                  <ArrowRight
+                    size={18}
+                  />
                 </a>
 
                 <Link
@@ -200,33 +286,49 @@ export function EventsSections({
                     </p>
 
                     <h2 className="mt-3 text-2xl font-semibold">
-                      Public and protected event information
+                      Public and
+                      protected event
+                      information
                     </h2>
                   </div>
 
-                  <CalendarDays className="text-[#e8c85e]" size={31} />
+                  <CalendarDays
+                    className="text-[#e8c85e]"
+                    size={31}
+                  />
                 </div>
 
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                  {eventFacts.map((fact) => (
-                    <div
-                      key={fact.label}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-5"
-                    >
-                      <p className="text-2xl font-semibold text-[#e8c85e]">
-                        {fact.value}
-                      </p>
+                  {eventFacts.map(
+                    (fact) => (
+                      <div
+                        key={
+                          fact.label
+                        }
+                        className="rounded-2xl border border-white/10 bg-white/5 p-5"
+                      >
+                        <p className="text-2xl font-semibold text-[#e8c85e]">
+                          {
+                            fact.value
+                          }
+                        </p>
 
-                      <p className="mt-2 text-sm leading-6 text-white/60">
-                        {fact.label}
-                      </p>
-                    </div>
-                  ))}
+                        <p className="mt-2 text-sm leading-6 text-white/60">
+                          {
+                            fact.label
+                          }
+                        </p>
+                      </div>
+                    ),
+                  )}
                 </div>
 
                 <p className="mt-6 text-sm leading-6 text-white/60">
-                  The events displayed below are published through the approved
-                  school administration workflow.
+                  The events displayed
+                  below are published
+                  through the approved
+                  school administration
+                  workflow.
                 </p>
               </div>
             </div>
@@ -239,15 +341,17 @@ export function EventsSections({
           aria-label="Events page sections"
           className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 py-4 text-sm font-semibold text-[#4e111b]"
         >
-          {sectionLinks.map((item) => (
-            <a
-              key={item.href}
-              href={`#${item.href}`}
-              className="focus-ring rounded-lg px-2 py-1.5 transition hover:bg-[#741f2b]/10"
-            >
-              {item.label}
-            </a>
-          ))}
+          {sectionLinks.map(
+            (item) => (
+              <a
+                key={item.href}
+                href={`#${item.href}`}
+                className="focus-ring rounded-lg px-2 py-1.5 transition hover:bg-[#741f2b]/10"
+              >
+                {item.label}
+              </a>
+            ),
+          )}
         </nav>
       </section>
 
@@ -264,113 +368,181 @@ export function EventsSections({
         </Reveal>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {featuredEvents.map((event, index) => {
-            const Icon = eventIcons[event.category] ?? CalendarDays;
-            const style = statusStyles[event.status];
+          {featuredEvents.map(
+            (
+              event,
+              index,
+            ) => {
+              const Icon =
+                eventIcons[
+                  event.category
+                ] ??
+                CalendarDays;
 
-            return (
-              <Reveal key={event.id} delay={index * 0.05}>
-                <article
-                  className={`card-3d flex h-full flex-col overflow-hidden rounded-[2rem] border bg-white ${style.border}`}
+              const style =
+                statusStyles[
+                  event.status
+                ];
+
+              return (
+                <Reveal
+                  key={event.id}
+                  delay={
+                    index *
+                    0.05
+                  }
                 >
-                  <div className="bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-7 text-white">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#c9a227] text-[#4e111b]">
-                        <Icon size={25} />
+                  <article
+                    className={`card-3d flex h-full flex-col overflow-hidden rounded-[2rem] border bg-white ${style.border}`}
+                  >
+                    {event.imageUrl ? (
+                      <div className="overflow-hidden bg-[#faf7ef]">
+                        <img
+                          src={
+                            event.imageUrl
+                          }
+                          alt={
+                            event.title
+                          }
+                          loading="lazy"
+                          className="h-52 w-full object-cover transition duration-500 hover:scale-[1.02]"
+                        />
                       </div>
-
-                      <span
-                        className={`rounded-full px-3 py-1.5 text-xs font-semibold ${style.badge}`}
-                      >
-                        {style.label}
-                      </span>
-                    </div>
-
-                    <p className="mt-7 text-xs font-semibold uppercase tracking-[0.16em] text-[#e8c85e]">
-                      {event.category}
-                    </p>
-
-                    <h2 className="mt-2 text-2xl font-semibold">
-                      {event.title}
-                    </h2>
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-7">
-                    <p className="leading-7 text-black/65">{event.summary}</p>
-
-                    {event.slug ? (
-                      <Link
-                        href={`/events/view?slug=${encodeURIComponent(event.slug)}`}
-                        className="focus-ring mt-4 inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[#741f2b]"
-                      >
-                        View event details
-                        <ArrowRight size={16} />
-                      </Link>
                     ) : null}
 
-                    <div className="mt-6 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <CalendarDays
-                          className="mt-0.5 shrink-0 text-[#741f2b]"
-                          size={19}
-                        />
-
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Date
-                          </p>
-
-                          <p className="mt-1 text-sm text-black/60">
-                            {event.month} · {event.dateLabel}
-                          </p>
+                    <div className="bg-gradient-to-br from-[#741f2b] to-[#4e111b] p-7 text-white">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#c9a227] text-[#4e111b]">
+                          <Icon
+                            size={
+                              25
+                            }
+                          />
                         </div>
+
+                        <span
+                          className={`rounded-full px-3 py-1.5 text-xs font-semibold ${style.badge}`}
+                        >
+                          {
+                            style.label
+                          }
+                        </span>
                       </div>
 
-                      <div className="flex items-start gap-3">
-                        <Clock3
-                          className="mt-0.5 shrink-0 text-[#741f2b]"
-                          size={19}
-                        />
-
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Time
-                          </p>
-
-                          <p className="mt-1 text-sm text-black/60">
-                            {event.timeLabel}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <MapPin
-                          className="mt-0.5 shrink-0 text-[#741f2b]"
-                          size={19}
-                        />
-
-                        <div>
-                          <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Venue
-                          </p>
-
-                          <p className="mt-1 text-sm text-black/60">
-                            {event.venue}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-7">
-                      <p className="rounded-2xl bg-[#faf7ef] p-4 text-sm font-semibold leading-6 text-[#741f2b]">
-                        {event.approvalStatus}
+                      <p className="mt-7 text-xs font-semibold uppercase tracking-[0.16em] text-[#e8c85e]">
+                        {
+                          event.category
+                        }
                       </p>
+
+                      <h2 className="mt-2 text-2xl font-semibold">
+                        {
+                          event.title
+                        }
+                      </h2>
                     </div>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
+
+                    <div className="flex flex-1 flex-col p-7">
+                      <p className="leading-7 text-black/65">
+                        {
+                          event.summary
+                        }
+                      </p>
+
+                      {event.slug ? (
+                        <Link
+                          href={`/events/view?slug=${encodeURIComponent(
+                            event.slug,
+                          )}`}
+                          className="focus-ring mt-4 inline-flex items-center gap-2 rounded-full text-sm font-semibold text-[#741f2b]"
+                        >
+                          View event
+                          details
+
+                          <ArrowRight
+                            size={
+                              16
+                            }
+                          />
+                        </Link>
+                      ) : null}
+
+                      <div className="mt-6 space-y-3">
+                        <div className="flex items-start gap-3">
+                          <CalendarDays
+                            className="mt-0.5 shrink-0 text-[#741f2b]"
+                            size={19}
+                          />
+
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                              Date
+                            </p>
+
+                            <p className="mt-1 text-sm text-black/60">
+                              {
+                                event.month
+                              }{" "}
+                              ·{" "}
+                              {
+                                event.dateLabel
+                              }
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <Clock3
+                            className="mt-0.5 shrink-0 text-[#741f2b]"
+                            size={19}
+                          />
+
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                              Time
+                            </p>
+
+                            <p className="mt-1 text-sm text-black/60">
+                              {
+                                event.timeLabel
+                              }
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3">
+                          <MapPin
+                            className="mt-0.5 shrink-0 text-[#741f2b]"
+                            size={19}
+                          />
+
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                              Venue
+                            </p>
+
+                            <p className="mt-1 text-sm text-black/60">
+                              {
+                                event.venue
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-auto pt-7">
+                        <p className="rounded-2xl bg-[#faf7ef] p-4 text-sm font-semibold leading-6 text-[#741f2b]">
+                          {
+                            event.approvalStatus
+                          }
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            },
+          )}
         </div>
       </section>
 
@@ -395,11 +567,22 @@ export function EventsSections({
                 </span>
 
                 <div className="mt-2 flex items-center gap-3 rounded-2xl border border-black/15 bg-white px-4 py-3">
-                  <Search className="shrink-0 text-[#741f2b]" size={19} />
+                  <Search
+                    className="shrink-0 text-[#741f2b]"
+                    size={19}
+                  />
 
                   <input
                     value={query}
-                    onChange={(event) => setQuery(event.target.value)}
+                    onChange={(
+                      event,
+                    ) =>
+                      setQuery(
+                        event
+                          .target
+                          .value,
+                      )
+                    }
                     placeholder="Event, venue or keyword"
                     className="w-full bg-transparent text-base outline-none placeholder:text-black/55"
                   />
@@ -413,14 +596,27 @@ export function EventsSections({
 
                 <select
                   value={category}
-                  onChange={(event) => setCategory(event.target.value)}
+                  onChange={(
+                    event,
+                  ) =>
+                    setCategory(
+                      event
+                        .target
+                        .value,
+                    )
+                  }
                   className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 text-base"
                 >
-                  {eventCategories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {eventCategories.map(
+                    (item) => (
+                      <option
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    ),
+                  )}
                 </select>
               </label>
 
@@ -431,14 +627,27 @@ export function EventsSections({
 
                 <select
                   value={month}
-                  onChange={(event) => setMonth(event.target.value)}
+                  onChange={(
+                    event,
+                  ) =>
+                    setMonth(
+                      event
+                        .target
+                        .value,
+                    )
+                  }
                   className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 text-base"
                 >
-                  {eventMonths.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {eventMonths.map(
+                    (item) => (
+                      <option
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    ),
+                  )}
                 </select>
               </label>
 
@@ -449,14 +658,27 @@ export function EventsSections({
 
                 <select
                   value={audience}
-                  onChange={(event) => setAudience(event.target.value)}
+                  onChange={(
+                    event,
+                  ) =>
+                    setAudience(
+                      event
+                        .target
+                        .value,
+                    )
+                  }
                   className="mt-2 w-full rounded-2xl border border-black/15 bg-white px-4 py-3 text-base"
                 >
-                  {eventAudiences.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {eventAudiences.map(
+                    (item) => (
+                      <option
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    ),
+                  )}
                 </select>
               </label>
             </div>
@@ -467,14 +689,23 @@ export function EventsSections({
             aria-live="polite"
           >
             <p className="text-sm text-black/55">
-              Showing {filteredEvents.length}{" "}
-              {filteredEvents.length === 1 ? "event" : "events"}.
+              Showing{" "}
+              {
+                filteredEvents.length
+              }{" "}
+              {filteredEvents.length ===
+              1
+                ? "event"
+                : "events"}
+              .
             </p>
 
             {filtersActive && (
               <button
                 type="button"
-                onClick={clearFilters}
+                onClick={
+                  clearFilters
+                }
                 className="focus-ring rounded-full border border-[#741f2b]/20 px-4 py-2 text-sm font-semibold text-[#741f2b]"
               >
                 Clear filters
@@ -482,138 +713,251 @@ export function EventsSections({
             )}
           </div>
 
-          {filteredEvents.length > 0 ? (
+          {filteredEvents.length >
+          0 ? (
             <div className="mt-8 grid gap-6 md:grid-cols-2">
-              {filteredEvents.map((event, index) => {
-                const Icon = eventIcons[event.category] ?? CalendarDays;
-                const style = statusStyles[event.status];
+              {filteredEvents.map(
+                (
+                  event,
+                  index,
+                ) => {
+                  const Icon =
+                    eventIcons[
+                      event
+                        .category
+                    ] ??
+                    CalendarDays;
 
-                return (
-                  <Reveal key={event.id} delay={index * 0.035}>
-                    <article
-                      className={`card-3d flex h-full flex-col rounded-[2rem] border bg-white p-7 ${style.border}`}
+                  const style =
+                    statusStyles[
+                      event
+                        .status
+                    ];
+
+                  return (
+                    <Reveal
+                      key={event.id}
+                      delay={
+                        index *
+                        0.035
+                      }
                     >
-                      <div className="flex flex-wrap items-start justify-between gap-4">
-                        <div className="flex items-center gap-4">
-                          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
-                            <Icon size={22} />
-                          </div>
-
-                          <div>
-                            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#741f2b]">
-                              {event.category}
-                            </p>
-
-                            <p className="mt-1 text-sm text-black/60">
-                              {event.audience}
-                            </p>
-                          </div>
-                        </div>
-
-                        <span
-                          className={`rounded-full px-3 py-1.5 text-xs font-semibold ${style.badge}`}
-                        >
-                          {style.label}
-                        </span>
-                      </div>
-
-                      <h2 className="mt-6 text-2xl font-semibold text-[#4e111b]">
-                        {event.title}
-                      </h2>
-
-                      <p className="mt-4 leading-7 text-black/65">
-                        {event.summary}
-                      </p>
-
-                      <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                        <div className="rounded-2xl bg-[#faf7ef] p-4">
-                          <CalendarDays
-                            className="text-[#741f2b]"
-                            size={18}
-                          />
-
-                          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Date
-                          </p>
-
-                          <p className="mt-2 text-sm leading-6 text-black/60">
-                            {event.month}
-                            <br />
-                            {event.dateLabel}
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-[#faf7ef] p-4">
-                          <Clock3 className="text-[#741f2b]" size={18} />
-
-                          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Time
-                          </p>
-
-                          <p className="mt-2 text-sm leading-6 text-black/60">
-                            {event.timeLabel}
-                          </p>
-                        </div>
-
-                        <div className="rounded-2xl bg-[#faf7ef] p-4">
-                          <MapPin className="text-[#741f2b]" size={18} />
-
-                          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
-                            Venue
-                          </p>
-
-                          <p className="mt-2 text-sm leading-6 text-black/60">
-                            {event.venue}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 space-y-3">
-                        {event.details.map((detail) => (
-                          <div key={detail} className="flex items-start gap-3">
-                            <CheckCircle2
-                              className="mt-0.5 shrink-0 text-[#c9a227]"
-                              size={18}
+                      <article
+                        className={`card-3d flex h-full flex-col overflow-hidden rounded-[2rem] border bg-white ${style.border}`}
+                      >
+                        {event.imageUrl ? (
+                          <div className="overflow-hidden bg-[#faf7ef]">
+                            <img
+                              src={
+                                event.imageUrl
+                              }
+                              alt={
+                                event.title
+                              }
+                              loading="lazy"
+                              className="h-56 w-full object-cover transition duration-500 hover:scale-[1.02]"
                             />
-
-                            <p className="text-sm leading-6 text-black/60">
-                              {detail}
-                            </p>
                           </div>
-                        ))}
-                      </div>
+                        ) : null}
 
-                      <div className="mt-auto pt-7">
-                        <div className="rounded-2xl border border-black/10 bg-[#faf7ef] p-4">
-                          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#741f2b]">
-                            Participation
+                        <div className="flex flex-1 flex-col p-7">
+                          <div className="flex flex-wrap items-start justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                              <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
+                                <Icon
+                                  size={
+                                    22
+                                  }
+                                />
+                              </div>
+
+                              <div>
+                                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#741f2b]">
+                                  {
+                                    event.category
+                                  }
+                                </p>
+
+                                <p className="mt-1 text-sm text-black/60">
+                                  {
+                                    event.audience
+                                  }
+                                </p>
+                              </div>
+                            </div>
+
+                            <span
+                              className={`rounded-full px-3 py-1.5 text-xs font-semibold ${style.badge}`}
+                            >
+                              {
+                                style.label
+                              }
+                            </span>
+                          </div>
+
+                          <h2 className="mt-6 text-2xl font-semibold text-[#4e111b]">
+                            {
+                              event.title
+                            }
+                          </h2>
+
+                          <p className="mt-4 leading-7 text-black/65">
+                            {
+                              event.summary
+                            }
                           </p>
 
-                          <p className="mt-2 text-sm leading-6 text-black/60">
-                            {event.registrationStatus}
-                          </p>
+                          {event.slug ? (
+                            <Link
+                              href={`/events/view?slug=${encodeURIComponent(
+                                event.slug,
+                              )}`}
+                              className="focus-ring mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#741f2b]"
+                            >
+                              View event
+                              details
+
+                              <ArrowRight
+                                size={
+                                  16
+                                }
+                              />
+                            </Link>
+                          ) : null}
+
+                          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                            <div className="rounded-2xl bg-[#faf7ef] p-4">
+                              <CalendarDays
+                                className="text-[#741f2b]"
+                                size={
+                                  18
+                                }
+                              />
+
+                              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                                Date
+                              </p>
+
+                              <p className="mt-2 text-sm leading-6 text-black/60">
+                                {
+                                  event.month
+                                }
+                                <br />
+                                {
+                                  event.dateLabel
+                                }
+                              </p>
+                            </div>
+
+                            <div className="rounded-2xl bg-[#faf7ef] p-4">
+                              <Clock3
+                                className="text-[#741f2b]"
+                                size={
+                                  18
+                                }
+                              />
+
+                              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                                Time
+                              </p>
+
+                              <p className="mt-2 text-sm leading-6 text-black/60">
+                                {
+                                  event.timeLabel
+                                }
+                              </p>
+                            </div>
+
+                            <div className="rounded-2xl bg-[#faf7ef] p-4">
+                              <MapPin
+                                className="text-[#741f2b]"
+                                size={
+                                  18
+                                }
+                              />
+
+                              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.13em] text-[#741f2b]">
+                                Venue
+                              </p>
+
+                              <p className="mt-2 text-sm leading-6 text-black/60">
+                                {
+                                  event.venue
+                                }
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="mt-6 space-y-3">
+                            {event.details.map(
+                              (
+                                detail,
+                              ) => (
+                                <div
+                                  key={
+                                    detail
+                                  }
+                                  className="flex items-start gap-3"
+                                >
+                                  <CheckCircle2
+                                    className="mt-0.5 shrink-0 text-[#c9a227]"
+                                    size={
+                                      18
+                                    }
+                                  />
+
+                                  <p className="text-sm leading-6 text-black/60">
+                                    {
+                                      detail
+                                    }
+                                  </p>
+                                </div>
+                              ),
+                            )}
+                          </div>
+
+                          <div className="mt-auto pt-7">
+                            <div className="rounded-2xl border border-black/10 bg-[#faf7ef] p-4">
+                              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#741f2b]">
+                                Participation
+                              </p>
+
+                              <p className="mt-2 text-sm leading-6 text-black/60">
+                                {
+                                  event.registrationStatus
+                                }
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  </Reveal>
-                );
-              })}
+                      </article>
+                    </Reveal>
+                  );
+                },
+              )}
             </div>
           ) : (
             <div className="mt-8 rounded-[2rem] border border-dashed border-black/20 bg-[#faf7ef] p-12 text-center">
-              <Search className="mx-auto text-[#741f2b]" size={30} />
+              <Search
+                className="mx-auto text-[#741f2b]"
+                size={30}
+              />
 
               <h2 className="mt-5 text-2xl font-semibold text-[#4e111b]">
                 No matching events
               </h2>
 
               <p className="mt-3 text-black/55">
-                Change the search term, category, month or audience.
+                Change the search term,
+                category, month or
+                audience.
               </p>
 
               <button
                 type="button"
-                onClick={clearFilters}
+                onClick={
+                  clearFilters
+                }
                 className="focus-ring mt-6 rounded-full bg-[#741f2b] px-5 py-3 text-sm font-semibold text-white"
               >
                 Reset calendar
@@ -636,26 +980,74 @@ export function EventsSections({
         </Reveal>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {calendarViews.map((view, index) => (
-            <Reveal key={view.title} delay={index * 0.05}>
-              <article className="card-3d h-full rounded-3xl border border-black/10 bg-white p-6">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
-                  {index === 0 && <CalendarDays size={22} />}
-                  {index === 1 && <GraduationCap size={22} />}
-                  {index === 2 && <UsersRound size={22} />}
-                  {index === 3 && <ClipboardCheck size={22} />}
-                </div>
+          {calendarViews.map(
+            (
+              view,
+              index,
+            ) => (
+              <Reveal
+                key={
+                  view.title
+                }
+                delay={
+                  index *
+                  0.05
+                }
+              >
+                <article className="card-3d h-full rounded-3xl border border-black/10 bg-white p-6">
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
+                    {index ===
+                      0 && (
+                      <CalendarDays
+                        size={
+                          22
+                        }
+                      />
+                    )}
 
-                <h3 className="mt-6 text-xl font-semibold text-[#4e111b]">
-                  {view.title}
-                </h3>
+                    {index ===
+                      1 && (
+                      <GraduationCap
+                        size={
+                          22
+                        }
+                      />
+                    )}
 
-                <p className="mt-4 text-sm leading-6 text-black/60">
-                  {view.description}
-                </p>
-              </article>
-            </Reveal>
-          ))}
+                    {index ===
+                      2 && (
+                      <UsersRound
+                        size={
+                          22
+                        }
+                      />
+                    )}
+
+                    {index ===
+                      3 && (
+                      <ClipboardCheck
+                        size={
+                          22
+                        }
+                      />
+                    )}
+                  </div>
+
+                  <h3 className="mt-6 text-xl font-semibold text-[#4e111b]">
+                    {
+                      view.title
+                    }
+                  </h3>
+
+                  <p className="mt-4 text-sm leading-6 text-black/60">
+                    {
+                      view.description
+                    }
+                  </p>
+                </article>
+              </Reveal>
+            ),
+          )}
         </div>
       </section>
 
@@ -671,36 +1063,66 @@ export function EventsSections({
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Every published event follows an approval process
+                Every published event
+                follows an approval
+                process
               </h2>
 
               <p className="mt-5 text-lg leading-8 text-white/65">
-                Dates, venues, participation requirements and public
-                instructions should be reviewed before becoming visible.
+                Dates, venues,
+                participation
+                requirements and public
+                instructions should be
+                reviewed before
+                becoming visible.
               </p>
             </div>
           </Reveal>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {eventWorkflow.map((item, index) => (
-              <Reveal key={item.step} delay={index * 0.04}>
-                <article className="card-3d h-full rounded-3xl border border-white/10 bg-white/5 p-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-3xl font-semibold text-[#e8c85e]">
-                      {item.step}
+            {eventWorkflow.map(
+              (
+                item,
+                index,
+              ) => (
+                <Reveal
+                  key={item.step}
+                  delay={
+                    index *
+                    0.04
+                  }
+                >
+                  <article className="card-3d h-full rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-3xl font-semibold text-[#e8c85e]">
+                        {
+                          item.step
+                        }
+                      </p>
+
+                      <ClipboardCheck
+                        className="text-[#e8c85e]"
+                        size={
+                          23
+                        }
+                      />
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-semibold">
+                      {
+                        item.title
+                      }
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-6 text-white/60">
+                      {
+                        item.description
+                      }
                     </p>
-
-                    <ClipboardCheck className="text-[#e8c85e]" size={23} />
-                  </div>
-
-                  <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
-
-                  <p className="mt-3 text-sm leading-6 text-white/60">
-                    {item.description}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
+                  </article>
+                </Reveal>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -712,35 +1134,60 @@ export function EventsSections({
         <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-black/10 bg-[#faf7ef] p-8 md:p-12 lg:grid-cols-[0.82fr_1.18fr]">
           <Reveal>
             <div>
-              <ShieldCheck className="text-[#741f2b]" size={34} />
+              <ShieldCheck
+                className="text-[#741f2b]"
+                size={34}
+              />
 
               <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">
                 Calendar Controls
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold text-[#4e111b]">
-                Accurate schedules, secure participation and visible updates
+                Accurate schedules,
+                secure participation
+                and visible updates
               </h2>
 
               <p className="mt-5 leading-7 text-black/65">
-                Event publication should protect student information while
-                keeping the school community informed of important changes.
+                Event publication
+                should protect student
+                information while
+                keeping the school
+                community informed of
+                important changes.
               </p>
             </div>
           </Reveal>
 
           <div className="space-y-3">
-            {eventPublishingRules.map((rule, index) => (
-              <Reveal key={rule} delay={index * 0.03}>
-                <div className="flex gap-3 rounded-2xl border border-black/10 bg-white p-4">
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#741f2b] text-xs font-semibold text-white">
-                    {index + 1}
-                  </div>
+            {eventPublishingRules.map(
+              (
+                rule,
+                index,
+              ) => (
+                <Reveal
+                  key={rule}
+                  delay={
+                    index *
+                    0.03
+                  }
+                >
+                  <div className="flex gap-3 rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#741f2b] text-xs font-semibold text-white">
+                      {
+                        index +
+                        1
+                      }
+                    </div>
 
-                  <p className="text-sm leading-6 text-black/65">{rule}</p>
-                </div>
-              </Reveal>
-            ))}
+                    <p className="text-sm leading-6 text-black/65">
+                      {rule}
+                    </p>
+                  </div>
+                </Reveal>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -754,12 +1201,18 @@ export function EventsSections({
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Check announcements before attending an event
+                Check announcements
+                before attending an
+                event
               </h2>
 
               <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">
-                Postponements, venue changes and urgent instructions will be
-                published through the News and Notices section.
+                Postponements, venue
+                changes and urgent
+                instructions will be
+                published through the
+                News and Notices
+                section.
               </p>
             </div>
 
@@ -768,7 +1221,10 @@ export function EventsSections({
               className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
             >
               View notices
-              <BellRing size={18} />
+
+              <BellRing
+                size={18}
+              />
             </Link>
           </div>
         </Reveal>

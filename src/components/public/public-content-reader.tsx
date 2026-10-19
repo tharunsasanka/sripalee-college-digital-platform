@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import {
   useEffect,
   useState,
@@ -16,6 +18,7 @@ import {
 } from "lucide-react";
 import {
   getPublicContentBySlug,
+  getPublicImageUrl,
   type PublicContentEntry,
   type PublicContentType,
 } from "@/lib/public-content";
@@ -193,6 +196,12 @@ export function PublicContentReader({
       </section>
     );
   }
+
+  const imageUrl =
+    getPublicImageUrl(
+      entry.imagePath,
+    );
+
   return (
     <>
       <section className="relative overflow-hidden bg-[#4e111b] px-5 py-20 text-white lg:px-8 lg:py-28">
@@ -209,12 +218,16 @@ export function PublicContentReader({
 
           <div className="mt-10 flex items-center gap-4">
             <div className="grid h-14 w-14 place-items-center rounded-2xl bg-[#c9a227] text-[#4e111b]">
-              <ContentTypeIcon type={entry.type} />
+              <ContentTypeIcon
+                type={entry.type}
+              />
             </div>
 
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#e8c85e]">
-                {getTypeLabel(entry.type)}
+                {getTypeLabel(
+                  entry.type,
+                )}
               </p>
 
               {entry.featured ? (
@@ -236,6 +249,18 @@ export function PublicContentReader({
           ) : null}
         </div>
       </section>
+
+      {imageUrl ? (
+        <section className="mx-auto max-w-6xl px-5 pt-12 lg:px-8">
+          <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-[#faf7ef] shadow-sm">
+            <img
+              src={imageUrl}
+              alt={entry.title}
+              className="max-h-[620px] w-full object-cover"
+            />
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-5xl px-5 py-16 lg:px-8 lg:py-20">
         <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
@@ -274,7 +299,10 @@ export function PublicContentReader({
               </p>
 
               <p className="mt-2 text-sm leading-6 text-black/65">
-                {entry.createdBy.displayName}
+                {
+                  entry.createdBy
+                    .displayName
+                }
               </p>
             </div>
 

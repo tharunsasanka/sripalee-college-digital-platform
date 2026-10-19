@@ -7,14 +7,24 @@ export const publicContentRouter = Router();
 
 const publicListSchema = z.object({
   type: z
-    .enum(["NEWS", "NOTICE", "EVENT"])
+    .enum([
+      "NEWS",
+      "NOTICE",
+      "EVENT",
+    ])
     .optional(),
+
   featured: z
-    .enum(["true", "false"])
+    .enum([
+      "true",
+      "false",
+    ])
     .transform(
-      (value) => value === "true",
+      (value) =>
+        value === "true",
     )
     .optional(),
+
   limit: z.coerce
     .number()
     .int()
@@ -36,12 +46,14 @@ const publicContentSelect = {
   slug: true,
   summary: true,
   body: true,
+  imagePath: true,
   featured: true,
   publishedAt: true,
   eventStartAt: true,
   eventEndAt: true,
   eventLocation: true,
   updatedAt: true,
+
   createdBy: {
     select: {
       displayName: true,
@@ -51,7 +63,11 @@ const publicContentSelect = {
 
 publicContentRouter.get(
   "/",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
       const parsed =
         publicListSchema.safeParse(
@@ -64,23 +80,32 @@ publicContentRouter.get(
           message:
             "The public content filters are invalid.",
         });
+
         return;
       }
 
-      const now = new Date();
+      const now =
+        new Date();
 
       const where:
         Prisma.ContentEntryWhereInput = {
-        status: "PUBLISHED",
-        deletedAt: null,
+        status:
+          "PUBLISHED",
+
+        deletedAt:
+          null,
+
         publishedAt: {
           lte: now,
         },
+
         ...(parsed.data.type
           ? {
-              type: parsed.data.type,
+              type:
+                parsed.data.type,
             }
           : {}),
+
         ...(parsed.data.featured !==
         undefined
           ? {
@@ -92,30 +117,37 @@ publicContentRouter.get(
 
       const orderBy:
         Prisma.ContentEntryOrderByWithRelationInput[] =
-        parsed.data.type === "EVENT"
+        parsed.data.type ===
+        "EVENT"
           ? [
               {
-                eventStartAt: "asc",
+                eventStartAt:
+                  "asc",
               },
               {
-                publishedAt: "desc",
+                publishedAt:
+                  "desc",
               },
             ]
           : [
               {
-                featured: "desc",
+                featured:
+                  "desc",
               },
               {
-                publishedAt: "desc",
+                publishedAt:
+                  "desc",
               },
             ];
 
       const content =
         await prisma.contentEntry.findMany({
           where,
-          select: publicContentSelect,
+          select:
+            publicContentSelect,
           orderBy,
-          take: parsed.data.limit,
+          take:
+            parsed.data.limit,
         });
 
       response.status(200).json({
@@ -130,11 +162,16 @@ publicContentRouter.get(
 
 publicContentRouter.get(
   "/:slug",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
-      const slug = slugSchema.safeParse(
-        request.params.slug,
-      );
+      const slug =
+        slugSchema.safeParse(
+          request.params.slug,
+        );
 
       if (!slug.success) {
         response.status(400).json({
@@ -142,20 +179,30 @@ publicContentRouter.get(
           message:
             "The content slug is invalid.",
         });
+
         return;
       }
 
       const content =
         await prisma.contentEntry.findFirst({
           where: {
-            slug: slug.data,
-            status: "PUBLISHED",
-            deletedAt: null,
+            slug:
+              slug.data,
+
+            status:
+              "PUBLISHED",
+
+            deletedAt:
+              null,
+
             publishedAt: {
-              lte: new Date(),
+              lte:
+                new Date(),
             },
           },
-          select: publicContentSelect,
+
+          select:
+            publicContentSelect,
         });
 
       if (!content) {
@@ -164,6 +211,7 @@ publicContentRouter.get(
           message:
             "The requested content was not found.",
         });
+
         return;
       }
 

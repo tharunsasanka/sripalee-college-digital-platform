@@ -1,8 +1,12 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import {
+  type ChangeEvent,
   type FormEvent,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import {
@@ -24,6 +28,35 @@ import type {
 interface AdminContentManagementProps {
   role: AdminRole;
 }
+
+type ManagedContentEntryWithImage =
+  ManagedContentEntry & {
+    imagePath: string | null;
+  };
+
+interface UploadedImageResponse {
+  success: boolean;
+  image?: {
+    path: string;
+    originalName: string;
+    mimeType: string;
+    size: number;
+  };
+  message?: string;
+}
+
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://127.0.0.1:4000";
+
+const MAX_IMAGE_SIZE =
+  5 * 1024 * 1024;
+
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
 
 function getErrorMessage(
   error: unknown,
@@ -61,69 +94,214 @@ function toApiDate(
     : null;
 }
 
+function getImageUrl(
+  imagePath: string | null,
+) {
+  if (!imagePath) {
+    return "";
+  }
+
+  if (
+    imagePath.startsWith("http://") ||
+    imagePath.startsWith("https://")
+  ) {
+    return imagePath;
+  }
+
+  return `${BACKEND_URL}${imagePath}`;
+}
+
+async function uploadAdminImage(
+  file: File,
+) {
+  const formData =
+    new FormData();
+
+  formData.append(
+    "image",
+    file,
+  );
+
+  const response =
+    await fetch(
+      `${BACKEND_URL}/api/admin/media/image`,
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      },
+    );
+
+  let result:
+    | UploadedImageResponse
+    | undefined;
+
+  try {
+    result =
+      (await response.json()) as
+        UploadedImageResponse;
+  } catch {
+    result = undefined;
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      result?.message ??
+        "The image could not be uploaded.",
+    );
+  }
+
+  if (!result?.image?.path) {
+    throw new Error(
+      "The server did not return an image path.",
+    );
+  }
+
+  return result.image.path;
+}
+
 export function AdminContentManagement({
   role,
 }: AdminContentManagementProps) {
-  const [content, setContent] =
-    useState<ManagedContentEntry[]>([]);
+  const [
+    content,
+    setContent,
+  ] = useState<
+    ManagedContentEntryWithImage[]
+  >([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [submitting, setSubmitting] =
-    useState(false);
+  const [
+    submitting,
+    setSubmitting,
+  ] = useState(false);
 
-  const [busyContentId, setBusyContentId] =
-    useState<string | null>(null);
+  const [
+    uploadingImage,
+    setUploadingImage,
+  ] = useState(false);
 
-  const [refreshKey, setRefreshKey] =
-    useState(0);
+  const [
+    busyContentId,
+    setBusyContentId,
+  ] = useState<string | null>(null);
 
-  const [message, setMessage] =
-    useState("");
+  const [
+    refreshKey,
+    setRefreshKey,
+  ] = useState(0);
 
-  const [error, setError] =
-    useState("");
+  const [
+    message,
+    setMessage,
+  ] = useState("");
 
-  const [typeFilter, setTypeFilter] =
-    useState<ContentType | "">("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState<ContentStatus | "">("");
+  const [
+    typeFilter,
+    setTypeFilter,
+  ] = useState<ContentType | "">("");
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [
+    statusFilter,
+    setStatusFilter,
+  ] = useState<ContentStatus | "">("");
 
-  const [type, setType] =
-    useState<ContentType>("NEWS");
+  const [
+    editingId,
+    setEditingId,
+  ] = useState<string | null>(null);
 
-  const [title, setTitle] =
-    useState("");
+  const [
+    type,
+    setType,
+  ] = useState<ContentType>("NEWS");
 
-  const [slug, setSlug] =
-    useState("");
+  const [
+    title,
+    setTitle,
+  ] = useState("");
 
-  const [summary, setSummary] =
-    useState("");
+  const [
+    slug,
+    setSlug,
+  ] = useState("");
 
-  const [body, setBody] =
-    useState("");
+  const [
+    summary,
+    setSummary,
+  ] = useState("");
 
-  const [featured, setFeatured] =
-    useState(false);
+  const [
+    body,
+    setBody,
+  ] = useState("");
 
-  const [eventStartAt, setEventStartAt] =
-    useState("");
+  const [
+    featured,
+    setFeatured,
+  ] = useState(false);
 
-  const [eventEndAt, setEventEndAt] =
-    useState("");
+  const [
+    eventStartAt,
+    setEventStartAt,
+  ] = useState("");
 
-  const [eventLocation, setEventLocation] =
-    useState("");
+  const [
+    eventEndAt,
+    setEventEndAt,
+  ] = useState("");
+
+  const [
+    eventLocation,
+    setEventLocation,
+  ] = useState("");
+
+  const [
+    imagePath,
+    setImagePath,
+  ] = useState<string | null>(null);
+
+  const [
+    selectedImage,
+    setSelectedImage,
+  ] = useState<File | null>(null);
+
+  const [
+    imagePreviewUrl,
+    setImagePreviewUrl,
+  ] = useState("");
+
+  const [
+    imageError,
+    setImageError,
+  ] = useState("");
 
   const canModerate =
     role === "SUPER_ADMIN" ||
     role === "CONTENT_ADMIN";
+
+  const currentImageUrl =
+    useMemo(() => {
+      if (imagePreviewUrl) {
+        return imagePreviewUrl;
+      }
+
+      return getImageUrl(
+        imagePath,
+      );
+    }, [
+      imagePreviewUrl,
+      imagePath,
+    ]);
 
   useEffect(() => {
     let active = true;
@@ -134,9 +312,13 @@ export function AdminContentManagement({
           await listAdminContent({
             type:
               typeFilter || undefined,
+
             status:
               statusFilter || undefined,
-            deleted: "exclude",
+
+            deleted:
+              "exclude",
+
             page: 1,
             pageSize: 100,
           });
@@ -145,7 +327,11 @@ export function AdminContentManagement({
           return;
         }
 
-        setContent(result.content);
+        setContent(
+          result.content as
+            ManagedContentEntryWithImage[],
+        );
+
         setError("");
       } catch (requestError) {
         if (!active) {
@@ -176,15 +362,46 @@ export function AdminContentManagement({
     refreshKey,
   ]);
 
+  useEffect(() => {
+    return () => {
+      if (
+        imagePreviewUrl.startsWith(
+          "blob:",
+        )
+      ) {
+        URL.revokeObjectURL(
+          imagePreviewUrl,
+        );
+      }
+    };
+  }, [imagePreviewUrl]);
+
   function refreshContent() {
     setLoading(true);
+
     setRefreshKey(
       (currentValue) =>
         currentValue + 1,
     );
   }
 
+  function clearImagePreview() {
+    if (
+      imagePreviewUrl.startsWith(
+        "blob:",
+      )
+    ) {
+      URL.revokeObjectURL(
+        imagePreviewUrl,
+      );
+    }
+
+    setImagePreviewUrl("");
+  }
+
   function resetForm() {
+    clearImagePreview();
+
     setEditingId(null);
     setType("NEWS");
     setTitle("");
@@ -195,31 +412,50 @@ export function AdminContentManagement({
     setEventStartAt("");
     setEventEndAt("");
     setEventLocation("");
+    setImagePath(null);
+    setSelectedImage(null);
+    setImageError("");
   }
 
   function startEditing(
-    entry: ManagedContentEntry,
+    entry:
+      ManagedContentEntryWithImage,
   ) {
+    clearImagePreview();
+
     setEditingId(entry.id);
     setType(entry.type);
     setTitle(entry.title);
     setSlug(entry.slug);
-    setSummary(entry.summary ?? "");
+    setSummary(
+      entry.summary ?? "",
+    );
     setBody(entry.body);
     setFeatured(entry.featured);
+
+    setImagePath(
+      entry.imagePath ?? null,
+    );
+
+    setSelectedImage(null);
+    setImageError("");
+
     setEventStartAt(
       toLocalDateTime(
         entry.eventStartAt,
       ),
     );
+
     setEventEndAt(
       toLocalDateTime(
         entry.eventEndAt,
       ),
     );
+
     setEventLocation(
       entry.eventLocation ?? "",
     );
+
     setMessage("");
     setError("");
 
@@ -227,6 +463,65 @@ export function AdminContentManagement({
       top: 0,
       behavior: "smooth",
     });
+  }
+
+  function handleImageChange(
+    event:
+      ChangeEvent<HTMLInputElement>,
+  ) {
+    setImageError("");
+
+    const file =
+      event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (
+      !ALLOWED_IMAGE_TYPES.includes(
+        file.type,
+      )
+    ) {
+      event.target.value = "";
+
+      setImageError(
+        "Please choose a JPG, PNG or WebP image.",
+      );
+
+      return;
+    }
+
+    if (
+      file.size >
+      MAX_IMAGE_SIZE
+    ) {
+      event.target.value = "";
+
+      setImageError(
+        "The image must be 5 MB or smaller.",
+      );
+
+      return;
+    }
+
+    clearImagePreview();
+
+    const previewUrl =
+      URL.createObjectURL(file);
+
+    setSelectedImage(file);
+    setImagePreviewUrl(
+      previewUrl,
+    );
+  }
+
+  function handleRemoveImage() {
+    clearImagePreview();
+
+    setSelectedImage(null);
+    setImagePath(null);
+    setImageError("");
   }
 
   async function handleSubmit(
@@ -238,37 +533,74 @@ export function AdminContentManagement({
     setSubmitting(true);
     setMessage("");
     setError("");
-
-    const input = {
-      type,
-      title: title.trim(),
-      ...(slug.trim()
-        ? {
-            slug: slug
-              .trim()
-              .toLowerCase(),
-          }
-        : {}),
-      summary:
-        summary.trim() || null,
-      body: body.trim(),
-      featured,
-      eventStartAt:
-        type === "EVENT"
-          ? toApiDate(eventStartAt)
-          : null,
-      eventEndAt:
-        type === "EVENT"
-          ? toApiDate(eventEndAt)
-          : null,
-      eventLocation:
-        type === "EVENT"
-          ? eventLocation.trim() ||
-            null
-          : null,
-    };
+    setImageError("");
 
     try {
+      let nextImagePath =
+        imagePath;
+
+      if (selectedImage) {
+        setUploadingImage(true);
+
+        try {
+          nextImagePath =
+            await uploadAdminImage(
+              selectedImage,
+            );
+        } finally {
+          setUploadingImage(false);
+        }
+      }
+
+      const input = {
+        type,
+
+        title:
+          title.trim(),
+
+        ...(slug.trim()
+          ? {
+              slug:
+                slug
+                  .trim()
+                  .toLowerCase(),
+            }
+          : {}),
+
+        summary:
+          summary.trim() ||
+          null,
+
+        body:
+          body.trim(),
+
+        imagePath:
+          nextImagePath,
+
+        featured,
+
+        eventStartAt:
+          type === "EVENT"
+            ? toApiDate(
+                eventStartAt,
+              )
+            : null,
+
+        eventEndAt:
+          type === "EVENT"
+            ? toApiDate(
+                eventEndAt,
+              )
+            : null,
+
+        eventLocation:
+          type === "EVENT"
+            ? eventLocation
+                .trim() ||
+              null
+            : null,
+      };
+
       if (editingId) {
         await updateAdminContent(
           editingId,
@@ -291,31 +623,44 @@ export function AdminContentManagement({
       resetForm();
       refreshContent();
     } catch (requestError) {
-      setError(
-        getErrorMessage(
-          requestError,
-          editingId
-            ? "The content entry could not be updated."
-            : "The content entry could not be created.",
-        ),
-      );
+      const fallback =
+        editingId
+          ? "The content entry could not be updated."
+          : "The content entry could not be created.";
+
+      if (
+        requestError instanceof Error
+      ) {
+        setError(
+          requestError.message ||
+            fallback,
+        );
+      } else {
+        setError(fallback);
+      }
     } finally {
       setSubmitting(false);
+      setUploadingImage(false);
     }
   }
 
   async function handlePublish(
-    entry: ManagedContentEntry,
+    entry:
+      ManagedContentEntryWithImage,
   ) {
-    const confirmed = window.confirm(
-      `Publish "${entry.title}"?`,
-    );
+    const confirmed =
+      window.confirm(
+        `Publish "${entry.title}"?`,
+      );
 
     if (!confirmed) {
       return;
     }
 
-    setBusyContentId(entry.id);
+    setBusyContentId(
+      entry.id,
+    );
+
     setMessage("");
     setError("");
 
@@ -342,17 +687,22 @@ export function AdminContentManagement({
   }
 
   async function handleArchive(
-    entry: ManagedContentEntry,
+    entry:
+      ManagedContentEntryWithImage,
   ) {
-    const confirmed = window.confirm(
-      `Archive "${entry.title}"?`,
-    );
+    const confirmed =
+      window.confirm(
+        `Archive "${entry.title}"?`,
+      );
 
     if (!confirmed) {
       return;
     }
 
-    setBusyContentId(entry.id);
+    setBusyContentId(
+      entry.id,
+    );
+
     setMessage("");
     setError("");
 
@@ -379,17 +729,22 @@ export function AdminContentManagement({
   }
 
   async function handleDelete(
-    entry: ManagedContentEntry,
+    entry:
+      ManagedContentEntryWithImage,
   ) {
-    const confirmed = window.confirm(
-      `Delete "${entry.title}"? This removes it from the public website.`,
-    );
+    const confirmed =
+      window.confirm(
+        `Delete "${entry.title}"? This removes it from the public website.`,
+      );
 
     if (!confirmed) {
       return;
     }
 
-    setBusyContentId(entry.id);
+    setBusyContentId(
+      entry.id,
+    );
+
     setMessage("");
     setError("");
 
@@ -398,7 +753,10 @@ export function AdminContentManagement({
         entry.id,
       );
 
-      if (editingId === entry.id) {
+      if (
+        editingId ===
+        entry.id
+      ) {
         resetForm();
       }
 
@@ -431,7 +789,11 @@ export function AdminContentManagement({
         </h2>
 
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Create official school updates as drafts. Authorised content administrators can review and publish them.
+          Create official school
+          updates as drafts. Add an
+          optional cover image and
+          publish the entry when it is
+          ready.
         </p>
       </header>
 
@@ -487,9 +849,11 @@ export function AdminContentManagement({
             <option value="NEWS">
               News
             </option>
+
             <option value="NOTICE">
               Notice
             </option>
+
             <option value="EVENT">
               Event
             </option>
@@ -511,7 +875,9 @@ export function AdminContentManagement({
             maxLength={180}
             value={title}
             onChange={(event) =>
-              setTitle(event.target.value)
+              setTitle(
+                event.target.value,
+              )
             }
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
           />
@@ -532,7 +898,9 @@ export function AdminContentManagement({
             placeholder="Leave blank to generate automatically"
             value={slug}
             onChange={(event) =>
-              setSlug(event.target.value)
+              setSlug(
+                event.target.value,
+              )
             }
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
           />
@@ -574,10 +942,96 @@ export function AdminContentManagement({
             rows={9}
             value={body}
             onChange={(event) =>
-              setBody(event.target.value)
+              setBody(
+                event.target.value,
+              )
             }
             className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
           />
+        </div>
+
+        <div className="lg:col-span-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5">
+            <div>
+              <h4 className="text-base font-bold text-slate-950">
+                Cover image
+              </h4>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Optional. JPG, PNG or
+                WebP. Maximum file size:
+                5 MB.
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="content-image"
+                className="mb-2 block text-sm font-semibold text-slate-800"
+              >
+                Choose image
+              </label>
+
+              <input
+                id="content-image"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={
+                  handleImageChange
+                }
+                className="block w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-700 file:px-4 file:py-2 file:font-semibold file:text-white hover:file:bg-emerald-800"
+              />
+            </div>
+
+            {imageError ? (
+              <p className="mt-3 text-sm font-medium text-red-700">
+                {imageError}
+              </p>
+            ) : null}
+
+            {currentImageUrl ? (
+              <div className="mt-5">
+                <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                  <img
+                    src={
+                      currentImageUrl
+                    }
+                    alt="Content cover preview"
+                    className="max-h-80 w-full object-cover"
+                  />
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={
+                      handleRemoveImage
+                    }
+                    className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+                  >
+                    Remove image
+                  </button>
+
+                  {selectedImage ? (
+                    <p className="text-sm text-slate-600">
+                      Selected:{" "}
+                      {
+                        selectedImage.name
+                      }
+                    </p>
+                  ) : imagePath ? (
+                    <p className="text-sm text-slate-600">
+                      Existing image
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 flex min-h-32 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center text-sm text-slate-500">
+                No cover image selected.
+              </div>
+            )}
+          </div>
         </div>
 
         {type === "EVENT" ? (
@@ -597,7 +1051,8 @@ export function AdminContentManagement({
                 value={eventStartAt}
                 onChange={(event) =>
                   setEventStartAt(
-                    event.target.value,
+                    event.target
+                      .value,
                   )
                 }
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
@@ -618,7 +1073,8 @@ export function AdminContentManagement({
                 value={eventEndAt}
                 onChange={(event) =>
                   setEventEndAt(
-                    event.target.value,
+                    event.target
+                      .value,
                   )
                 }
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
@@ -636,10 +1092,13 @@ export function AdminContentManagement({
               <input
                 id="event-location"
                 maxLength={200}
-                value={eventLocation}
+                value={
+                  eventLocation
+                }
                 onChange={(event) =>
                   setEventLocation(
-                    event.target.value,
+                    event.target
+                      .value,
                   )
                 }
                 className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
@@ -655,7 +1114,8 @@ export function AdminContentManagement({
               checked={featured}
               onChange={(event) =>
                 setFeatured(
-                  event.target.checked,
+                  event.target
+                    .checked,
                 )
               }
               className="h-4 w-4 rounded border-slate-300"
@@ -668,21 +1128,32 @@ export function AdminContentManagement({
         <div className="flex flex-wrap gap-3 lg:col-span-2">
           <button
             type="submit"
-            disabled={submitting}
+            disabled={
+              submitting ||
+              uploadingImage
+            }
             className="rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {submitting
-              ? "Saving…"
-              : editingId
-                ? "Save changes"
-                : "Create draft"}
+            {uploadingImage
+              ? "Uploading image…"
+              : submitting
+                ? "Saving…"
+                : editingId
+                  ? "Save changes"
+                  : "Create draft"}
           </button>
 
           {editingId ? (
             <button
               type="button"
-              onClick={resetForm}
-              className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+              disabled={
+                submitting ||
+                uploadingImage
+              }
+              onClick={
+                resetForm
+              }
+              className="rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:opacity-60"
             >
               Cancel editing
             </button>
@@ -704,8 +1175,10 @@ export function AdminContentManagement({
             value={typeFilter}
             onChange={(event) => {
               setLoading(true);
+
               setTypeFilter(
-                event.target.value as
+                event.target
+                  .value as
                   | ContentType
                   | "",
               );
@@ -715,12 +1188,15 @@ export function AdminContentManagement({
             <option value="">
               All types
             </option>
+
             <option value="NEWS">
               News
             </option>
+
             <option value="NOTICE">
               Notices
             </option>
+
             <option value="EVENT">
               Events
             </option>
@@ -737,11 +1213,15 @@ export function AdminContentManagement({
 
           <select
             id="content-status-filter"
-            value={statusFilter}
+            value={
+              statusFilter
+            }
             onChange={(event) => {
               setLoading(true);
+
               setStatusFilter(
-                event.target.value as
+                event.target
+                  .value as
                   | ContentStatus
                   | "",
               );
@@ -751,12 +1231,15 @@ export function AdminContentManagement({
             <option value="">
               All statuses
             </option>
+
             <option value="DRAFT">
               Draft
             </option>
+
             <option value="PUBLISHED">
               Published
             </option>
+
             <option value="ARCHIVED">
               Archived
             </option>
@@ -769,154 +1252,208 @@ export function AdminContentManagement({
           <p className="rounded-2xl bg-slate-50 p-6 text-center text-sm text-slate-600">
             Loading content…
           </p>
-        ) : content.length === 0 ? (
+        ) : content.length ===
+          0 ? (
           <p className="rounded-2xl bg-slate-50 p-6 text-center text-sm text-slate-600">
-            No content entries match the selected filters.
+            No content entries
+            match the selected
+            filters.
           </p>
         ) : (
-          content.map((entry) => {
-            const busy =
-              busyContentId === entry.id;
+          content.map(
+            (entry) => {
+              const busy =
+                busyContentId ===
+                entry.id;
 
-            const editorCanEdit =
-              role !== "EDITOR" ||
-              entry.status === "DRAFT";
+              const editorCanEdit =
+                role !==
+                  "EDITOR" ||
+                entry.status ===
+                  "DRAFT";
 
-            return (
-              <article
-                key={entry.id}
-                className="rounded-2xl border border-slate-200 p-5"
-              >
-                <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap gap-2">
-                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
-                        {entry.type}
-                      </span>
+              const entryImageUrl =
+                getImageUrl(
+                  entry.imagePath,
+                );
 
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
-                        {entry.status}
-                      </span>
-
-                      {entry.featured ? (
-                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
-                          FEATURED
-                        </span>
+              return (
+                <article
+                  key={
+                    entry.id
+                  }
+                  className="rounded-2xl border border-slate-200 p-5"
+                >
+                  <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="min-w-0 flex-1">
+                      {entryImageUrl ? (
+                        <div className="mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                          <img
+                            src={
+                              entryImageUrl
+                            }
+                            alt=""
+                            className="h-52 w-full object-cover sm:h-64"
+                            loading="lazy"
+                          />
+                        </div>
                       ) : null}
+
+                      <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                          {
+                            entry.type
+                          }
+                        </span>
+
+                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-800">
+                          {
+                            entry.status
+                          }
+                        </span>
+
+                        {entry.featured ? (
+                          <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
+                            FEATURED
+                          </span>
+                        ) : null}
+                      </div>
+
+                      <h3 className="mt-3 text-xl font-bold text-slate-950">
+                        {
+                          entry.title
+                        }
+                      </h3>
+
+                      <p className="mt-2 break-all text-sm text-slate-500">
+                        /
+                        {
+                          entry.slug
+                        }
+                      </p>
+
+                      {entry.summary ? (
+                        <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+                          {
+                            entry.summary
+                          }
+                        </p>
+                      ) : null}
+
+                      {entry.type ===
+                      "EVENT" ? (
+                        <div className="mt-3 text-sm text-slate-600">
+                          <p>
+                            Start:{" "}
+                            {entry.eventStartAt
+                              ? new Date(
+                                  entry.eventStartAt,
+                                ).toLocaleString()
+                              : "Not set"}
+                          </p>
+
+                          <p>
+                            Location:{" "}
+                            {entry.eventLocation ??
+                              "Not set"}
+                          </p>
+                        </div>
+                      ) : null}
+
+                      <p className="mt-3 text-xs text-slate-500">
+                        Updated by{" "}
+                        {
+                          entry
+                            .updatedBy
+                            .displayName
+                        }
+                        {" · "}
+                        {new Date(
+                          entry.updatedAt,
+                        ).toLocaleString()}
+                      </p>
                     </div>
 
-                    <h3 className="mt-3 text-xl font-bold text-slate-950">
-                      {entry.title}
-                    </h3>
+                    <div className="flex max-w-md flex-wrap gap-2">
+                      {editorCanEdit ? (
+                        <button
+                          type="button"
+                          disabled={
+                            busy
+                          }
+                          onClick={() =>
+                            startEditing(
+                              entry,
+                            )
+                          }
+                          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-60"
+                        >
+                          Edit
+                        </button>
+                      ) : null}
 
-                    <p className="mt-2 break-all text-sm text-slate-500">
-                      /{entry.slug}
-                    </p>
+                      {canModerate &&
+                      entry.status !==
+                        "PUBLISHED" ? (
+                        <button
+                          type="button"
+                          disabled={
+                            busy
+                          }
+                          onClick={() =>
+                            void handlePublish(
+                              entry,
+                            )
+                          }
+                          className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60"
+                        >
+                          Publish
+                        </button>
+                      ) : null}
 
-                    {entry.summary ? (
-                      <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-                        {entry.summary}
-                      </p>
-                    ) : null}
+                      {canModerate &&
+                      entry.status !==
+                        "ARCHIVED" ? (
+                        <button
+                          type="button"
+                          disabled={
+                            busy
+                          }
+                          onClick={() =>
+                            void handleArchive(
+                              entry,
+                            )
+                          }
+                          className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-100 disabled:opacity-60"
+                        >
+                          Archive
+                        </button>
+                      ) : null}
 
-                    {entry.type === "EVENT" ? (
-                      <div className="mt-3 text-sm text-slate-600">
-                        <p>
-                          Start:{" "}
-                          {entry.eventStartAt
-                            ? new Date(
-                                entry.eventStartAt,
-                              ).toLocaleString()
-                            : "Not set"}
-                        </p>
-
-                        <p>
-                          Location:{" "}
-                          {entry.eventLocation ??
-                            "Not set"}
-                        </p>
-                      </div>
-                    ) : null}
-
-                    <p className="mt-3 text-xs text-slate-500">
-                      Updated by{" "}
-                      {entry.updatedBy.displayName}
-                      {" · "}
-                      {new Date(
-                        entry.updatedAt,
-                      ).toLocaleString()}
-                    </p>
+                      {canModerate ? (
+                        <button
+                          type="button"
+                          disabled={
+                            busy
+                          }
+                          onClick={() =>
+                            void handleDelete(
+                              entry,
+                            )
+                          }
+                          className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-60"
+                        >
+                          {busy
+                            ? "Updating…"
+                            : "Delete"}
+                        </button>
+                      ) : null}
+                    </div>
                   </div>
-
-                  <div className="flex max-w-md flex-wrap gap-2">
-                    {editorCanEdit ? (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() =>
-                          startEditing(entry)
-                        }
-                        className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-60"
-                      >
-                        Edit
-                      </button>
-                    ) : null}
-
-                    {canModerate &&
-                    entry.status !==
-                      "PUBLISHED" ? (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() =>
-                          void handlePublish(
-                            entry,
-                          )
-                        }
-                        className="rounded-lg bg-emerald-700 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-60"
-                      >
-                        Publish
-                      </button>
-                    ) : null}
-
-                    {canModerate &&
-                    entry.status !==
-                      "ARCHIVED" ? (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() =>
-                          void handleArchive(
-                            entry,
-                          )
-                        }
-                        className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-800 hover:bg-amber-100 disabled:opacity-60"
-                      >
-                        Archive
-                      </button>
-                    ) : null}
-
-                    {canModerate ? (
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() =>
-                          void handleDelete(
-                            entry,
-                          )
-                        }
-                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 disabled:opacity-60"
-                      >
-                        {busy
-                          ? "Updating…"
-                          : "Delete"}
-                      </button>
-                    ) : null}
-                  </div>
-                </div>
-              </article>
-            );
-          })
+                </article>
+              );
+            },
+          )
         )}
       </div>
     </section>

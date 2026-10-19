@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -124,10 +125,15 @@ export function SiteHeader() {
             href="/"
             className="focus-ring flex min-w-0 shrink-0 items-center gap-3 rounded-xl"
           >
-            <div className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full border-2 border-[#c9a227] bg-[#741f2b] text-sm font-bold text-[#e8c85e] shadow-md">
-              SC
-
-              <span className="absolute inset-1 rounded-full border border-[#e8c85e]/25" />
+            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border-2 border-[#c9a227] bg-[#741f2b] shadow-md">
+              <Image
+                src="/images/sripalee-logo.jpg"
+                alt="Sripalee College logo"
+                fill
+                sizes="56px"
+                className="object-cover"
+                priority
+              />
             </div>
 
             <div className="hidden min-w-0 sm:block">
@@ -198,11 +204,12 @@ export function SiteHeader() {
             </button>
 
             <Link
-              href="/portal"
-              className="focus-ring hidden items-center gap-2 rounded-full bg-[#741f2b] px-4 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#4e111b] md:inline-flex"
+              href="/admin/login"
+              aria-label="Admin Portal"
+              title="Admin Portal"
+              className="focus-ring hidden h-11 w-11 place-items-center rounded-full bg-[#741f2b] text-white shadow-md transition hover:bg-[#4e111b] md:grid"
             >
-              <ShieldCheck size={17} />
-              {copy.portal}
+              <ShieldCheck size={19} />
             </Link>
 
             <button
@@ -239,6 +246,16 @@ export function SiteHeader() {
                   {item.label[language]}
                 </Link>
               ))}
+
+              <Link
+                href="/admin/login"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Admin Portal"
+                title="Admin Portal"
+                className="focus-ring flex items-center justify-center rounded-xl border border-[#741f2b] bg-[#741f2b] px-4 py-3 text-white"
+              >
+                <ShieldCheck size={18} />
+              </Link>
             </div>
           </nav>
         )}

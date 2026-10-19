@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+
+import {
+  useEffect,
+  useState,
+} from "react";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -40,7 +45,10 @@ import {
   type NoticeboardSlide,
 } from "@/lib/noticeboard-data";
 
-const slideIcons: Record<string, LucideIcon> = {
+const slideIcons: Record<
+  string,
+  LucideIcon
+> = {
   emergency: AlertTriangle,
   examination: GraduationCap,
   parents: UsersRound,
@@ -63,31 +71,50 @@ const priorityStyles: Record<
 > = {
   emergency: {
     label: "Emergency",
-    badge: "bg-white text-red-800",
-    background: "from-red-800 via-red-700 to-red-950",
-    accent: "text-red-100",
-    border: "border-red-300",
+    badge:
+      "bg-white text-red-800",
+    background:
+      "from-red-800 via-red-700 to-red-950",
+    accent:
+      "text-red-100",
+    border:
+      "border-red-300",
   },
+
   important: {
     label: "Important",
-    badge: "bg-amber-100 text-amber-900",
-    background: "from-[#6a1723] via-[#4e111b] to-[#301016]",
-    accent: "text-[#f1d474]",
-    border: "border-amber-300",
+    badge:
+      "bg-amber-100 text-amber-900",
+    background:
+      "from-[#6a1723] via-[#4e111b] to-[#301016]",
+    accent:
+      "text-[#f1d474]",
+    border:
+      "border-amber-300",
   },
+
   standard: {
     label: "Information",
-    badge: "bg-white/15 text-white",
-    background: "from-[#4e111b] via-[#39131a] to-[#241014]",
-    accent: "text-[#e8c85e]",
-    border: "border-black/10",
+    badge:
+      "bg-white/15 text-white",
+    background:
+      "from-[#4e111b] via-[#39131a] to-[#241014]",
+    accent:
+      "text-[#e8c85e]",
+    border:
+      "border-black/10",
   },
+
   celebration: {
     label: "Achievement",
-    badge: "bg-[#f5dc76] text-[#4e111b]",
-    background: "from-[#4e111b] via-[#6c2530] to-[#2c1317]",
-    accent: "text-[#f5dc76]",
-    border: "border-[#c9a227]",
+    badge:
+      "bg-[#f5dc76] text-[#4e111b]",
+    background:
+      "from-[#4e111b] via-[#6c2530] to-[#2c1317]",
+    accent:
+      "text-[#f5dc76]",
+    border:
+      "border-[#c9a227]",
   },
 };
 
@@ -117,75 +144,152 @@ type NoticeboardSectionsProps = {
 export function NoticeboardSections({
   slides,
 }: NoticeboardSectionsProps) {
-  const [category, setCategory] = useState("All Slides");
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [rotationSeconds, setRotationSeconds] = useState(8);
-  const [fullscreenFeedback, setFullscreenFeedback] = useState("");
+  const [category, setCategory] =
+    useState("All Slides");
 
-  const filteredSlides = slides.filter(
-    (slide) => category === "All Slides" || slide.category === category,
-  );
+  const [
+    activeIndex,
+    setActiveIndex,
+  ] = useState(0);
+
+  const [
+    isPlaying,
+    setIsPlaying,
+  ] = useState(true);
+
+  const [
+    rotationSeconds,
+    setRotationSeconds,
+  ] = useState(8);
+
+  const [
+    fullscreenFeedback,
+    setFullscreenFeedback,
+  ] = useState("");
+
+  const filteredSlides =
+    slides.filter(
+      (slide) =>
+        category ===
+          "All Slides" ||
+        slide.category ===
+          category,
+    );
 
   const safeIndex =
     filteredSlides.length === 0
       ? 0
-      : Math.min(activeIndex, filteredSlides.length - 1);
+      : Math.min(
+          activeIndex,
+          filteredSlides.length -
+            1,
+        );
 
-  const activeSlide = filteredSlides[safeIndex];
+  const activeSlide =
+    filteredSlides[safeIndex];
 
   useEffect(() => {
-    if (!isPlaying || filteredSlides.length <= 1) {
+    if (
+      !isPlaying ||
+      filteredSlides.length <=
+        1
+    ) {
       return;
     }
 
-    const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % filteredSlides.length);
-    }, rotationSeconds * 1000);
+    const timer =
+      window.setInterval(
+        () => {
+          setActiveIndex(
+            (current) =>
+              (current + 1) %
+              filteredSlides.length,
+          );
+        },
+        rotationSeconds * 1000,
+      );
 
-    return () => window.clearInterval(timer);
-  }, [filteredSlides.length, isPlaying, rotationSeconds]);
+    return () =>
+      window.clearInterval(
+        timer,
+      );
+  }, [
+    filteredSlides.length,
+    isPlaying,
+    rotationSeconds,
+  ]);
 
-  function changeCategory(value: string) {
+  function changeCategory(
+    value: string,
+  ) {
     setCategory(value);
     setActiveIndex(0);
   }
 
   function showPreviousSlide() {
-    if (filteredSlides.length === 0) {
+    if (
+      filteredSlides.length ===
+      0
+    ) {
       return;
     }
 
-    setActiveIndex((current) =>
-      current <= 0 ? filteredSlides.length - 1 : current - 1,
+    setActiveIndex(
+      (current) =>
+        current <= 0
+          ? filteredSlides.length -
+            1
+          : current - 1,
     );
   }
 
   function showNextSlide() {
-    if (filteredSlides.length === 0) {
+    if (
+      filteredSlides.length ===
+      0
+    ) {
       return;
     }
 
-    setActiveIndex((current) => (current + 1) % filteredSlides.length);
+    setActiveIndex(
+      (current) =>
+        (current + 1) %
+        filteredSlides.length,
+    );
   }
 
   async function toggleFullscreen() {
     try {
-      if (document.fullscreenElement) {
+      if (
+        document.fullscreenElement
+      ) {
         await document.exitFullscreen();
-        setFullscreenFeedback("Full-screen display closed.");
+
+        setFullscreenFeedback(
+          "Full-screen display closed.",
+        );
+
         return;
       }
 
-      const display = document.getElementById("noticeboard-display");
+      const display =
+        document.getElementById(
+          "noticeboard-display",
+        );
 
       if (!display) {
-        setFullscreenFeedback("The noticeboard display could not be found.");
+        setFullscreenFeedback(
+          "The noticeboard display could not be found.",
+        );
+
         return;
       }
 
       await display.requestFullscreen();
-      setFullscreenFeedback("Full-screen TV display opened.");
+
+      setFullscreenFeedback(
+        "Full-screen TV display opened.",
+      );
     } catch {
       setFullscreenFeedback(
         "The browser blocked full-screen mode. Use the browser full-screen controls instead.",
@@ -197,7 +301,9 @@ export function NoticeboardSections({
     <>
       <section className="relative overflow-hidden bg-[#4e111b] px-5 py-24 text-white lg:px-8 lg:py-32">
         <div className="soft-grid absolute inset-0 opacity-30" />
+
         <div className="absolute -left-24 top-20 h-72 w-72 rounded-full border border-[#c9a227]/30" />
+
         <div className="absolute -right-28 bottom-0 h-96 w-96 rounded-full border border-white/10" />
 
         <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
@@ -208,13 +314,20 @@ export function NoticeboardSections({
               </p>
 
               <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-7xl">
-                School information designed for public display screens.
+                School information
+                designed for public
+                display screens.
               </h1>
 
               <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70 md:text-xl">
-                Present important notices, events, achievements, examination
-                reminders and emergency instructions through an approved
-                full-screen display.
+                Present important
+                notices, events,
+                achievements,
+                examination reminders
+                and emergency
+                instructions through
+                an approved full-screen
+                display.
               </p>
 
               <div className="mt-9 flex flex-wrap gap-3">
@@ -223,7 +336,10 @@ export function NoticeboardSections({
                   className="focus-ring inline-flex items-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
                 >
                   Open board preview
-                  <ArrowRight size={18} />
+
+                  <ArrowRight
+                    size={18}
+                  />
                 </a>
 
                 <Link
@@ -246,33 +362,49 @@ export function NoticeboardSections({
                     </p>
 
                     <h2 className="mt-3 text-2xl font-semibold">
-                      Automatic rotation with priority control
+                      Automatic
+                      rotation with
+                      priority control
                     </h2>
                   </div>
 
-                  <MonitorPlay className="text-[#e8c85e]" size={32} />
+                  <MonitorPlay
+                    className="text-[#e8c85e]"
+                    size={32}
+                  />
                 </div>
 
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                  {noticeboardFacts.map((fact) => (
-                    <div
-                      key={fact.label}
-                      className="rounded-2xl border border-white/10 bg-white/5 p-5"
-                    >
-                      <p className="text-2xl font-semibold text-[#e8c85e]">
-                        {fact.value}
-                      </p>
+                  {noticeboardFacts.map(
+                    (fact) => (
+                      <div
+                        key={
+                          fact.label
+                        }
+                        className="rounded-2xl border border-white/10 bg-white/5 p-5"
+                      >
+                        <p className="text-2xl font-semibold text-[#e8c85e]">
+                          {
+                            fact.value
+                          }
+                        </p>
 
-                      <p className="mt-2 text-sm leading-6 text-white/60">
-                        {fact.label}
-                      </p>
-                    </div>
-                  ))}
+                        <p className="mt-2 text-sm leading-6 text-white/60">
+                          {
+                            fact.label
+                          }
+                        </p>
+                      </div>
+                    ),
+                  )}
                 </div>
 
                 <p className="mt-6 text-sm leading-6 text-white/60">
-                  Current slides are development examples and must be replaced
-                  with authorised school content.
+                  Current slides are
+                  development examples
+                  and must be replaced
+                  with authorised
+                  school content.
                 </p>
               </div>
             </div>
@@ -285,15 +417,17 @@ export function NoticeboardSections({
           aria-label="Noticeboard page sections"
           className="mx-auto flex max-w-7xl flex-wrap gap-x-7 gap-y-2 py-4 text-sm font-semibold text-[#4e111b]"
         >
-          {sectionLinks.map((item) => (
-            <a
-              key={item.href}
-              href={`#${item.href}`}
-              className="focus-ring rounded-lg px-2 py-1.5 transition hover:bg-[#741f2b]/10"
-            >
-              {item.label}
-            </a>
-          ))}
+          {sectionLinks.map(
+            (item) => (
+              <a
+                key={item.href}
+                href={`#${item.href}`}
+                className="focus-ring rounded-lg px-2 py-1.5 transition hover:bg-[#741f2b]/10"
+              >
+                {item.label}
+              </a>
+            ),
+          )}
         </nav>
       </section>
 
@@ -306,16 +440,21 @@ export function NoticeboardSections({
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div className="max-w-4xl">
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#e8c85e]">
-                  Interactive Board Preview
+                  Interactive Board
+                  Preview
                 </p>
 
                 <h2 className="mt-3 text-3xl font-semibold text-white md:text-5xl">
-                  Test the school display experience
+                  Test the school
+                  display experience
                 </h2>
 
                 <p className="mt-5 text-lg leading-8 text-white/60">
-                  Select a category, control slide rotation and open the board
-                  in full-screen TV mode.
+                  Select a category,
+                  control slide
+                  rotation and open the
+                  board in full-screen
+                  TV mode.
                 </p>
               </div>
 
@@ -324,20 +463,27 @@ export function NoticeboardSections({
                   Rotation
                 </span>
 
-                {[5, 8, 12].map((seconds) => (
-                  <button
-                    key={seconds}
-                    type="button"
-                    onClick={() => setRotationSeconds(seconds)}
-                    className={`focus-ring grid h-10 w-10 place-items-center rounded-full text-sm font-semibold ${
-                      rotationSeconds === seconds
-                        ? "bg-[#c9a227] text-[#4e111b]"
-                        : "text-white/70 hover:bg-white/10"
-                    }`}
-                  >
-                    {seconds}
-                  </button>
-                ))}
+                {[5, 8, 12].map(
+                  (seconds) => (
+                    <button
+                      key={seconds}
+                      type="button"
+                      onClick={() =>
+                        setRotationSeconds(
+                          seconds,
+                        )
+                      }
+                      className={`focus-ring grid h-10 w-10 place-items-center rounded-full text-sm font-semibold ${
+                        rotationSeconds ===
+                        seconds
+                          ? "bg-[#c9a227] text-[#4e111b]"
+                          : "text-white/70 hover:bg-white/10"
+                      }`}
+                    >
+                      {seconds}
+                    </button>
+                  ),
+                )}
               </div>
             </div>
           </Reveal>
@@ -351,66 +497,108 @@ export function NoticeboardSections({
 
                 <select
                   value={category}
-                  onChange={(event) => changeCategory(event.target.value)}
+                  onChange={(
+                    event,
+                  ) =>
+                    changeCategory(
+                      event.target
+                        .value,
+                    )
+                  }
                   className="rounded-full border border-white/15 bg-[#2c1b20] px-4 py-2.5 text-sm text-white"
                 >
-                  {noticeboardCategories.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
+                  {noticeboardCategories.map(
+                    (item) => (
+                      <option
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    ),
+                  )}
                 </select>
               </label>
 
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   type="button"
-                  onClick={showPreviousSlide}
+                  onClick={
+                    showPreviousSlide
+                  }
                   className="focus-ring grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
                   aria-label="Show previous slide"
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft
+                    size={20}
+                  />
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setIsPlaying((current) => !current)}
+                  onClick={() =>
+                    setIsPlaying(
+                      (current) =>
+                        !current,
+                    )
+                  }
                   className="focus-ring inline-flex h-11 items-center gap-2 rounded-full bg-[#c9a227] px-5 font-semibold text-[#4e111b]"
                 >
-                  {isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                  {isPlaying ? "Pause" : "Play"}
+                  {isPlaying ? (
+                    <Pause
+                      size={18}
+                    />
+                  ) : (
+                    <Play
+                      size={18}
+                    />
+                  )}
+
+                  {isPlaying
+                    ? "Pause"
+                    : "Play"}
                 </button>
 
                 <button
                   type="button"
-                  onClick={showNextSlide}
+                  onClick={
+                    showNextSlide
+                  }
                   className="focus-ring grid h-11 w-11 place-items-center rounded-full border border-white/15 text-white transition hover:bg-white/10"
                   aria-label="Show next slide"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight
+                    size={20}
+                  />
                 </button>
 
                 <button
                   type="button"
-                  onClick={toggleFullscreen}
+                  onClick={
+                    toggleFullscreen
+                  }
                   className="focus-ring inline-flex h-11 items-center gap-2 rounded-full border border-white/15 px-5 font-semibold text-white transition hover:bg-white/10"
                 >
-                  <Maximize2 size={18} />
+                  <Maximize2
+                    size={18}
+                  />
                   TV mode
                 </button>
               </div>
             </div>
           </Reveal>
 
-          {fullscreenFeedback && (
+          {fullscreenFeedback ? (
             <p
               role="status"
               aria-live="polite"
               className="mt-4 text-sm text-white/60"
             >
-              {fullscreenFeedback}
+              {
+                fullscreenFeedback
+              }
             </p>
-          )}
+          ) : null}
 
           {activeSlide ? (
             <Reveal delay={0.08}>
@@ -419,69 +607,128 @@ export function NoticeboardSections({
                 className="mt-8 flex min-h-[650px] flex-col overflow-hidden bg-[#171013] shadow-2xl"
               >
                 <NoticeboardDisplay
-                  slide={activeSlide}
-                  position={safeIndex + 1}
-                  total={filteredSlides.length}
-                  isPlaying={isPlaying}
-                  rotationSeconds={rotationSeconds}
+                  slide={
+                    activeSlide
+                  }
+                  position={
+                    safeIndex + 1
+                  }
+                  total={
+                    filteredSlides.length
+                  }
+                  isPlaying={
+                    isPlaying
+                  }
+                  rotationSeconds={
+                    rotationSeconds
+                  }
                 />
               </div>
             </Reveal>
           ) : (
             <div className="mt-8 grid min-h-[420px] place-items-center border border-white/10 bg-white/5 p-10 text-center">
               <div>
-                <Megaphone className="mx-auto text-[#e8c85e]" size={34} />
+                <Megaphone
+                  className="mx-auto text-[#e8c85e]"
+                  size={34}
+                />
 
                 <h3 className="mt-5 text-2xl font-semibold text-white">
                   No slides available
                 </h3>
 
                 <p className="mt-3 text-white/60">
-                  Select another display category.
+                  Select another
+                  display category.
                 </p>
               </div>
             </div>
           )}
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredSlides.map((slide, index) => {
-              const style = priorityStyles[slide.priority];
-              const selected = index === safeIndex;
+            {filteredSlides.map(
+              (
+                slide,
+                index,
+              ) => {
+                const style =
+                  priorityStyles[
+                    slide
+                      .priority
+                  ];
 
-              return (
-                <button
-                  key={slide.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveIndex(index);
-                    setIsPlaying(false);
-                  }}
-                  className={`focus-ring rounded-2xl border p-4 text-left transition ${
-                    selected
-                      ? "border-[#c9a227] bg-[#c9a227]/15"
-                      : "border-white/10 bg-white/5 hover:bg-white/10"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${style.badge}`}
-                    >
-                      {style.label}
-                    </span>
+                const selected =
+                  index ===
+                  safeIndex;
 
-                    <span className="text-xs text-white/60">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </div>
+                return (
+                  <button
+                    key={slide.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveIndex(
+                        index,
+                      );
 
-                  <p className="mt-4 font-semibold text-white">{slide.title}</p>
+                      setIsPlaying(
+                        false,
+                      );
+                    }}
+                    className={`focus-ring overflow-hidden rounded-2xl border text-left transition ${
+                      selected
+                        ? "border-[#c9a227] bg-[#c9a227]/15"
+                        : "border-white/10 bg-white/5 hover:bg-white/10"
+                    }`}
+                  >
+                    {slide.imageUrl ? (
+                      <img
+                        src={
+                          slide.imageUrl
+                        }
+                        alt={
+                          slide.title
+                        }
+                        loading="lazy"
+                        className="h-28 w-full object-cover"
+                      />
+                    ) : null}
 
-                  <p className="mt-2 text-xs text-white/60">
-                    {slide.category}
-                  </p>
-                </button>
-              );
-            })}
+                    <div className="p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${style.badge}`}
+                        >
+                          {
+                            style.label
+                          }
+                        </span>
+
+                        <span className="text-xs text-white/60">
+                          {String(
+                            index + 1,
+                          ).padStart(
+                            2,
+                            "0",
+                          )}
+                        </span>
+                      </div>
+
+                      <p className="mt-4 font-semibold text-white">
+                        {
+                          slide.title
+                        }
+                      </p>
+
+                      <p className="mt-2 text-xs text-white/60">
+                        {
+                          slide.category
+                        }
+                      </p>
+                    </div>
+                  </button>
+                );
+              },
+            )}
           </div>
         </div>
       </section>
@@ -499,38 +746,108 @@ export function NoticeboardSections({
         </Reveal>
 
         <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {noticeboardZones.map((zone, index) => (
-            <Reveal key={zone.title} delay={index * 0.04}>
-              <article className="card-3d h-full rounded-[2rem] border border-black/10 bg-white p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
-                    {index === 0 && <MonitorPlay size={22} />}
-                    {index === 1 && <Megaphone size={22} />}
-                    {index === 2 && <CalendarDays size={22} />}
-                    {index === 3 && <Trophy size={22} />}
-                    {index === 4 && <BellRing size={22} />}
-                    {index === 5 && <Languages size={22} />}
+          {noticeboardZones.map(
+            (
+              zone,
+              index,
+            ) => (
+              <Reveal
+                key={zone.title}
+                delay={
+                  index *
+                  0.04
+                }
+              >
+                <article className="card-3d h-full rounded-[2rem] border border-black/10 bg-white p-7">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#741f2b] text-white">
+                      {index ===
+                        0 && (
+                        <MonitorPlay
+                          size={
+                            22
+                          }
+                        />
+                      )}
+
+                      {index ===
+                        1 && (
+                        <Megaphone
+                          size={
+                            22
+                          }
+                        />
+                      )}
+
+                      {index ===
+                        2 && (
+                        <CalendarDays
+                          size={
+                            22
+                          }
+                        />
+                      )}
+
+                      {index ===
+                        3 && (
+                        <Trophy
+                          size={
+                            22
+                          }
+                        />
+                      )}
+
+                      {index ===
+                        4 && (
+                        <BellRing
+                          size={
+                            22
+                          }
+                        />
+                      )}
+
+                      {index ===
+                        5 && (
+                        <Languages
+                          size={
+                            22
+                          }
+                        />
+                      )}
+                    </div>
+
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#741f2b]">
+                      Zone{" "}
+                      {String(
+                        index + 1,
+                      ).padStart(
+                        2,
+                        "0",
+                      )}
+                    </span>
                   </div>
 
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#741f2b]">
-                    Zone {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
+                  <h3 className="mt-6 text-xl font-semibold text-[#4e111b]">
+                    {
+                      zone.title
+                    }
+                  </h3>
 
-                <h3 className="mt-6 text-xl font-semibold text-[#4e111b]">
-                  {zone.title}
-                </h3>
+                  <p className="mt-2 text-sm font-semibold text-[#741f2b]">
+                    {
+                      zone.position
+                    }
+                  </p>
 
-                <p className="mt-2 text-sm font-semibold text-[#741f2b]">
-                  {zone.position}
-                </p>
-
-                <p className="mt-4 text-sm leading-7 text-black/60">
-                  {zone.description}
-                </p>
-              </article>
-            </Reveal>
-          ))}
+                  <p className="mt-4 text-sm leading-7 text-black/60">
+                    {
+                      zone.description
+                    }
+                  </p>
+                </article>
+              </Reveal>
+            ),
+          )}
         </div>
       </section>
 
@@ -546,36 +863,65 @@ export function NoticeboardSections({
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Screen content moves through approval and scheduling
+                Screen content moves
+                through approval and
+                scheduling
               </h2>
 
               <p className="mt-5 text-lg leading-8 text-white/65">
-                Editors should not be able to place unauthorised messages
-                directly onto public school screens.
+                Editors should not be
+                able to place
+                unauthorised messages
+                directly onto public
+                school screens.
               </p>
             </div>
           </Reveal>
 
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {noticeboardWorkflow.map((item, index) => (
-              <Reveal key={item.step} delay={index * 0.04}>
-                <article className="card-3d h-full rounded-3xl border border-white/10 bg-white/5 p-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-3xl font-semibold text-[#e8c85e]">
-                      {item.step}
+            {noticeboardWorkflow.map(
+              (
+                item,
+                index,
+              ) => (
+                <Reveal
+                  key={item.step}
+                  delay={
+                    index *
+                    0.04
+                  }
+                >
+                  <article className="card-3d h-full rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-3xl font-semibold text-[#e8c85e]">
+                        {
+                          item.step
+                        }
+                      </p>
+
+                      <ClipboardCheck
+                        className="text-[#e8c85e]"
+                        size={
+                          23
+                        }
+                      />
+                    </div>
+
+                    <h3 className="mt-5 text-xl font-semibold">
+                      {
+                        item.title
+                      }
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-6 text-white/60">
+                      {
+                        item.description
+                      }
                     </p>
-
-                    <ClipboardCheck className="text-[#e8c85e]" size={23} />
-                  </div>
-
-                  <h3 className="mt-5 text-xl font-semibold">{item.title}</h3>
-
-                  <p className="mt-3 text-sm leading-6 text-white/60">
-                    {item.description}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
+                  </article>
+                </Reveal>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -587,19 +933,28 @@ export function NoticeboardSections({
         <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] border border-black/10 bg-[#faf7ef] p-8 md:p-12 lg:grid-cols-[0.82fr_1.18fr]">
           <Reveal>
             <div>
-              <ShieldCheck className="text-[#741f2b]" size={35} />
+              <ShieldCheck
+                className="text-[#741f2b]"
+                size={35}
+              />
 
               <p className="mt-6 text-sm font-semibold uppercase tracking-[0.2em] text-[#741f2b]">
                 Display Security
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold text-[#4e111b]">
-                Public screens require restricted access
+                Public screens
+                require restricted
+                access
               </h2>
 
               <p className="mt-5 leading-7 text-black/65">
-                A school display should show approved public information
-                without exposing the administration system or private records.
+                A school display
+                should show approved
+                public information
+                without exposing the
+                administration system
+                or private records.
               </p>
 
               <div className="mt-7 flex items-center gap-3 rounded-2xl bg-white p-4">
@@ -609,25 +964,45 @@ export function NoticeboardSections({
                 />
 
                 <p className="text-sm font-semibold leading-6 text-[#4e111b]">
-                  Display devices should use a dedicated restricted account,
-                  not an administrator account.
+                  Display devices
+                  should use a
+                  dedicated restricted
+                  account, not an
+                  administrator
+                  account.
                 </p>
               </div>
             </div>
           </Reveal>
 
           <div className="space-y-3">
-            {noticeboardSecurityRules.map((rule, index) => (
-              <Reveal key={rule} delay={index * 0.03}>
-                <div className="flex gap-3 rounded-2xl border border-black/10 bg-white p-4">
-                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#741f2b] text-xs font-semibold text-white">
-                    {index + 1}
-                  </div>
+            {noticeboardSecurityRules.map(
+              (
+                rule,
+                index,
+              ) => (
+                <Reveal
+                  key={rule}
+                  delay={
+                    index *
+                    0.03
+                  }
+                >
+                  <div className="flex gap-3 rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#741f2b] text-xs font-semibold text-white">
+                      {
+                        index +
+                        1
+                      }
+                    </div>
 
-                  <p className="text-sm leading-6 text-black/65">{rule}</p>
-                </div>
-              </Reveal>
-            ))}
+                    <p className="text-sm leading-6 text-black/65">
+                      {rule}
+                    </p>
+                  </div>
+                </Reveal>
+              ),
+            )}
           </div>
         </div>
       </section>
@@ -641,12 +1016,18 @@ export function NoticeboardSections({
               </p>
 
               <h2 className="mt-3 text-3xl font-semibold md:text-5xl">
-                Open the full notice or event page
+                Open the full notice
+                or event page
               </h2>
 
               <p className="mt-5 max-w-3xl text-lg leading-8 text-white/65">
-                Display slides should remain brief and direct users to approved
-                pages for complete information and downloadable documents.
+                Display slides should
+                remain brief and
+                direct users to
+                approved pages for
+                complete information
+                and downloadable
+                documents.
               </p>
             </div>
 
@@ -656,7 +1037,10 @@ export function NoticeboardSections({
                 className="focus-ring inline-flex items-center justify-center gap-2 rounded-full bg-[#c9a227] px-6 py-3.5 font-semibold text-[#4e111b]"
               >
                 View notices
-                <ArrowRight size={18} />
+
+                <ArrowRight
+                  size={18}
+                />
               </Link>
 
               <Link
@@ -688,8 +1072,14 @@ function NoticeboardDisplay({
   isPlaying,
   rotationSeconds,
 }: NoticeboardDisplayProps) {
-  const Icon = slideIcons[slide.icon] ?? Megaphone;
-  const style = priorityStyles[slide.priority];
+  const Icon =
+    slideIcons[slide.icon] ??
+    Megaphone;
+
+  const style =
+    priorityStyles[
+      slide.priority
+    ];
 
   return (
     <div
@@ -702,7 +1092,10 @@ function NoticeboardDisplay({
           </div>
 
           <div>
-            <p className="font-semibold">Sripalee College</p>
+            <p className="font-semibold">
+              Sripalee College
+            </p>
+
             <p className="text-xs uppercase tracking-[0.16em] text-white/60">
               Digital Noticeboard
             </p>
@@ -717,7 +1110,8 @@ function NoticeboardDisplay({
           </span>
 
           <span className="rounded-full border border-white/15 px-4 py-2 text-xs font-semibold text-white/65">
-            Slide {position}/{total}
+            Slide {position}/
+            {total}
           </span>
         </div>
       </div>
@@ -740,7 +1134,9 @@ function NoticeboardDisplay({
             {slide.title}
           </h2>
 
-          <p className={`mt-4 text-xl font-semibold ${style.accent}`}>
+          <p
+            className={`mt-4 text-xl font-semibold ${style.accent}`}
+          >
             {slide.subtitle}
           </p>
 
@@ -749,65 +1145,106 @@ function NoticeboardDisplay({
           </p>
         </div>
 
-        <div className="rounded-[2rem] border border-white/15 bg-black/15 p-6 md:p-8">
-          <div className="space-y-4">
-            {slide.details.map((detail) => (
-              <div key={detail} className="flex items-start gap-3">
-                <CheckCircle2
-                  className={`mt-0.5 shrink-0 ${style.accent}`}
+        <div className="overflow-hidden rounded-[2rem] border border-white/15 bg-black/15">
+          {slide.imageUrl ? (
+            <div className="border-b border-white/15 bg-black/20">
+              <img
+                src={
+                  slide.imageUrl
+                }
+                alt={
+                  slide.title
+                }
+                className="max-h-[300px] w-full object-cover"
+              />
+            </div>
+          ) : null}
+
+          <div className="p-6 md:p-8">
+            <div className="space-y-4">
+              {slide.details.map(
+                (detail) => (
+                  <div
+                    key={detail}
+                    className="flex items-start gap-3"
+                  >
+                    <CheckCircle2
+                      className={`mt-0.5 shrink-0 ${style.accent}`}
+                      size={20}
+                    />
+
+                    <p className="leading-7 text-white/75">
+                      {detail}
+                    </p>
+                  </div>
+                ),
+              )}
+            </div>
+
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <CalendarDays
+                  className={
+                    style.accent
+                  }
                   size={20}
                 />
 
-                <p className="leading-7 text-white/75">{detail}</p>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
+                  Date
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-white/75">
+                  {
+                    slide.dateLabel
+                  }
+                </p>
               </div>
-            ))}
-          </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <CalendarDays className={style.accent} size={20} />
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <Clock3
+                  className={
+                    style.accent
+                  }
+                  size={20}
+                />
 
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-                Date
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
+                  Time
+                </p>
+
+                <p className="mt-2 text-sm leading-6 text-white/75">
+                  {
+                    slide.timeLabel
+                  }
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
+                Location or channel
               </p>
 
               <p className="mt-2 text-sm leading-6 text-white/75">
-                {slide.dateLabel}
+                {slide.location}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-              <Clock3 className={style.accent} size={20} />
-
-              <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-                Time
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-white/75">
-                {slide.timeLabel}
-              </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {slide.languages.map(
+                (language) => (
+                  <span
+                    key={
+                      language
+                    }
+                    className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/65"
+                  >
+                    {language}
+                  </span>
+                ),
+              )}
             </div>
-          </div>
-
-          <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
-              Location or channel
-            </p>
-
-            <p className="mt-2 text-sm leading-6 text-white/75">
-              {slide.location}
-            </p>
-          </div>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            {slide.languages.map((language) => (
-              <span
-                key={language}
-                className="rounded-full border border-white/15 px-3 py-1.5 text-xs font-semibold text-white/65"
-              >
-                {language}
-              </span>
-            ))}
           </div>
         </div>
       </div>
@@ -818,7 +1255,9 @@ function NoticeboardDisplay({
 
           {slide.slug ? (
             <Link
-              href={`/noticeboard/view?slug=${encodeURIComponent(slide.slug)}`}
+              href={`/noticeboard/view?slug=${encodeURIComponent(
+                slide.slug,
+              )}`}
               className="focus-ring rounded-full border border-white/20 px-3 py-1.5 font-semibold text-white"
             >
               Read full notice
@@ -827,7 +1266,12 @@ function NoticeboardDisplay({
         </div>
 
         <div className="flex items-center gap-3">
-          {isPlaying ? <Play size={14} /> : <Pause size={14} />}
+          {isPlaying ? (
+            <Play size={14} />
+          ) : (
+            <Pause size={14} />
+          )}
+
           <span>
             {isPlaying
               ? `Automatic rotation every ${rotationSeconds} seconds`

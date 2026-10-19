@@ -4,32 +4,39 @@ import {
   type Response,
 } from "express";
 import { z } from "zod";
+
 import type { Prisma } from "../generated/prisma/client";
 import {
   createContentSlug,
   validateEventDates,
 } from "../lib/content-validation";
+import { deleteUnusedContentImage } from "../lib/content-media";
 import { prisma } from "../lib/prisma";
 import { getRequestMetadata } from "../lib/session";
 import { authenticateAdmin } from "../middleware/authenticate";
 import { authorizeAdminRoles } from "../middleware/authorize";
 import type { AuthContext } from "../types/auth";
 
-export const adminContentRouter = Router();
+export const adminContentRouter =
+  Router();
 
-adminContentRouter.use(authenticateAdmin);
+adminContentRouter.use(
+  authenticateAdmin,
+);
 
-const contentTypeSchema = z.enum([
-  "NEWS",
-  "NOTICE",
-  "EVENT",
-]);
+const contentTypeSchema =
+  z.enum([
+    "NEWS",
+    "NOTICE",
+    "EVENT",
+  ]);
 
-const contentStatusSchema = z.enum([
-  "DRAFT",
-  "PUBLISHED",
-  "ARCHIVED",
-]);
+const contentStatusSchema =
+  z.enum([
+    "DRAFT",
+    "PUBLISHED",
+    "ARCHIVED",
+  ]);
 
 const slugSchema = z
   .string()
@@ -47,81 +54,200 @@ const dateInputSchema = z
   .max(80)
   .refine(
     (value) =>
-      !Number.isNaN(Date.parse(value)),
+      !Number.isNaN(
+        Date.parse(value),
+      ),
     "A valid date and time is required.",
   )
   .nullable()
   .optional();
 
-const createContentSchema = z.object({
-  type: contentTypeSchema,
-  title: z.string().trim().min(3).max(180),
-  slug: slugSchema.optional(),
-  summary: z
-    .string()
-    .trim()
-    .max(320)
-    .nullable()
-    .optional(),
-  body: z.string().trim().min(1),
-  featured: z.boolean().optional().default(false),
-  eventStartAt: dateInputSchema,
-  eventEndAt: dateInputSchema,
-  eventLocation: z
-    .string()
-    .trim()
-    .max(200)
-    .nullable()
-    .optional(),
-});
+function isValidContentImagePath(
+  value: string,
+) {
+  if (
+    /^\/uploads\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/i.test(
+      value,
+    )
+  ) {
+    return true;
+  }
 
-const updateContentSchema = z.object({
-  type: contentTypeSchema.optional(),
-  title: z
-    .string()
-    .trim()
-    .min(3)
-    .max(180)
-    .optional(),
-  slug: slugSchema.optional(),
-  summary: z
-    .string()
-    .trim()
-    .max(320)
-    .nullable()
-    .optional(),
-  body: z.string().trim().min(1).optional(),
-  featured: z.boolean().optional(),
-  eventStartAt: dateInputSchema,
-  eventEndAt: dateInputSchema,
-  eventLocation: z
-    .string()
-    .trim()
-    .max(200)
-    .nullable()
-    .optional(),
-});
+  let parsedUrl: URL;
 
-const listContentSchema = z.object({
-  type: contentTypeSchema.optional(),
-  status: contentStatusSchema.optional(),
-  deleted: z
-    .enum(["exclude", "include", "only"])
-    .default("exclude"),
-  page: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .default(1),
-  pageSize: z.coerce
-    .number()
-    .int()
-    .min(1)
-    .max(100)
-    .default(20),
-});
+  try {
+    parsedUrl =
+      new URL(value);
+  } catch {
+    return false;
+  }
 
-const idSchema = z.string().uuid();
+  if (
+    parsedUrl.protocol !==
+    "https:"
+  ) {
+    return false;
+  }
+
+  if (
+    parsedUrl.hostname !==
+    "res.cloudinary.com"
+  ) {
+    return false;
+  }
+
+  return (
+    parsedUrl.pathname.includes(
+      "/image/upload/",
+    ) &&
+    parsedUrl.pathname.includes(
+      "/sripalee-college/content/",
+    )
+  );
+}
+
+const imagePathSchema = z
+  .string()
+  .trim()
+  .max(300)
+  .refine(
+    isValidContentImagePath,
+    "The image path is invalid.",
+  )
+  .nullable()
+  .optional();
+
+const createContentSchema =
+  z.object({
+    type:
+      contentTypeSchema,
+
+    title: z
+      .string()
+      .trim()
+      .min(3)
+      .max(180),
+
+    slug:
+      slugSchema.optional(),
+
+    summary: z
+      .string()
+      .trim()
+      .max(320)
+      .nullable()
+      .optional(),
+
+    body: z
+      .string()
+      .trim()
+      .min(1),
+
+    imagePath:
+      imagePathSchema,
+
+    featured: z
+      .boolean()
+      .optional()
+      .default(false),
+
+    eventStartAt:
+      dateInputSchema,
+
+    eventEndAt:
+      dateInputSchema,
+
+    eventLocation: z
+      .string()
+      .trim()
+      .max(200)
+      .nullable()
+      .optional(),
+  });
+
+const updateContentSchema =
+  z.object({
+    type:
+      contentTypeSchema.optional(),
+
+    title: z
+      .string()
+      .trim()
+      .min(3)
+      .max(180)
+      .optional(),
+
+    slug:
+      slugSchema.optional(),
+
+    summary: z
+      .string()
+      .trim()
+      .max(320)
+      .nullable()
+      .optional(),
+
+    body: z
+      .string()
+      .trim()
+      .min(1)
+      .optional(),
+
+    imagePath:
+      imagePathSchema,
+
+    featured: z
+      .boolean()
+      .optional(),
+
+    eventStartAt:
+      dateInputSchema,
+
+    eventEndAt:
+      dateInputSchema,
+
+    eventLocation: z
+      .string()
+      .trim()
+      .max(200)
+      .nullable()
+      .optional(),
+  });
+
+const listContentSchema =
+  z.object({
+    type:
+      contentTypeSchema.optional(),
+
+    status:
+      contentStatusSchema.optional(),
+
+    deleted: z
+      .enum([
+        "exclude",
+        "include",
+        "only",
+      ])
+      .default(
+        "exclude",
+      ),
+
+    page: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .default(1),
+
+    pageSize: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(100)
+      .default(20),
+  });
+
+const idSchema =
+  z.string().uuid();
 
 const administratorContentSelect = {
   id: true,
@@ -130,6 +256,7 @@ const administratorContentSelect = {
   slug: true,
   summary: true,
   body: true,
+  imagePath: true,
   status: true,
   featured: true,
   publishedAt: true,
@@ -139,17 +266,21 @@ const administratorContentSelect = {
   deletedAt: true,
   createdAt: true,
   updatedAt: true,
+
   createdBy: {
     select: {
       id: true,
-      displayName: true,
+      displayName:
+        true,
       email: true,
     },
   },
+
   updatedBy: {
     select: {
       id: true,
-      displayName: true,
+      displayName:
+        true,
       email: true,
     },
   },
@@ -158,33 +289,51 @@ const administratorContentSelect = {
 function getAuthentication(
   response: Response,
 ) {
-  return response.locals.auth as AuthContext;
+  return response.locals
+    .auth as AuthContext;
 }
 
 function normalizeNullableText(
-  value: string | null | undefined,
+  value:
+    | string
+    | null
+    | undefined,
 ) {
-  if (value === null) {
+  if (
+    value === null
+  ) {
     return null;
   }
 
-  if (value === undefined) {
+  if (
+    value ===
+    undefined
+  ) {
     return undefined;
   }
 
-  const normalized = value.trim();
+  const normalized =
+    value.trim();
 
-  return normalized || null;
+  return (
+    normalized ||
+    null
+  );
 }
 
 function parseDate(
-  value: string | null | undefined,
+  value:
+    | string
+    | null
+    | undefined,
 ) {
   if (!value) {
     return null;
   }
 
-  return new Date(value);
+  return new Date(
+    value,
+  );
 }
 
 async function createUniqueSlug(
@@ -192,7 +341,9 @@ async function createUniqueSlug(
   excludedId?: string,
 ) {
   const baseSlug =
-    createContentSlug(value);
+    createContentSlug(
+      value,
+    );
 
   for (
     let attempt = 0;
@@ -204,51 +355,81 @@ async function createUniqueSlug(
         ? ""
         : `-${attempt + 1}`;
 
-    const candidate = `${baseSlug.slice(
-      0,
-      200 - suffix.length,
-    )}${suffix}`;
+    const candidate =
+      `${baseSlug.slice(
+        0,
+        200 -
+          suffix.length,
+      )}${suffix}`;
 
     const existing =
-      await prisma.contentEntry.findFirst({
-        where: {
-          slug: candidate,
-          ...(excludedId
-            ? {
-                id: {
-                  not: excludedId,
-                },
-              }
-            : {}),
-        },
-        select: {
-          id: true,
-        },
-      });
+      await prisma.contentEntry.findFirst(
+        {
+          where: {
+            slug:
+              candidate,
 
-    if (!existing) {
+            ...(excludedId
+              ? {
+                  id: {
+                    not:
+                      excludedId,
+                  },
+                }
+              : {}),
+          },
+
+          select: {
+            id: true,
+          },
+        },
+      );
+
+    if (
+      !existing
+    ) {
       return candidate;
     }
   }
 
-  return `${baseSlug.slice(0, 191)}-${randomUUID().slice(0, 8)}`;
+  return `${baseSlug.slice(
+    0,
+    191,
+  )}-${randomUUID().slice(
+    0,
+    8,
+  )}`;
 }
 
+/*
+ * LIST CONTENT
+ */
 adminContentRouter.get(
   "/",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
       const parsed =
         listContentSchema.safeParse(
           request.query,
         );
 
-      if (!parsed.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content filters are invalid.",
-        });
+      if (
+        !parsed.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content filters are invalid.",
+          });
+
         return;
       }
 
@@ -258,340 +439,591 @@ adminContentRouter.get(
         deleted,
         page,
         pageSize,
-      } = parsed.data;
+      } =
+        parsed.data;
 
       const where:
-        Prisma.ContentEntryWhereInput = {
-        ...(type ? { type } : {}),
-        ...(status ? { status } : {}),
-        ...(deleted === "exclude"
-          ? {
-              deletedAt: null,
-            }
-          : {}),
-        ...(deleted === "only"
-          ? {
-              deletedAt: {
-                not: null,
-              },
-            }
-          : {}),
-      };
+        Prisma.ContentEntryWhereInput =
+        {
+          ...(type
+            ? {
+                type,
+              }
+            : {}),
+
+          ...(status
+            ? {
+                status,
+              }
+            : {}),
+
+          ...(deleted ===
+          "exclude"
+            ? {
+                deletedAt:
+                  null,
+              }
+            : {}),
+
+          ...(deleted ===
+          "only"
+            ? {
+                deletedAt: {
+                  not: null,
+                },
+              }
+            : {}),
+        };
 
       const [
         content,
         total,
-      ] = await prisma.$transaction([
-        prisma.contentEntry.findMany({
-          where,
-          select:
-            administratorContentSelect,
-          orderBy: {
-            updatedAt: "desc",
-          },
-          skip: (page - 1) * pageSize,
-          take: pageSize,
-        }),
-        prisma.contentEntry.count({
-          where,
-        }),
-      ]);
+      ] =
+        await prisma.$transaction(
+          [
+            prisma.contentEntry.findMany(
+              {
+                where,
 
-      response.status(200).json({
-        success: true,
-        content,
-        pagination: {
-          page,
-          pageSize,
-          total,
-          totalPages: Math.ceil(
-            total / pageSize,
-          ),
-        },
-      });
-    } catch (error) {
+                select:
+                  administratorContentSelect,
+
+                orderBy: {
+                  updatedAt:
+                    "desc",
+                },
+
+                skip:
+                  (page -
+                    1) *
+                  pageSize,
+
+                take:
+                  pageSize,
+              },
+            ),
+
+            prisma.contentEntry.count(
+              {
+                where,
+              },
+            ),
+          ],
+        );
+
+      response
+        .status(200)
+        .json({
+          success: true,
+
+          content,
+
+          pagination: {
+            page,
+            pageSize,
+            total,
+
+            totalPages:
+              Math.ceil(
+                total /
+                  pageSize,
+              ),
+          },
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * GET ONE CONTENT ENTRY
+ */
 adminContentRouter.get(
   "/:id",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
-      const parsed = idSchema.safeParse(
-        request.params.id,
-      );
+      const parsed =
+        idSchema.safeParse(
+          request.params
+            .id,
+        );
 
-      if (!parsed.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content identifier is invalid.",
-        });
+      if (
+        !parsed.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content identifier is invalid.",
+          });
+
         return;
       }
 
       const content =
-        await prisma.contentEntry.findUnique({
-          where: {
-            id: parsed.data,
-          },
-          select:
-            administratorContentSelect,
-        });
+        await prisma.contentEntry.findUnique(
+          {
+            where: {
+              id:
+                parsed.data,
+            },
 
-      if (!content) {
-        response.status(404).json({
-          success: false,
-          message:
-            "The content entry was not found.",
-        });
+            select:
+              administratorContentSelect,
+          },
+        );
+
+      if (
+        !content
+      ) {
+        response
+          .status(404)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content entry was not found.",
+          });
+
         return;
       }
 
-      response.status(200).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
+      response
+        .status(200)
+        .json({
+          success: true,
+          content,
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * CREATE CONTENT
+ */
 adminContentRouter.post(
   "/",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
       const parsed =
         createContentSchema.safeParse(
           request.body,
         );
 
-      if (!parsed.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "Valid content details are required.",
-          errors: parsed.error.flatten(),
-        });
+      if (
+        !parsed.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "Valid content details are required.",
+
+            errors:
+              parsed.error.flatten(),
+          });
+
         return;
       }
 
       const authentication =
-        getAuthentication(response);
+        getAuthentication(
+          response,
+        );
 
-      const eventStartAt = parseDate(
-        parsed.data.eventStartAt,
-      );
+      const eventStartAt =
+        parseDate(
+          parsed.data
+            .eventStartAt,
+        );
 
-      const eventEndAt = parseDate(
-        parsed.data.eventEndAt,
-      );
+      const eventEndAt =
+        parseDate(
+          parsed.data
+            .eventEndAt,
+        );
 
       const eventError =
         validateEventDates(
-          parsed.data.type,
+          parsed.data
+            .type,
           eventStartAt,
           eventEndAt,
         );
 
-      if (eventError) {
-        response.status(400).json({
-          success: false,
-          message: eventError,
-        });
+      if (
+        eventError
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              eventError,
+          });
+
         return;
       }
 
       const slug =
         await createUniqueSlug(
-          parsed.data.slug ??
-            parsed.data.title,
+          parsed.data
+            .slug ??
+            parsed.data
+              .title,
         );
 
       const requestMetadata =
-        getRequestMetadata(request);
+        getRequestMetadata(
+          request,
+        );
 
       const content =
         await prisma.$transaction(
-          async (transaction) => {
+          async (
+            transaction,
+          ) => {
             const created =
-              await transaction.contentEntry.create({
-                data: {
-                  type: parsed.data.type,
-                  title: parsed.data.title,
-                  slug,
-                  summary:
-                    normalizeNullableText(
-                      parsed.data.summary,
-                    ) ?? null,
-                  body: parsed.data.body,
-                  status: "DRAFT",
-                  featured:
-                    parsed.data.featured,
-                  eventStartAt:
-                    parsed.data.type ===
-                    "EVENT"
-                      ? eventStartAt
-                      : null,
-                  eventEndAt:
-                    parsed.data.type ===
-                    "EVENT"
-                      ? eventEndAt
-                      : null,
-                  eventLocation:
-                    parsed.data.type ===
-                    "EVENT"
-                      ? normalizeNullableText(
-                          parsed.data
-                            .eventLocation,
-                        ) ?? null
-                      : null,
-                  createdById:
-                    authentication.admin.id,
-                  updatedById:
-                    authentication.admin.id,
-                },
-                select:
-                  administratorContentSelect,
-              });
+              await transaction.contentEntry.create(
+                {
+                  data: {
+                    type:
+                      parsed
+                        .data
+                        .type,
 
-            await transaction.auditLog.create({
-              data: {
-                actorId:
-                  authentication.admin.id,
-                action:
-                  "CONTENT_CREATED",
-                entityType: "ContentEntry",
-                entityId: created.id,
-                ipAddress:
-                  requestMetadata.ipAddress,
-                userAgent:
-                  requestMetadata.userAgent,
-                metadata: {
-                  type: created.type,
-                  status: created.status,
-                  slug: created.slug,
+                    title:
+                      parsed
+                        .data
+                        .title,
+
+                    slug,
+
+                    summary:
+                      normalizeNullableText(
+                        parsed
+                          .data
+                          .summary,
+                      ) ??
+                      null,
+
+                    body:
+                      parsed
+                        .data
+                        .body,
+
+                    imagePath:
+                      normalizeNullableText(
+                        parsed
+                          .data
+                          .imagePath,
+                      ) ??
+                      null,
+
+                    status:
+                      "DRAFT",
+
+                    featured:
+                      parsed
+                        .data
+                        .featured,
+
+                    eventStartAt:
+                      parsed
+                        .data
+                        .type ===
+                      "EVENT"
+                        ? eventStartAt
+                        : null,
+
+                    eventEndAt:
+                      parsed
+                        .data
+                        .type ===
+                      "EVENT"
+                        ? eventEndAt
+                        : null,
+
+                    eventLocation:
+                      parsed
+                        .data
+                        .type ===
+                      "EVENT"
+                        ? normalizeNullableText(
+                            parsed
+                              .data
+                              .eventLocation,
+                          ) ??
+                          null
+                        : null,
+
+                    createdById:
+                      authentication
+                        .admin
+                        .id,
+
+                    updatedById:
+                      authentication
+                        .admin
+                        .id,
+                  },
+
+                  select:
+                    administratorContentSelect,
+                },
+              );
+
+            await transaction.auditLog.create(
+              {
+                data: {
+                  actorId:
+                    authentication
+                      .admin
+                      .id,
+
+                  action:
+                    "CONTENT_CREATED",
+
+                  entityType:
+                    "ContentEntry",
+
+                  entityId:
+                    created.id,
+
+                  ipAddress:
+                    requestMetadata
+                      .ipAddress,
+
+                  userAgent:
+                    requestMetadata
+                      .userAgent,
+
+                  metadata: {
+                    type:
+                      created
+                        .type,
+
+                    status:
+                      created
+                        .status,
+
+                    slug:
+                      created
+                        .slug,
+
+                    imagePath:
+                      created
+                        .imagePath,
+                  },
                 },
               },
-            });
+            );
 
             return created;
           },
         );
 
-      response.status(201).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
+      response
+        .status(201)
+        .json({
+          success: true,
+          content,
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * UPDATE CONTENT
+ */
 adminContentRouter.patch(
   "/:id",
-  async (request, response, next) => {
+  async (
+    request,
+    response,
+    next,
+  ) => {
     try {
-      const id = idSchema.safeParse(
-        request.params.id,
-      );
+      const id =
+        idSchema.safeParse(
+          request.params
+            .id,
+        );
 
       const parsed =
         updateContentSchema.safeParse(
           request.body,
         );
 
-      if (!id.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content identifier is invalid.",
-        });
-        return;
-      }
+      if (
+        !id.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
 
-      if (!parsed.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "Valid content details are required.",
-          errors: parsed.error.flatten(),
-        });
+            message:
+              "The content identifier is invalid.",
+          });
+
         return;
       }
 
       if (
-        Object.keys(parsed.data).length === 0
+        !parsed.success
       ) {
-        response.status(400).json({
-          success: false,
-          message:
-            "At least one content field must be supplied.",
-        });
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "Valid content details are required.",
+
+            errors:
+              parsed.error.flatten(),
+          });
+
+        return;
+      }
+
+      if (
+        Object.keys(
+          parsed.data,
+        ).length ===
+        0
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "At least one content field must be supplied.",
+          });
+
         return;
       }
 
       const authentication =
-        getAuthentication(response);
+        getAuthentication(
+          response,
+        );
 
       const existing =
-        await prisma.contentEntry.findUnique({
-          where: {
-            id: id.data,
+        await prisma.contentEntry.findUnique(
+          {
+            where: {
+              id:
+                id.data,
+            },
           },
-        });
+        );
 
       if (
         !existing ||
-        existing.deletedAt
+        existing
+          .deletedAt
       ) {
-        response.status(404).json({
-          success: false,
-          message:
-            "The content entry was not found.",
-        });
+        response
+          .status(404)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content entry was not found.",
+          });
+
         return;
       }
 
       if (
-        authentication.admin.role ===
+        authentication
+          .admin.role ===
           "EDITOR" &&
-        existing.status !== "DRAFT"
+        existing.status !==
+          "DRAFT"
       ) {
-        response.status(403).json({
-          success: false,
-          message:
-            "Editors can modify draft content only.",
-        });
+        response
+          .status(403)
+          .json({
+            success:
+              false,
+
+            message:
+              "Editors can modify draft content only.",
+          });
+
         return;
       }
 
       const nextType =
-        parsed.data.type ??
+        parsed.data
+          .type ??
         existing.type;
 
       const nextEventStartAt =
-        nextType === "EVENT"
-          ? parsed.data.eventStartAt !==
-            undefined
+        nextType ===
+        "EVENT"
+          ? parsed.data
+                .eventStartAt !==
+              undefined
             ? parseDate(
-                parsed.data.eventStartAt,
+                parsed
+                  .data
+                  .eventStartAt,
               )
-            : existing.eventStartAt
+            : existing
+                .eventStartAt
           : null;
 
       const nextEventEndAt =
-        nextType === "EVENT"
-          ? parsed.data.eventEndAt !==
-            undefined
+        nextType ===
+        "EVENT"
+          ? parsed.data
+                .eventEndAt !==
+              undefined
             ? parseDate(
-                parsed.data.eventEndAt,
+                parsed
+                  .data
+                  .eventEndAt,
               )
-            : existing.eventEndAt
+            : existing
+                .eventEndAt
           : null;
 
       const eventError =
@@ -601,420 +1033,770 @@ adminContentRouter.patch(
           nextEventEndAt,
         );
 
-      if (eventError) {
-        response.status(400).json({
-          success: false,
-          message: eventError,
-        });
+      if (
+        eventError
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              eventError,
+          });
+
         return;
       }
 
       const nextSlug =
-        parsed.data.slug !== undefined
+        parsed.data
+          .slug !==
+        undefined
           ? await createUniqueSlug(
-              parsed.data.slug,
+              parsed
+                .data
+                .slug,
               existing.id,
             )
           : existing.slug;
 
       const requestMetadata =
-        getRequestMetadata(request);
+        getRequestMetadata(
+          request,
+        );
 
       const content =
         await prisma.$transaction(
-          async (transaction) => {
+          async (
+            transaction,
+          ) => {
             const updated =
-              await transaction.contentEntry.update({
-                where: {
-                  id: existing.id,
-                },
-                data: {
-                  type: nextType,
-                  title:
-                    parsed.data.title ??
-                    existing.title,
-                  slug: nextSlug,
-                  summary:
-                    parsed.data.summary !==
-                    undefined
-                      ? normalizeNullableText(
-                          parsed.data.summary,
-                        ) ?? null
-                      : existing.summary,
-                  body:
-                    parsed.data.body ??
-                    existing.body,
-                  featured:
-                    parsed.data.featured ??
-                    existing.featured,
-                  eventStartAt:
-                    nextEventStartAt,
-                  eventEndAt:
-                    nextEventEndAt,
-                  eventLocation:
-                    nextType === "EVENT"
-                      ? parsed.data
-                            .eventLocation !==
-                          undefined
-                        ? normalizeNullableText(
-                            parsed.data
-                              .eventLocation,
-                          ) ?? null
-                        : existing.eventLocation
-                      : null,
-                  updatedById:
-                    authentication.admin.id,
-                },
-                select:
-                  administratorContentSelect,
-              });
+              await transaction.contentEntry.update(
+                {
+                  where: {
+                    id:
+                      existing
+                        .id,
+                  },
 
-            await transaction.auditLog.create({
-              data: {
-                actorId:
-                  authentication.admin.id,
-                action:
-                  "CONTENT_UPDATED",
-                entityType: "ContentEntry",
-                entityId: updated.id,
-                ipAddress:
-                  requestMetadata.ipAddress,
-                userAgent:
-                  requestMetadata.userAgent,
-                metadata: {
-                  type: updated.type,
-                  status: updated.status,
-                  slug: updated.slug,
+                  data: {
+                    type:
+                      nextType,
+
+                    title:
+                      parsed
+                        .data
+                        .title ??
+                      existing
+                        .title,
+
+                    slug:
+                      nextSlug,
+
+                    summary:
+                      parsed
+                        .data
+                        .summary !==
+                      undefined
+                        ? normalizeNullableText(
+                            parsed
+                              .data
+                              .summary,
+                          ) ??
+                          null
+                        : existing
+                            .summary,
+
+                    body:
+                      parsed
+                        .data
+                        .body ??
+                      existing
+                        .body,
+
+                    imagePath:
+                      parsed
+                        .data
+                        .imagePath !==
+                      undefined
+                        ? normalizeNullableText(
+                            parsed
+                              .data
+                              .imagePath,
+                          ) ??
+                          null
+                        : existing
+                            .imagePath,
+
+                    featured:
+                      parsed
+                        .data
+                        .featured ??
+                      existing
+                        .featured,
+
+                    eventStartAt:
+                      nextEventStartAt,
+
+                    eventEndAt:
+                      nextEventEndAt,
+
+                    eventLocation:
+                      nextType ===
+                      "EVENT"
+                        ? parsed
+                              .data
+                              .eventLocation !==
+                          undefined
+                          ? normalizeNullableText(
+                              parsed
+                                .data
+                                .eventLocation,
+                            ) ??
+                            null
+                          : existing
+                              .eventLocation
+                        : null,
+
+                    updatedById:
+                      authentication
+                        .admin
+                        .id,
+                  },
+
+                  select:
+                    administratorContentSelect,
+                },
+              );
+
+            await transaction.auditLog.create(
+              {
+                data: {
+                  actorId:
+                    authentication
+                      .admin
+                      .id,
+
+                  action:
+                    "CONTENT_UPDATED",
+
+                  entityType:
+                    "ContentEntry",
+
+                  entityId:
+                    updated
+                      .id,
+
+                  ipAddress:
+                    requestMetadata
+                      .ipAddress,
+
+                  userAgent:
+                    requestMetadata
+                      .userAgent,
+
+                  metadata: {
+                    type:
+                      updated
+                        .type,
+
+                    status:
+                      updated
+                        .status,
+
+                    slug:
+                      updated
+                        .slug,
+
+                    imagePath:
+                      updated
+                        .imagePath,
+                  },
                 },
               },
-            });
+            );
 
             return updated;
           },
         );
 
-      response.status(200).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
+      if (
+        existing.imagePath &&
+        existing.imagePath !==
+          content.imagePath
+      ) {
+        await deleteUnusedContentImage(
+          existing.imagePath,
+        );
+      }
+
+      response
+        .status(200)
+        .json({
+          success: true,
+          content,
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * PUBLISH CONTENT
+ */
 adminContentRouter.post(
   "/:id/publish",
+
   authorizeAdminRoles(
     "SUPER_ADMIN",
     "CONTENT_ADMIN",
   ),
-  async (request, response, next) => {
-    try {
-      const id = idSchema.safeParse(
-        request.params.id,
-      );
 
-      if (!id.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content identifier is invalid.",
-        });
+  async (
+    request,
+    response,
+    next,
+  ) => {
+    try {
+      const id =
+        idSchema.safeParse(
+          request.params
+            .id,
+        );
+
+      if (
+        !id.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content identifier is invalid.",
+          });
+
         return;
       }
 
       const authentication =
-        getAuthentication(response);
+        getAuthentication(
+          response,
+        );
 
       const existing =
-        await prisma.contentEntry.findUnique({
-          where: {
-            id: id.data,
+        await prisma.contentEntry.findUnique(
+          {
+            where: {
+              id:
+                id.data,
+            },
           },
-        });
+        );
 
       if (
         !existing ||
-        existing.deletedAt
+        existing
+          .deletedAt
       ) {
-        response.status(404).json({
-          success: false,
-          message:
-            "The content entry was not found.",
-        });
+        response
+          .status(404)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content entry was not found.",
+          });
+
         return;
       }
 
       const eventError =
         validateEventDates(
           existing.type,
-          existing.eventStartAt,
-          existing.eventEndAt,
+          existing
+            .eventStartAt,
+          existing
+            .eventEndAt,
         );
 
-      if (eventError) {
-        response.status(400).json({
-          success: false,
-          message: eventError,
-        });
+      if (
+        eventError
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              eventError,
+          });
+
         return;
       }
 
-      const now = new Date();
+      const now =
+        new Date();
 
       const requestMetadata =
-        getRequestMetadata(request);
+        getRequestMetadata(
+          request,
+        );
 
       const content =
         await prisma.$transaction(
-          async (transaction) => {
+          async (
+            transaction,
+          ) => {
             const published =
-              await transaction.contentEntry.update({
-                where: {
-                  id: existing.id,
-                },
-                data: {
-                  status: "PUBLISHED",
-                  publishedAt:
-                    existing.publishedAt ??
-                    now,
-                  updatedById:
-                    authentication.admin.id,
-                },
-                select:
-                  administratorContentSelect,
-              });
+              await transaction.contentEntry.update(
+                {
+                  where: {
+                    id:
+                      existing
+                        .id,
+                  },
 
-            await transaction.auditLog.create({
-              data: {
-                actorId:
-                  authentication.admin.id,
-                action:
-                  "CONTENT_PUBLISHED",
-                entityType: "ContentEntry",
-                entityId: published.id,
-                ipAddress:
-                  requestMetadata.ipAddress,
-                userAgent:
-                  requestMetadata.userAgent,
-                metadata: {
-                  type: published.type,
-                  slug: published.slug,
+                  data: {
+                    status:
+                      "PUBLISHED",
+
+                    publishedAt:
+                      existing
+                        .publishedAt ??
+                      now,
+
+                    updatedById:
+                      authentication
+                        .admin
+                        .id,
+                  },
+
+                  select:
+                    administratorContentSelect,
+                },
+              );
+
+            await transaction.auditLog.create(
+              {
+                data: {
+                  actorId:
+                    authentication
+                      .admin
+                      .id,
+
+                  action:
+                    "CONTENT_PUBLISHED",
+
+                  entityType:
+                    "ContentEntry",
+
+                  entityId:
+                    published
+                      .id,
+
+                  ipAddress:
+                    requestMetadata
+                      .ipAddress,
+
+                  userAgent:
+                    requestMetadata
+                      .userAgent,
+
+                  metadata: {
+                    type:
+                      published
+                        .type,
+
+                    slug:
+                      published
+                        .slug,
+                  },
                 },
               },
-            });
+            );
 
             return published;
           },
         );
 
-      response.status(200).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
+      response
+        .status(200)
+        .json({
+          success: true,
+          content,
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * ARCHIVE CONTENT
+ */
 adminContentRouter.post(
   "/:id/archive",
+
   authorizeAdminRoles(
     "SUPER_ADMIN",
     "CONTENT_ADMIN",
   ),
-  async (request, response, next) => {
-    try {
-      const id = idSchema.safeParse(
-        request.params.id,
-      );
 
-      if (!id.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content identifier is invalid.",
-        });
+  async (
+    request,
+    response,
+    next,
+  ) => {
+    try {
+      const id =
+        idSchema.safeParse(
+          request.params
+            .id,
+        );
+
+      if (
+        !id.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content identifier is invalid.",
+          });
+
         return;
       }
 
       const authentication =
-        getAuthentication(response);
+        getAuthentication(
+          response,
+        );
 
       const existing =
-        await prisma.contentEntry.findUnique({
-          where: {
-            id: id.data,
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-            type: true,
-            slug: true,
-          },
-        });
+        await prisma.contentEntry.findUnique(
+          {
+            where: {
+              id:
+                id.data,
 
-      if (!existing) {
-        response.status(404).json({
-          success: false,
-          message:
-            "The content entry was not found.",
-        });
+              deletedAt:
+                null,
+            },
+
+            select: {
+              id: true,
+              type: true,
+              slug: true,
+            },
+          },
+        );
+
+      if (
+        !existing
+      ) {
+        response
+          .status(404)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content entry was not found.",
+          });
+
         return;
       }
 
       const requestMetadata =
-        getRequestMetadata(request);
+        getRequestMetadata(
+          request,
+        );
 
       const content =
         await prisma.$transaction(
-          async (transaction) => {
+          async (
+            transaction,
+          ) => {
             const archived =
-              await transaction.contentEntry.update({
-                where: {
-                  id: existing.id,
-                },
-                data: {
-                  status: "ARCHIVED",
-                  updatedById:
-                    authentication.admin.id,
-                },
-                select:
-                  administratorContentSelect,
-              });
+              await transaction.contentEntry.update(
+                {
+                  where: {
+                    id:
+                      existing
+                        .id,
+                  },
 
-            await transaction.auditLog.create({
-              data: {
-                actorId:
-                  authentication.admin.id,
-                action:
-                  "CONTENT_ARCHIVED",
-                entityType: "ContentEntry",
-                entityId: archived.id,
-                ipAddress:
-                  requestMetadata.ipAddress,
-                userAgent:
-                  requestMetadata.userAgent,
-                metadata: {
-                  type: archived.type,
-                  slug: archived.slug,
+                  data: {
+                    status:
+                      "ARCHIVED",
+
+                    updatedById:
+                      authentication
+                        .admin
+                        .id,
+                  },
+
+                  select:
+                    administratorContentSelect,
+                },
+              );
+
+            await transaction.auditLog.create(
+              {
+                data: {
+                  actorId:
+                    authentication
+                      .admin
+                      .id,
+
+                  action:
+                    "CONTENT_ARCHIVED",
+
+                  entityType:
+                    "ContentEntry",
+
+                  entityId:
+                    archived
+                      .id,
+
+                  ipAddress:
+                    requestMetadata
+                      .ipAddress,
+
+                  userAgent:
+                    requestMetadata
+                      .userAgent,
+
+                  metadata: {
+                    type:
+                      archived
+                        .type,
+
+                    slug:
+                      archived
+                        .slug,
+                  },
                 },
               },
-            });
+            );
 
             return archived;
           },
         );
 
-      response.status(200).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
+      response
+        .status(200)
+        .json({
+          success: true,
+          content,
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },
 );
 
+/*
+ * SOFT DELETE CONTENT
+ */
 adminContentRouter.delete(
   "/:id",
+
   authorizeAdminRoles(
     "SUPER_ADMIN",
     "CONTENT_ADMIN",
   ),
-  async (request, response, next) => {
-    try {
-      const id = idSchema.safeParse(
-        request.params.id,
-      );
 
-      if (!id.success) {
-        response.status(400).json({
-          success: false,
-          message:
-            "The content identifier is invalid.",
-        });
+  async (
+    request,
+    response,
+    next,
+  ) => {
+    try {
+      const id =
+        idSchema.safeParse(
+          request.params
+            .id,
+        );
+
+      if (
+        !id.success
+      ) {
+        response
+          .status(400)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content identifier is invalid.",
+          });
+
         return;
       }
 
       const authentication =
-        getAuthentication(response);
+        getAuthentication(
+          response,
+        );
 
       const existing =
-        await prisma.contentEntry.findUnique({
-          where: {
-            id: id.data,
+        await prisma.contentEntry.findUnique(
+          {
+            where: {
+              id:
+                id.data,
+            },
+
+            select: {
+              id: true,
+              type: true,
+              slug: true,
+              imagePath:
+                true,
+              deletedAt:
+                true,
+            },
           },
-          select: {
-            id: true,
-            type: true,
-            slug: true,
-            deletedAt: true,
-          },
-        });
+        );
 
       if (
         !existing ||
-        existing.deletedAt
+        existing
+          .deletedAt
       ) {
-        response.status(404).json({
-          success: false,
-          message:
-            "The content entry was not found.",
-        });
+        response
+          .status(404)
+          .json({
+            success:
+              false,
+
+            message:
+              "The content entry was not found.",
+          });
+
         return;
       }
 
-      const now = new Date();
+      const now =
+        new Date();
 
       const requestMetadata =
-        getRequestMetadata(request);
+        getRequestMetadata(
+          request,
+        );
 
       await prisma.$transaction(
-        async (transaction) => {
-          await transaction.contentEntry.update({
-            where: {
-              id: existing.id,
-            },
-            data: {
-              status: "ARCHIVED",
-              deletedAt: now,
-              deletedById:
-                authentication.admin.id,
-              updatedById:
-                authentication.admin.id,
-            },
-          });
+        async (
+          transaction,
+        ) => {
+          await transaction.contentEntry.update(
+            {
+              where: {
+                id:
+                  existing
+                    .id,
+              },
 
-          await transaction.auditLog.create({
-            data: {
-              actorId:
-                authentication.admin.id,
-              action:
-                "CONTENT_SOFT_DELETED",
-              entityType: "ContentEntry",
-              entityId: existing.id,
-              ipAddress:
-                requestMetadata.ipAddress,
-              userAgent:
-                requestMetadata.userAgent,
-              metadata: {
-                type: existing.type,
-                slug: existing.slug,
+              data: {
+                status:
+                  "ARCHIVED",
+
+                deletedAt:
+                  now,
+
+                deletedById:
+                  authentication
+                    .admin
+                    .id,
+
+                updatedById:
+                  authentication
+                    .admin
+                    .id,
               },
             },
-          });
+          );
+
+          await transaction.auditLog.create(
+            {
+              data: {
+                actorId:
+                  authentication
+                    .admin
+                    .id,
+
+                action:
+                  "CONTENT_SOFT_DELETED",
+
+                entityType:
+                  "ContentEntry",
+
+                entityId:
+                  existing
+                    .id,
+
+                ipAddress:
+                  requestMetadata
+                    .ipAddress,
+
+                userAgent:
+                  requestMetadata
+                    .userAgent,
+
+                metadata: {
+                  type:
+                    existing
+                      .type,
+
+                  slug:
+                    existing
+                      .slug,
+
+                  imagePath:
+                    existing
+                      .imagePath,
+                },
+              },
+            },
+          );
         },
       );
 
-      response.status(200).json({
-        success: true,
-        message:
-          "The content entry was deleted.",
-      });
-    } catch (error) {
+      if (
+        existing.imagePath
+      ) {
+        await deleteUnusedContentImage(
+          existing.imagePath,
+        );
+      }
+
+      response
+        .status(200)
+        .json({
+          success: true,
+
+          message:
+            "The content entry was deleted.",
+        });
+    } catch (
+      error
+    ) {
       next(error);
     }
   },

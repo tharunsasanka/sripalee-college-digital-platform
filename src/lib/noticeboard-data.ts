@@ -8,6 +8,7 @@ export type NoticeboardSlide = {
   id: string;
   slug?: string;
   title: string;
+  imageUrl?: string | null;
   subtitle: string;
   category: string;
   priority: NoticeboardPriority;
@@ -56,10 +57,12 @@ export const noticeboardSlides: NoticeboardSlide[] = [
   {
     id: "emergency-message-template",
     title: "Emergency Announcement",
-    subtitle: "Authorised urgent communication template",
+    subtitle:
+      "Authorised urgent communication template",
     category: "Emergency",
     priority: "emergency",
-    audience: "Entire School Community",
+    audience:
+      "Entire School Community",
     summary:
       "This demonstration slide shows how an authorised emergency closure, safety instruction or urgent schedule change will appear.",
     details: [
@@ -67,20 +70,33 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Record the publishing officer and time",
       "Provide approved language versions",
     ],
-    dateLabel: "Official date and time required",
-    timeLabel: "Immediate display when authorised",
-    location: "All school screens and public website",
-    languages: ["Sinhala", "English", "Tamil"],
-    status: "Emergency approval required",
+    dateLabel:
+      "Official date and time required",
+    timeLabel:
+      "Immediate display when authorised",
+    location:
+      "All school screens and public website",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    status:
+      "Emergency approval required",
     icon: "emergency",
   },
   {
     id: "examination-reminder",
-    title: "Term Examination Reminder",
-    subtitle: "Check the approved timetable before attending",
-    category: "Examinations",
-    priority: "important",
-    audience: "Students and Parents",
+    title:
+      "Term Examination Reminder",
+    subtitle:
+      "Check the approved timetable before attending",
+    category:
+      "Examinations",
+    priority:
+      "important",
+    audience:
+      "Students and Parents",
     summary:
       "Students should review their grade, subject, examination room and approved timetable before the examination period.",
     details: [
@@ -88,20 +104,34 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Arrive according to official instructions",
       "Check News and Notices for corrections",
     ],
-    dateLabel: "Approved examination period required",
-    timeLabel: "According to official timetable",
-    location: "Assigned examination rooms",
-    languages: ["Sinhala", "English"],
-    status: "Academic approval required",
-    icon: "examination",
+    dateLabel:
+      "Approved examination period required",
+    timeLabel:
+      "According to official timetable",
+    location:
+      "Assigned examination rooms",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    status:
+      "Academic approval required",
+    icon:
+      "examination",
   },
   {
-    id: "parent-meeting",
-    title: "Parent Consultation Meeting",
-    subtitle: "Grade-specific meeting information",
-    category: "Important Notice",
-    priority: "important",
-    audience: "Parents and Guardians",
+    id:
+      "parent-meeting",
+    title:
+      "Parent Consultation Meeting",
+    subtitle:
+      "Grade-specific meeting information",
+    category:
+      "Important Notice",
+    priority:
+      "important",
+    audience:
+      "Parents and Guardians",
     summary:
       "A proposed display for parent meetings, consultations and approved school-community discussions.",
     details: [
@@ -109,20 +139,35 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Check the assigned appointment time",
       "Private student matters remain confidential",
     ],
-    dateLabel: "Official meeting date required",
-    timeLabel: "Assigned time required",
-    location: "Approved meeting area",
-    languages: ["Sinhala", "English", "Tamil"],
-    status: "Section-head approval required",
-    icon: "parents",
+    dateLabel:
+      "Official meeting date required",
+    timeLabel:
+      "Assigned time required",
+    location:
+      "Approved meeting area",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    status:
+      "Section-head approval required",
+    icon:
+      "parents",
   },
   {
-    id: "academic-resource-update",
-    title: "New Learning Resources",
-    subtitle: "Approved revision and subject materials",
-    category: "Academic",
-    priority: "standard",
-    audience: "Students",
+    id:
+      "academic-resource-update",
+    title:
+      "New Learning Resources",
+    subtitle:
+      "Approved revision and subject materials",
+    category:
+      "Academic",
+    priority:
+      "standard",
+    audience:
+      "Students",
     summary:
       "Approved learning materials can be accessed through the Resources section and future student portal.",
     details: [
@@ -130,20 +175,34 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Confirm the subject and language",
       "Use only current approved versions",
     ],
-    dateLabel: "Publication date required",
-    timeLabel: "Available after approval",
-    location: "Resources and Student Portal",
-    languages: ["Sinhala", "English"],
-    status: "Department approval required",
-    icon: "academic",
+    dateLabel:
+      "Publication date required",
+    timeLabel:
+      "Available after approval",
+    location:
+      "Resources and Student Portal",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    status:
+      "Department approval required",
+    icon:
+      "academic",
   },
   {
-    id: "sports-meet-countdown",
-    title: "Annual Sports Meet",
-    subtitle: "Inter-house athletics and school-community programme",
-    category: "Events",
-    priority: "standard",
-    audience: "Entire School Community",
+    id:
+      "sports-meet-countdown",
+    title:
+      "Annual Sports Meet",
+    subtitle:
+      "Inter-house athletics and school-community programme",
+    category:
+      "Events",
+    priority:
+      "standard",
+    audience:
+      "Entire School Community",
     summary:
       "This event slide can present the official sports programme, countdown, participation details and visitor guidance.",
     details: [
@@ -151,20 +210,34 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Participant and spectator guidance",
       "Health and safety instructions",
     ],
-    dateLabel: "Official event date required",
-    timeLabel: "Programme time pending",
-    location: "School grounds",
-    languages: ["Sinhala", "English"],
-    status: "Sports committee approval required",
-    icon: "sports",
+    dateLabel:
+      "Official event date required",
+    timeLabel:
+      "Programme time pending",
+    location:
+      "School grounds",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    status:
+      "Sports committee approval required",
+    icon:
+      "sports",
   },
   {
-    id: "cultural-programme",
-    title: "Arts and Cultural Festival",
-    subtitle: "Music, dance, drama and creative expression",
-    category: "Events",
-    priority: "standard",
-    audience: "Entire School Community",
+    id:
+      "cultural-programme",
+    title:
+      "Arts and Cultural Festival",
+    subtitle:
+      "Music, dance, drama and creative expression",
+    category:
+      "Events",
+    priority:
+      "standard",
+    audience:
+      "Entire School Community",
     summary:
       "A public display for approved performances, exhibitions, cultural activities and programme information.",
     details: [
@@ -172,20 +245,35 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Programme and venue information",
       "Photography permission controls",
     ],
-    dateLabel: "Official event date required",
-    timeLabel: "Programme time pending",
-    location: "Approved performance venue",
-    languages: ["Sinhala", "English", "Tamil"],
-    status: "Cultural committee approval required",
-    icon: "culture",
+    dateLabel:
+      "Official event date required",
+    timeLabel:
+      "Programme time pending",
+    location:
+      "Approved performance venue",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    status:
+      "Cultural committee approval required",
+    icon:
+      "culture",
   },
   {
-    id: "student-achievement",
-    title: "Celebrating Student Achievement",
-    subtitle: "Recognising verified excellence",
-    category: "Achievements",
-    priority: "celebration",
-    audience: "Entire School Community",
+    id:
+      "student-achievement",
+    title:
+      "Celebrating Student Achievement",
+    subtitle:
+      "Recognising verified excellence",
+    category:
+      "Achievements",
+    priority:
+      "celebration",
+    audience:
+      "Entire School Community",
     summary:
       "A celebratory display for verified academic, sporting, cultural and leadership achievements.",
     details: [
@@ -193,20 +281,34 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Publish only approved student information",
       "Confirm permission for photographs",
     ],
-    dateLabel: "Verified achievement date required",
-    timeLabel: "Feature period assigned by editor",
-    location: "Public website and school displays",
-    languages: ["Sinhala", "English"],
-    status: "Achievement verification required",
-    icon: "achievement",
+    dateLabel:
+      "Verified achievement date required",
+    timeLabel:
+      "Feature period assigned by editor",
+    location:
+      "Public website and school displays",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    status:
+      "Achievement verification required",
+    icon:
+      "achievement",
   },
   {
-    id: "administrative-reminder",
-    title: "Administrative Reminder",
-    subtitle: "Important school-office information",
-    category: "Administration",
-    priority: "standard",
-    audience: "Students, Parents and Staff",
+    id:
+      "administrative-reminder",
+    title:
+      "Administrative Reminder",
+    subtitle:
+      "Important school-office information",
+    category:
+      "Administration",
+    priority:
+      "standard",
+    audience:
+      "Students, Parents and Staff",
     summary:
       "A standard display for approved office hours, public-document deadlines and administrative instructions.",
     details: [
@@ -214,49 +316,70 @@ export const noticeboardSlides: NoticeboardSlide[] = [
       "Display the correct deadline",
       "Link to the approved form or resource",
     ],
-    dateLabel: "Official publication date required",
-    timeLabel: "Display during approved period",
-    location: "School office and digital screens",
-    languages: ["Sinhala", "English", "Tamil"],
-    status: "Administrative approval required",
-    icon: "administration",
+    dateLabel:
+      "Official publication date required",
+    timeLabel:
+      "Display during approved period",
+    location:
+      "School office and digital screens",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    status:
+      "Administrative approval required",
+    icon:
+      "administration",
   },
 ];
 
 export const noticeboardZones = [
   {
-    title: "Main Feature Zone",
-    position: "Primary screen area",
+    title:
+      "Main Feature Zone",
+    position:
+      "Primary screen area",
     description:
       "Displays the current emergency, important, event or achievement announcement.",
   },
   {
-    title: "Daily Notices Zone",
-    position: "Supporting information area",
+    title:
+      "Daily Notices Zone",
+    position:
+      "Supporting information area",
     description:
       "Shows approved daily reminders, academic information and administrative notices.",
   },
   {
-    title: "Upcoming Events Zone",
-    position: "Calendar and countdown area",
+    title:
+      "Upcoming Events Zone",
+    position:
+      "Calendar and countdown area",
     description:
       "Presents approved dates, event countdowns, locations and programme times.",
   },
   {
-    title: "Achievement Zone",
-    position: "Celebration area",
+    title:
+      "Achievement Zone",
+    position:
+      "Celebration area",
     description:
       "Highlights verified student, staff, school and past-pupil achievements.",
   },
   {
-    title: "Information Ticker",
-    position: "Lower screen area",
+    title:
+      "Information Ticker",
+    position:
+      "Lower screen area",
     description:
       "Rotates short approved messages without displaying sensitive information.",
   },
   {
-    title: "Status and Language Zone",
-    position: "Screen header or footer",
+    title:
+      "Status and Language Zone",
+    position:
+      "Screen header or footer",
     description:
       "Shows publication status, language selection and last-approved update information.",
   },
@@ -265,43 +388,50 @@ export const noticeboardZones = [
 export const noticeboardWorkflow = [
   {
     step: "01",
-    title: "Create display",
+    title:
+      "Create display",
     description:
       "An authorised editor enters the title, category, audience, language, display period and screen content.",
   },
   {
     step: "02",
-    title: "Review accuracy",
+    title:
+      "Review accuracy",
     description:
       "Names, dates, instructions, translations, images and destination links are checked.",
   },
   {
     step: "03",
-    title: "Approve",
+    title:
+      "Approve",
     description:
       "The responsible officer confirms that the slide is suitable for the selected screens.",
   },
   {
     step: "04",
-    title: "Schedule",
+    title:
+      "Schedule",
     description:
       "The approved start time, expiry time, rotation order and screen locations are assigned.",
   },
   {
     step: "05",
-    title: "Publish",
+    title:
+      "Publish",
     description:
       "The display becomes active on approved school screens and associated website areas.",
   },
   {
     step: "06",
-    title: "Monitor",
+    title:
+      "Monitor",
     description:
       "Staff confirm that the correct slide is visible and that emergency priority works correctly.",
   },
   {
     step: "07",
-    title: "Expire or archive",
+    title:
+      "Expire or archive",
     description:
       "Completed displays leave the active rotation while retaining their approved publication history.",
   },

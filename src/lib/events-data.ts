@@ -8,6 +8,7 @@ export type SchoolEvent = {
   id: string;
   slug?: string;
   title: string;
+  imageUrl?: string | null;
   category: string;
   audience: string;
   month: string;
@@ -100,9 +101,15 @@ export const schoolEvents: SchoolEvent[] = [
     status: "upcoming",
     featured: true,
     registrationRequired: false,
-    registrationStatus: "No public registration required",
-    languages: ["Sinhala", "English", "Tamil"],
-    approvalStatus: "Administrative confirmation required",
+    registrationStatus:
+      "No public registration required",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    approvalStatus:
+      "Administrative confirmation required",
   },
   {
     id: "term-examination-period",
@@ -110,9 +117,12 @@ export const schoolEvents: SchoolEvent[] = [
     category: "Examination",
     audience: "Students",
     month: "March",
-    dateLabel: "Approved timetable required",
-    timeLabel: "According to examination timetable",
-    venue: "Assigned examination rooms",
+    dateLabel:
+      "Approved timetable required",
+    timeLabel:
+      "According to examination timetable",
+    venue:
+      "Assigned examination rooms",
     summary:
       "A proposed event entry linking students and parents to approved examination dates, instructions and timetable documents.",
     details: [
@@ -123,19 +133,29 @@ export const schoolEvents: SchoolEvent[] = [
     status: "upcoming",
     featured: true,
     registrationRequired: false,
-    registrationStatus: "Student eligibility managed internally",
-    languages: ["Sinhala", "English"],
-    approvalStatus: "Academic approval required",
+    registrationStatus:
+      "Student eligibility managed internally",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    approvalStatus:
+      "Academic approval required",
   },
   {
     id: "annual-sports-meet",
-    title: "Annual Inter-House Sports Meet",
+    title:
+      "Annual Inter-House Sports Meet",
     category: "Sports",
-    audience: "Entire School Community",
+    audience:
+      "Entire School Community",
     month: "February",
-    dateLabel: "Official date pending",
-    timeLabel: "Programme time pending",
-    venue: "School grounds",
+    dateLabel:
+      "Official date pending",
+    timeLabel:
+      "Programme time pending",
+    venue:
+      "School grounds",
     summary:
       "A proposed event page for athletics, house competitions, participation instructions and approved spectator information.",
     details: [
@@ -146,19 +166,30 @@ export const schoolEvents: SchoolEvent[] = [
     status: "registration",
     featured: true,
     registrationRequired: true,
-    registrationStatus: "Student participation approval required",
-    languages: ["Sinhala", "English"],
-    approvalStatus: "Sports committee approval required",
+    registrationStatus:
+      "Student participation approval required",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    approvalStatus:
+      "Sports committee approval required",
   },
   {
     id: "cultural-festival",
-    title: "Arts and Cultural Festival",
-    category: "Arts and Culture",
-    audience: "Entire School Community",
+    title:
+      "Arts and Cultural Festival",
+    category:
+      "Arts and Culture",
+    audience:
+      "Entire School Community",
     month: "June",
-    dateLabel: "Official date pending",
-    timeLabel: "Programme time pending",
-    venue: "Approved performance venue",
+    dateLabel:
+      "Official date pending",
+    timeLabel:
+      "Programme time pending",
+    venue:
+      "Approved performance venue",
     summary:
       "A proposed event presenting approved music, dance, drama, art and cultural activities organised by the school.",
     details: [
@@ -169,19 +200,30 @@ export const schoolEvents: SchoolEvent[] = [
     status: "registration",
     featured: false,
     registrationRequired: true,
-    registrationStatus: "Participant registration required",
-    languages: ["Sinhala", "English", "Tamil"],
-    approvalStatus: "Cultural committee approval required",
+    registrationStatus:
+      "Participant registration required",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    approvalStatus:
+      "Cultural committee approval required",
   },
   {
     id: "parent-consultation",
-    title: "Parent Consultation Meeting",
-    category: "School Community",
+    title:
+      "Parent Consultation Meeting",
+    category:
+      "School Community",
     audience: "Parents",
     month: "May",
-    dateLabel: "Grade-specific date required",
-    timeLabel: "Assigned time slot required",
-    venue: "Relevant classroom or meeting area",
+    dateLabel:
+      "Grade-specific date required",
+    timeLabel:
+      "Assigned time slot required",
+    venue:
+      "Relevant classroom or meeting area",
     summary:
       "A controlled event entry for parent meetings, academic progress discussions and approved school-community communication.",
     details: [
@@ -192,19 +234,30 @@ export const schoolEvents: SchoolEvent[] = [
     status: "upcoming",
     featured: false,
     registrationRequired: true,
-    registrationStatus: "Parent appointment process required",
-    languages: ["Sinhala", "English", "Tamil"],
-    approvalStatus: "Section-head approval required",
+    registrationStatus:
+      "Parent appointment process required",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    approvalStatus:
+      "Section-head approval required",
   },
   {
     id: "teacher-development",
-    title: "Teacher Professional Development Programme",
-    category: "Administration",
+    title:
+      "Teacher Professional Development Programme",
+    category:
+      "Administration",
     audience: "Teachers",
     month: "August",
-    dateLabel: "Official date pending",
-    timeLabel: "Internal schedule required",
-    venue: "Assigned training venue",
+    dateLabel:
+      "Official date pending",
+    timeLabel:
+      "Internal schedule required",
+    venue:
+      "Assigned training venue",
     summary:
       "A proposed calendar entry for approved teacher training, professional development and academic-planning activities.",
     details: [
@@ -215,19 +268,30 @@ export const schoolEvents: SchoolEvent[] = [
     status: "upcoming",
     featured: false,
     registrationRequired: false,
-    registrationStatus: "Participation assigned internally",
-    languages: ["Sinhala", "English"],
-    approvalStatus: "Administrative approval required",
+    registrationStatus:
+      "Participation assigned internally",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    approvalStatus:
+      "Administrative approval required",
   },
   {
     id: "founders-commemoration",
-    title: "Founding Heritage Commemoration",
-    category: "Commemorations",
-    audience: "Entire School Community",
+    title:
+      "Founding Heritage Commemoration",
+    category:
+      "Commemorations",
+    audience:
+      "Entire School Community",
     month: "September",
-    dateLabel: "Historical date confirmation required",
-    timeLabel: "Programme time pending",
-    venue: "School heritage area",
+    dateLabel:
+      "Historical date confirmation required",
+    timeLabel:
+      "Programme time pending",
+    venue:
+      "School heritage area",
     summary:
       "A proposed commemorative programme connecting the school community with approved historical records and institutional heritage.",
     details: [
@@ -238,19 +302,31 @@ export const schoolEvents: SchoolEvent[] = [
     status: "upcoming",
     featured: false,
     registrationRequired: false,
-    registrationStatus: "Public participation details pending",
-    languages: ["Sinhala", "English", "Tamil"],
-    approvalStatus: "Heritage committee approval required",
+    registrationStatus:
+      "Public participation details pending",
+    languages: [
+      "Sinhala",
+      "English",
+      "Tamil",
+    ],
+    approvalStatus:
+      "Heritage committee approval required",
   },
   {
     id: "past-pupils-gathering",
-    title: "Past Pupils Community Gathering",
-    category: "School Community",
-    audience: "Past Pupils",
+    title:
+      "Past Pupils Community Gathering",
+    category:
+      "School Community",
+    audience:
+      "Past Pupils",
     month: "December",
-    dateLabel: "Official date pending",
-    timeLabel: "Programme time pending",
-    venue: "Approved school venue",
+    dateLabel:
+      "Official date pending",
+    timeLabel:
+      "Programme time pending",
+    venue:
+      "Approved school venue",
     summary:
       "A proposed event supporting approved engagement between the school and its past-pupil community.",
     details: [
@@ -261,9 +337,14 @@ export const schoolEvents: SchoolEvent[] = [
     status: "registration",
     featured: false,
     registrationRequired: true,
-    registrationStatus: "Verified registration required",
-    languages: ["Sinhala", "English"],
-    approvalStatus: "Administrative approval required",
+    registrationStatus:
+      "Verified registration required",
+    languages: [
+      "Sinhala",
+      "English",
+    ],
+    approvalStatus:
+      "Administrative approval required",
   },
 ];
 

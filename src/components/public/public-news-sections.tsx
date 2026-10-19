@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
+
 import {
   useEffect,
   useState,
@@ -14,6 +16,7 @@ import {
 import { Reveal } from "@/components/reveal";
 import {
   createContentExcerpt,
+  getPublicImageUrl,
   listPublicContent,
   type PublicContentEntry,
 } from "@/lib/public-content";
@@ -27,7 +30,11 @@ function formatPublishedDate(
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime(),
+    )
+  ) {
     return "Publication date unavailable";
   }
 
@@ -104,7 +111,10 @@ export function PublicNewsSections() {
           </h1>
 
           <p className="mt-7 max-w-3xl text-lg leading-8 text-white/70 md:text-xl">
-            Read official school news published through the authorised administration portal.
+            Read official school news
+            published through the
+            authorised administration
+            portal.
           </p>
         </div>
       </section>
@@ -141,69 +151,115 @@ export function PublicNewsSections() {
             </h2>
 
             <p className="mt-3 text-black/60">
-              Official school news will appear here after publication.
+              Official school news will
+              appear here after
+              publication.
             </p>
           </div>
         ) : (
           <div className="grid gap-7 md:grid-cols-2">
             {news.map(
-              (entry, index) => (
-                <Reveal
-                  key={entry.id}
-                  delay={index * 0.04}
-                >
-                  <article className="card-3d flex h-full flex-col rounded-[2rem] border border-black/10 bg-white p-7">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <span className="rounded-full bg-[#741f2b]/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[#741f2b]">
-                        School news
-                      </span>
+              (
+                entry,
+                index,
+              ) => {
+                const imageUrl =
+                  getPublicImageUrl(
+                    entry.imagePath,
+                  );
 
-                      {entry.featured ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[#c9a227]/20 px-3 py-1.5 text-xs font-bold text-[#4e111b]">
-                          <Star size={14} />
-                          Featured
-                        </span>
+                return (
+                  <Reveal
+                    key={entry.id}
+                    delay={
+                      index * 0.04
+                    }
+                  >
+                    <article className="card-3d flex h-full flex-col overflow-hidden rounded-[2rem] border border-black/10 bg-white">
+                      {imageUrl ? (
+                        <Link
+                          href={`/news/view?slug=${encodeURIComponent(
+                            entry.slug,
+                          )}`}
+                          className="block overflow-hidden bg-[#faf7ef]"
+                        >
+                          <img
+                            src={imageUrl}
+                            alt={
+                              entry.title
+                            }
+                            loading="lazy"
+                            className="h-64 w-full object-cover transition duration-500 hover:scale-[1.02]"
+                          />
+                        </Link>
                       ) : null}
-                    </div>
 
-                    <h2 className="mt-6 text-2xl font-semibold leading-tight text-[#4e111b]">
-                      <Link
-                        href={`/news/view?slug=${encodeURIComponent(entry.slug)}`}
-                        className="focus-ring rounded-lg transition hover:text-[#741f2b]"
-                      >
-                        {entry.title}
-                      </Link>
-                    </h2>
+                      <div className="flex flex-1 flex-col p-7">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <span className="rounded-full bg-[#741f2b]/10 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em] text-[#741f2b]">
+                            School news
+                          </span>
 
-                    <p className="mt-4 leading-7 text-black/65">
-                      {createContentExcerpt(
-                        entry,
-                        300,
-                      )}
-                    </p>
+                          {entry.featured ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#c9a227]/20 px-3 py-1.5 text-xs font-bold text-[#4e111b]">
+                              <Star
+                                size={14}
+                              />
+                              Featured
+                            </span>
+                          ) : null}
+                        </div>
 
-                    <div className="mt-6 whitespace-pre-line rounded-2xl bg-[#faf7ef] p-5 text-sm leading-7 text-black/65">
-                      {entry.body}
-                    </div>
+                        <h2 className="mt-6 text-2xl font-semibold leading-tight text-[#4e111b]">
+                          <Link
+                            href={`/news/view?slug=${encodeURIComponent(
+                              entry.slug,
+                            )}`}
+                            className="focus-ring rounded-lg transition hover:text-[#741f2b]"
+                          >
+                            {entry.title}
+                          </Link>
+                        </h2>
 
-                    <div className="mt-auto flex flex-col gap-3 border-t border-black/10 pt-6 text-sm text-black/55 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="inline-flex items-center gap-2">
-                        <CalendarDays
-                          size={17}
-                        />
-                        {formatPublishedDate(
-                          entry.publishedAt,
-                        )}
-                      </span>
+                        <p className="mt-4 leading-7 text-black/65">
+                          {createContentExcerpt(
+                            entry,
+                            300,
+                          )}
+                        </p>
 
-                      <span className="inline-flex items-center gap-2">
-                        <UserRound size={17} />
-                        {entry.createdBy.displayName}
-                      </span>
-                    </div>
-                  </article>
-                </Reveal>
-              ),
+                        <div className="mt-6 whitespace-pre-line rounded-2xl bg-[#faf7ef] p-5 text-sm leading-7 text-black/65">
+                          {entry.body}
+                        </div>
+
+                        <div className="mt-auto flex flex-col gap-3 border-t border-black/10 pt-6 text-sm text-black/55 sm:flex-row sm:items-center sm:justify-between">
+                          <span className="inline-flex items-center gap-2">
+                            <CalendarDays
+                              size={17}
+                            />
+
+                            {formatPublishedDate(
+                              entry.publishedAt,
+                            )}
+                          </span>
+
+                          <span className="inline-flex items-center gap-2">
+                            <UserRound
+                              size={17}
+                            />
+
+                            {
+                              entry
+                                .createdBy
+                                .displayName
+                            }
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </Reveal>
+                );
+              },
             )}
           </div>
         )}

@@ -1,0 +1,134 @@
+generator client {
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  runtime                = "nodejs"
+  moduleFormat           = "cjs"
+  generatedFileExtension = "ts"
+  importFileExtension    = "js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  CONTENT_ADMIN
+  EDITOR
+}
+
+enum AdminStatus {
+  PENDING
+  ACTIVE
+  DISABLED
+}
+
+enum ContentType {
+  NEWS
+  NOTICE
+  EVENT
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model AdminUser {
+  id                String         @id @default(uuid()) @db.Uuid
+  email             String         @unique @db.VarChar(254)
+  displayName       String         @map("display_name") @db.VarChar(120)
+  passwordHash      String         @map("password_hash") @db.VarChar(255)
+  role              AdminRole      @default(EDITOR)
+  status            AdminStatus    @default(PENDING)
+  failedLoginCount  Int            @default(0) @map("failed_login_count")
+  lockedUntil       DateTime?      @map("locked_until")
+  passwordChangedAt DateTime       @default(now()) @map("password_changed_at")
+  lastLoginAt       DateTime?      @map("last_login_at")
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt @map("updated_at")
+  sessions          AdminSession[]
+  auditLogs         AuditLog[]     @relation("AuditActor")
+  createdContent    ContentEntry[] @relation("ContentCreatedBy")
+  updatedContent    ContentEntry[] @relation("ContentUpdatedBy")
+  deletedContent    ContentEntry[] @relation("ContentDeletedBy")
+
+  @@index([status])
+  @@index([role])
+  @@index([lockedUntil])
+  @@map("admin_users")
+}
+
+model AdminSession {
+  id          String    @id @default(uuid()) @db.Uuid
+  adminUserId String    @map("admin_user_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash") @db.VarChar(64)
+  expiresAt   DateTime  @map("expires_at")
+  revokedAt   DateTime? @map("revoked_at")
+  lastSeenAt  DateTime  @default(now()) @map("last_seen_at")
+  ipAddress   String?   @map("ip_address") @db.VarChar(64)
+  userAgent   String?   @map("user_agent") @db.VarChar(512)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  adminUser   AdminUser @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([adminUserId])
+  @@index([expiresAt])
+  @@index([revokedAt])
+  @@index([adminUserId, revokedAt])
+  @@map("admin_sessions")
+}
+
+model AuditLog {
+  id         String     @id @default(uuid()) @db.Uuid
+  actorId    String?    @map("actor_id") @db.Uuid
+  action     String     @db.VarChar(80)
+  entityType String?    @map("entity_type") @db.VarChar(80)
+  entityId   String?    @map("entity_id") @db.VarChar(120)
+  ipAddress  String?    @map("ip_address") @db.VarChar(64)
+  userAgent  String?    @map("user_agent") @db.VarChar(512)
+  metadata   Json?
+  createdAt  DateTime   @default(now()) @map("created_at")
+  actor      AdminUser? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model ContentEntry {
+  id            String        @id @default(uuid()) @db.Uuid
+  type          ContentType
+  title         String        @db.VarChar(180)
+  slug          String        @unique @db.VarChar(200)
+  summary       String?       @db.VarChar(320)
+  body          String        @db.Text
+  imagePath     String?       @map("image_path") @db.VarChar(300)
+  status        ContentStatus @default(DRAFT)
+  featured      Boolean       @default(false)
+  publishedAt   DateTime?     @map("published_at")
+  eventStartAt  DateTime?     @map("event_start_at")
+  eventEndAt    DateTime?     @map("event_end_at")
+  eventLocation String?       @map("event_location") @db.VarChar(200)
+  createdById   String        @map("created_by_id") @db.Uuid
+  updatedById   String        @map("updated_by_id") @db.Uuid
+  deletedById   String?       @map("deleted_by_id") @db.Uuid
+  deletedAt     DateTime?     @map("deleted_at")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  createdBy     AdminUser     @relation("ContentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy     AdminUser     @relation("ContentUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+  deletedBy     AdminUser?    @relation("ContentDeletedBy", fields: [deletedById], references: [id], onDelete: SetNull)
+
+  @@index([type])
+  @@index([status])
+  @@index([featured])
+  @@index([publishedAt])
+  @@index([eventStartAt])
+  @@index([deletedAt])
+  @@index([type, status, publishedAt])
+  @@map("content_entries")
+}
